@@ -3112,129 +3112,62 @@ async function saveObservation(designerId){
 
 
 
-// ── AIRTABLE SYNC (via Google Apps Script proxy — no token in HTML) ───────────
-const AT = {
-  proxy: 'https://script.google.com/a/macros/realtor.com/s/AKfycby6SGVGJxsDUsZEc8st5GCPZYdqnhwKOewPggf-aRNsLa-UudV59BY2tP9gnKceuZLK/exec',
-  designers: {
-    tableId: 'tbl5lvZM4dwp2APYI',
-    fKey:    'fldtfdUOrcZgSuOxd',
-    fData:   'fldcpQjfjgrJXCZt1',
-  },
-  accounts: {
-    tableId:   'tbl8Fvj2Btdw3OIPi',
-    fUsername: 'fld1bftnEwIe5msSw',
-    fPic:      'fldtujivUofPsbBuf',
-    fPwOver:   'fld2NmTbLFaiXqRSS',
+// ── GOOGLE SHEETS SYNC (via Apps Script proxy) ───────────────────────────────
+const PROXY_URL = 'https://script.google.com/a/macros/realtor.com/s/AKfycby6SGVGJxsDUsZEc8st5GCPZYdqnhwKOewPggf-aRNsLa-UudV59BY2tP9gnKceuZLK/exec';
+
+async function sheetsLoad(key){
+  try {
+    const url = PROXY_URL + '?key=' + encodeURIComponent(key);
+    const r = await fetch(url);
+    const d = await r.json();
+    return d.value || null;
+  } catch(e) {
+    console.warn('Sheets load failed:', e);
+    return null;
   }
-};
-
-// ── Generic helpers — all calls go through the proxy ─────────────────────────
-async function atGet(tableId, filterFormula){
-  const query = filterFormula
-    ? 'filterByFormula=' + encodeURIComponent(filterFormula)
-    : '';
-  const url = AT.proxy + '?path=' + encodeURIComponent(tableId)
-    + (query ? '&query=' + encodeURIComponent(query) : '');
-  const r = await fetch(url);
-  return r.json();
 }
 
-async function atCreate(tableId, fields){
-  const url = AT.proxy + '?path=' + encodeURIComponent(tableId);
-  const r = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ records: [{ fields }] })
-  });
-  return r.json();
+async function sheetsSave(key, value){
+  try {
+    await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key, value })
+    });
+  } catch(e) {
+    console.warn('Sheets save failed:', e);
+  }
 }
 
-async function atUpdate(tableId, recordId, fields){
-  // Apps Script doPost handles PATCH-style updates via POST with _method override
-  const url = AT.proxy + '?path=' + encodeURIComponent(tableId + '/' + recordId);
-  const r = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ records: [{ fields }], _method: 'PATCH' })
-  });
-  return r.json();
-}
-
-// ── Designers: load ───────────────────────────────────────────────────────────
-let atDesignerRecordId = null; // single row keyed by 'all'
-
+// Wrappers used by the rest of the app
 async function atLoadDesigners(){
-  try {
-    const res = await atGet(AT.designers.tableId,
-      `{${AT.designers.fKey}}='all'`);
-    const records = res.records || [];
-    if(records.length > 0){
-      atDesignerRecordId = records[0].id;
-      const raw = records[0].fields[AT.designers.fData];
-      if(raw){
-        const parsed = JSON.parse(raw);
-        if(Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    }
-  } catch(e){ console.warn('Airtable load failed, using local:', e); }
-  return null;
+  const raw = await sheetsLoad('designers');
+  if(!raw) return null;
+  try { return JSON.parse(raw); } catch(e) { return null; }
 }
 
-// ── Designers: save ───────────────────────────────────────────────────────────
 async function atSaveDesigners(designersArr){
-  const dataStr = JSON.stringify(designersArr);
-  try {
-    if(atDesignerRecordId){
-      await atUpdate(AT.designers.tableId, atDesignerRecordId, {
-        [AT.designers.fData]: dataStr
-      });
-    } else {
-      const res = await atCreate(AT.designers.tableId, {
-        [AT.designers.fKey]: 'all',
-        [AT.designers.fData]: dataStr
-      });
-      if(res.records) atDesignerRecordId = res.records[0].id;
-    }
-  } catch(e){ console.warn('Airtable save failed:', e); }
+  sheetsSave('designers', JSON.stringify(designersArr));
 }
 
-// ── Accounts: load ─────────────────────────────────────────────────────────
-let atAccountRecords = {}; // { username: recordId }
+// Account data (profile pics, password overrides)
+let _acctCache = null;
 
 async function atLoadAccounts(){
-  try {
-    const res = await atGet(AT.accounts.tableId);
-    const out = {};
-    (res.records||[]).forEach(rec => {
-      const uname = rec.fields[AT.accounts.fUsername];
-      if(uname){
-        atAccountRecords[uname] = rec.id;
-        out[uname] = {
-          pic: rec.fields[AT.accounts.fPic] || '',
-          passwordOverride: rec.fields[AT.accounts.fPwOver] || ''
-        };
-      }
-    });
-    return out;
-  } catch(e){ console.warn('Airtable accounts load failed:', e); return {}; }
+  if(_acctCache) return _acctCache;
+  const raw = await sheetsLoad('accounts');
+  if(!raw) return {};
+  try { _acctCache = JSON.parse(raw); return _acctCache; } catch(e) { return {}; }
 }
 
 async function atSaveAccount(username, fields){
-  // fields: { pic?, passwordOverride? }
-  const atFields = {};
-  if(fields.pic !== undefined)              atFields[AT.accounts.fPic]    = fields.pic;
-  if(fields.passwordOverride !== undefined) atFields[AT.accounts.fPwOver] = fields.passwordOverride;
-  atFields[AT.accounts.fUsername] = username;
-  try {
-    if(atAccountRecords[username]){
-      await atUpdate(AT.accounts.tableId, atAccountRecords[username], atFields);
-    } else {
-      const res = await atCreate(AT.accounts.tableId, atFields);
-      if(res.records) atAccountRecords[username] = res.records[0].id;
-    }
-  } catch(e){ console.warn('Airtable account save failed:', e); }
+  const current = await atLoadAccounts();
+  if(!current[username]) current[username] = {};
+  Object.assign(current[username], fields);
+  _acctCache = current;
+  sheetsSave('accounts', JSON.stringify(current));
 }
-// ── END AIRTABLE SYNC ─────────────────────────────────────────────────────────
+// ── END GOOGLE SHEETS SYNC ────────────────────────────────────────────────────
 
 // ── AUTH ──
 
@@ -3309,19 +3242,18 @@ function loadAcctData(){
 }
 function saveAcctData(data){
   try{ localStorage.setItem(ACCT_STORAGE, JSON.stringify(data)); }catch(e){}
-  // Sync each account entry to Airtable
+  // Sync each account entry to Google Sheets
   Object.entries(data).forEach(([username, acctData])=>{
     atSaveAccount(username, acctData);
   });
 }
 async function syncAccountsFromAirtable(){
-  const atAccts = await atLoadAccounts();
-  if(Object.keys(atAccts).length > 0){
-    // Merge into localStorage (Airtable wins)
+  // Now reads from Google Sheets
+  const sheetAccts = await atLoadAccounts();
+  if(Object.keys(sheetAccts).length > 0){
     const local = loadAcctData();
-    const merged = Object.assign({}, local, atAccts);
+    const merged = Object.assign({}, local, sheetAccts);
     try{ localStorage.setItem(ACCT_STORAGE, JSON.stringify(merged)); }catch(e){}
-    // Apply password overrides
     Object.entries(merged).forEach(([oldPw, d])=>{
       if(d.passwordOverride && AUTH_CREDS[oldPw] && oldPw !== d.passwordOverride){
         const info = AUTH_CREDS[oldPw];
