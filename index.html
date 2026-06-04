@@ -2188,9 +2188,8 @@ function markNoteRead(designerId, noteType, noteDate){
 
 
 async function save(){
-  try{
-    await window.storage.set('rdc_designers', JSON.stringify(designers));
-  }catch(e){console.error('Save error:',e);}
+  try{ localStorage.setItem('rdc_designers', JSON.stringify(designers)); }catch(e){console.error('Save error:',e);}
+  atSaveDesigners(designers); // sync to Airtable (non-blocking)
 }
 
 async function sendMessage(){
@@ -2257,17 +2256,8 @@ function renderLeaveView(){
 
 // Load from persistent storage on startup
 async function loadAndInit(filterDesignerId){
-  try {
-    const result = await window.storage.get('rdc_designers');
-    if(result && result.value){
-      const saved = JSON.parse(result.value);
-      // Merge: keep initial data structure but overlay saved data
-      designers = saved;
-    }
-  } catch(e) {
-    // Key doesn't exist yet — use initial data
-    console.log('No saved data yet, using initial designers.');
-  }
+  // This function is now superseded by the Airtable-aware version below
+  // but kept as a no-op shell for compatibility
   initSidebar(filterDesignerId);
   if(filterDesignerId){
     showDesigner(filterDesignerId);
