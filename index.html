@@ -3123,11 +3123,13 @@ const NOTIFY_PROXY = 'https://script.google.com/a/macros/realtor.com/s/AKfycby6S
 async function notifyMirella(type, fromName, message){
   try {
     const date = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-    await fetch(NOTIFY_PROXY, {
+    // Use no-cors mode to bypass CORS preflight — fire and forget
+    fetch(NOTIFY_PROXY, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({ type, from: fromName, message, date })
-    });
+    }).catch(e => console.warn('Notification failed:', e));
   } catch(e){
     console.warn('Email notification failed:', e);
   }
