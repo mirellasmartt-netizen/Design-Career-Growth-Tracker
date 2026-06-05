@@ -2112,7 +2112,8 @@ function submitDesignerNote(designerId){
   save();
   document.getElementById('designer-note-input').value = '';
   renderDesigner(designerId);
-  alert('Note submitted! Mirella will be able to see and respond to it.');
+  notifyMirella('note', currentUser ? currentUser.name : d.name, text);
+  alert('Note submitted! Mirella will receive an email notification.');
 }
 
 function submitCareerRequest(designerId){
@@ -2133,7 +2134,8 @@ function submitCareerRequest(designerId){
   save();
   document.getElementById('career-req-input').value = '';
   renderDesigner(designerId);
-  alert('Career discussion request sent to Mirella!');
+  notifyMirella('career-request', currentUser ? currentUser.name : d.name, text);
+  alert('Request sent! Mirella will receive an email notification.');
 }
 
 
@@ -2147,7 +2149,8 @@ function submitDesignerNoteFromTab(designerId){
   save();
   document.getElementById('designer-note-input-tab').value='';
   renderDesignerTab('notes',d);
-  alert('Note submitted to Mirella!');
+  notifyMirella('note', currentUser ? currentUser.name : d.name, text);
+  alert('Note submitted! Mirella will receive an email notification.');
 }
 
 function submitCareerRequestFromTab(designerId){
@@ -2160,7 +2163,8 @@ function submitCareerRequestFromTab(designerId){
   save();
   document.getElementById('career-req-input-tab').value='';
   renderDesignerTab('notes',d);
-  alert('Career discussion request sent to Mirella!');
+  notifyMirella('career-request', currentUser ? currentUser.name : d.name, text);
+  alert('Request sent! Mirella will receive an email notification.');
 }
 
 function submitAdminReply(designerId, noteIdx){
@@ -3113,62 +3117,28 @@ async function saveObservation(designerId){
 
 
 
-// ── GOOGLE SHEETS SYNC (via Apps Script proxy) ───────────────────────────────
-const PROXY_URL = 'https://script.google.com/a/macros/realtor.com/s/AKfycby6SGVGJxsDUsZEc8st5GCPZYdqnhwKOewPggf-aRNsLa-UudV59BY2tP9gnKceuZLK/exec';
+// ── EMAIL NOTIFICATIONS (via Apps Script) ────────────────────────────────────
+const NOTIFY_PROXY = 'https://script.google.com/a/macros/realtor.com/s/AKfycby6SGVGJxsDUsZEc8st5GCPZYdqnhwKOewPggf-aRNsLa-UudV59BY2tP9gnKceuZLK/exec';
 
-async function sheetsLoad(key){
+async function notifyMirella(type, fromName, message){
   try {
-    const url = PROXY_URL + '?key=' + encodeURIComponent(key);
-    const r = await fetch(url);
-    const d = await r.json();
-    return d.value || null;
-  } catch(e) {
-    console.warn('Sheets load failed:', e);
-    return null;
-  }
-}
-
-async function sheetsSave(key, value){
-  try {
-    await fetch(PROXY_URL, {
+    const date = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    await fetch(NOTIFY_PROXY, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key, value })
+      body: JSON.stringify({ type, from: fromName, message, date })
     });
-  } catch(e) {
-    console.warn('Sheets save failed:', e);
+  } catch(e){
+    console.warn('Email notification failed:', e);
   }
 }
 
-// Wrappers used by the rest of the app
-async function atLoadDesigners(){
-  const raw = await sheetsLoad('designers');
-  if(!raw) return null;
-  try { return JSON.parse(raw); } catch(e) { return null; }
-}
-
-async function atSaveDesigners(designersArr){
-  sheetsSave('designers', JSON.stringify(designersArr));
-}
-
-// Account data (profile pics, password overrides)
-let _acctCache = null;
-
-async function atLoadAccounts(){
-  if(_acctCache) return _acctCache;
-  const raw = await sheetsLoad('accounts');
-  if(!raw) return {};
-  try { _acctCache = JSON.parse(raw); return _acctCache; } catch(e) { return {}; }
-}
-
-async function atSaveAccount(username, fields){
-  const current = await atLoadAccounts();
-  if(!current[username]) current[username] = {};
-  Object.assign(current[username], fields);
-  _acctCache = current;
-  sheetsSave('accounts', JSON.stringify(current));
-}
-// ── END GOOGLE SHEETS SYNC ────────────────────────────────────────────────────
+// Stubs so existing code doesn't break
+async function atLoadDesigners(){ return null; }
+async function atSaveDesigners(d){ /* no-op — localStorage only */ }
+async function atLoadAccounts(){ return {}; }
+async function atSaveAccount(u, f){ /* no-op */ }
+// ── END EMAIL NOTIFICATIONS ───────────────────────────────────────────────────
 
 // ── AUTH ──
 
@@ -3222,7 +3192,8 @@ function authLogout(){
 
 
 
-function showSyncIndicator(state){
+function showSyncIndicator(state){ return; }
+function _showSyncIndicatorFull(state){
   const el = document.getElementById('sync-indicator');
   const label = document.getElementById('sync-label');
   if(!el) return;
