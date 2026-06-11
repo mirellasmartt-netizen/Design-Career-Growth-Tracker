@@ -240,6 +240,41 @@
   .acct-remove-pic:hover{color:var(--red)}
 
 
+  /* OFFBOARDING NOTES */
+  .offboard-section{margin-bottom:28px}
+  .offboard-section-title{font-size:11px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .offboard-section-title::after{content:'';flex:1;height:1px;background:var(--gray-border)}
+  .offboard-card{background:#fff;border:1px solid var(--gray-border);border-radius:10px;padding:18px;margin-bottom:10px}
+  .offboard-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+  .offboard-person-name{font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal)}
+  .offboard-person-role{font-size:11px;color:var(--gray-mid);margin-top:2px}
+  .offboard-flag{font-size:10px;font-weight:600;padding:3px 9px;border-radius:12px;white-space:nowrap}
+  .offboard-flag-watch{background:#FEF3C7;color:#92400E}
+  .offboard-flag-key{background:#E8F0FB;color:#1A56A0}
+  .offboard-flag-action{background:var(--red-light);color:var(--red-dark)}
+  .offboard-text{font-size:12px;color:var(--gray-dark);line-height:1.7}
+  .offboard-text p{margin-bottom:8px}
+  .offboard-text p:last-child{margin-bottom:0}
+  .offboard-alert{background:#FFF8F0;border-left:3px solid var(--red);border-radius:0 6px 6px 0;padding:10px 12px;margin-top:10px;font-size:12px;color:var(--gray-dark);line-height:1.6}
+  .offboard-alert-label{font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+  .offboard-my-notes-area{background:var(--warm-white);border:1px dashed var(--gray-border);border-radius:8px;padding:14px;margin-top:10px}
+  .offboard-my-notes-label{font-size:10px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+  .offboard-my-notes-label span{font-size:9px;background:var(--charcoal);color:#fff;padding:1px 6px;border-radius:8px;letter-spacing:.5px}
+  .offboard-my-notes-ta{width:100%;border:1px solid var(--gray-border);border-radius:6px;padding:8px 10px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--charcoal);resize:vertical;min-height:64px;background:#fff}
+  .offboard-my-notes-ta:focus{outline:none;border-color:var(--red)}
+  .offboard-save-row{display:flex;align-items:center;gap:8px;margin-top:6px}
+  .offboard-save-btn{padding:5px 14px;background:var(--charcoal);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
+  .offboard-save-btn:hover{background:var(--gray-dark)}
+  .offboard-save-confirm{font-size:11px;color:var(--exceeds);display:none}
+  .offboard-risk-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-border);font-size:12px;color:var(--gray-dark);line-height:1.6}
+  .offboard-risk-item:last-child{border-bottom:none}
+  .offboard-risk-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+  .offboard-action-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-border);align-items:flex-start}
+  .offboard-action-item:last-child{border-bottom:none}
+  .offboard-action-check{width:16px;height:16px;border:2px solid var(--gray-border);border-radius:4px;flex-shrink:0;cursor:pointer;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+  .offboard-action-check.done{background:var(--exceeds);border-color:var(--exceeds);color:#fff;font-size:10px}
+  .offboard-action-text{font-size:12px;color:var(--gray-dark);line-height:1.6;flex:1}
+  .offboard-action-text.done-text{text-decoration:line-through;color:var(--gray-mid)}
   /* SYNC INDICATOR */
   .sync-indicator{
     position:fixed;bottom:14px;right:14px;
@@ -328,6 +363,8 @@
       <div class="nav-item admin-only" id="nav-goals" onclick="showView('goals')">FY27 Goals</div>
       <div class="nav-item admin-only" id="nav-gaps" onclick="showView('gaps')">Skills & Gaps</div>
       <div class="nav-item admin-only" id="nav-leave" onclick="showView('leave')">Leave Tracker</div>
+      <div class="nav-item admin-only" id="nav-offboarding" onclick="showView('offboarding')">📋 Offboarding Notes</div>
+      <div class="nav-item admin-only" id="nav-backup" onclick="showView('backup')" style="margin-top:4px;border-top:1px solid var(--gray-border);padding-top:10px">💾 Backup & Restore</div>
     </div>
     <div class="sidebar-section" style="flex:1">
       <div class="sidebar-label">Designers</div>
@@ -501,7 +538,7 @@ const statusProgressColors={
 const initialDesigners=[
   {
     id:1,name:"Will Soemargo",role:"Senior Product Designer",level:"Senior (T4) — Promoted Out of Cycle Jan 2026",area:"RealPro App (UMA/Mobile)",
-    startDate:"9/13/2021",location:"Vancouver, PST",contact:{birthday:"",address:"",cell:"",email:"",personal:""},
+    startDate:"9/13/2021",location:"Vancouver, PST",contact:{birthday:"3/8",address:"201 - 9298 University Crescent, Burnaby BC V5A 4X8",cell:"(604) 704-7316",email:"Soemargo8@gmail.com",personal:""},
     projects:[
       {category:"client",name:"UMA Milestone 1.1 — RealPro App Launch",status:"past",fy:"FY25",detail:"Lead designer on initial UMA launch. On-time delivery, praised for documentation quality and design-to-eng handoff."},
       {category:"client",name:"MVIP/RCC End-to-End Experience",status:"past",fy:"FY25",detail:"End-to-end design ownership of MVIP/RCC agent experience. Contributed to the UMA/UWP agent experience design sprint."},
@@ -713,7 +750,7 @@ const initialDesigners=[
   },
   {
     id:3,name:"Lauren Lang",role:"Senior Product Designer",level:"Senior (newer to role)",area:"Online Store → UWP (Q2)",
-    startDate:"11/18/2024",location:"TBD, CST",contact:{birthday:"",address:"",cell:"",email:"",personal:""},
+    startDate:"11/18/2024",location:"TBD, CST",contact:{birthday:"9/9",address:"3917 Katzman Dr, Austin TX 78728",cell:"512-563-5509",email:"laurenlangdesign@gmail.com",personal:""},
     projects:[
       {category:"client",name:"Online Store Redesign — Mobile IA",status:"past",fy:"FY25",detail:"Led mobile information architecture effort. Replaced text-heavy VQA docs with annotated Figma board."},
       {category:"client",name:"Billing — Renewals, Homepage, Order History",status:"current",fy:"FY26",detail:"Solid delivery on Billing workstream at FY26 mid-year."},
@@ -728,7 +765,7 @@ const initialDesigners=[
       {name:"Assertiveness / Voice",score:62},{name:"Facilitation",score:52},{name:"Data & Analytics",score:58}
     ],
     summary:"Lauren delivered strong FY25 results on the Online Store and has transitioned effectively into the RealPro Dashboard space in FY26. Her mid-year shows she is on track — solid execution on Billing and UWP work, and notably she has begun mentoring Carolina which has been a highlight. Her mentorship is helping both designers grow in confidence and design advocacy. Growth areas: increasing visibility of in-flight work to leadership earlier, proactive facilitation (1-2 sessions per quarter), and not jumping to high-fidelity too quickly. Self-reflection: handles ambiguity well, takes strong design stances with openness to critique, highly values team relationships. Working on facilitation confidence and staying in discovery longer before moving to hi-fi.",
-    nextSteps:["Increase visibility of in-flight and exploratory work — share early concepts with manager and in team forums","Continue and deepen mentorship of Carolina with focus on user advocacy and multiple solution paths","Proactively identify and lead 1-2 collaborative working sessions per quarter","Resist jumping to high-fidelity — stay in discovery and exploration longer","Partner with Pooja and/or Carolina to co-facilitate sessions and build confidence"],
+    nextSteps:["Increase visibility of in-flight and exploratory work — share early concepts with manager and in team forums","Proactively identify and lead 1-2 collaborative working sessions per quarter","Resist jumping to high-fidelity — stay in discovery and exploration longer","Partner with Pooja to co-facilitate sessions and build confidence"],
     thrive: {
     commMethod: ["Combination depending on urgency"],
     focusHours: ["Late Morning (10AM-12PM)", "Bursts throughout the day", "Varies by task"],
@@ -788,7 +825,7 @@ const initialDesigners=[
     ],
     goals:[
       {id:"g9",type:"PM",title:"Establish voice of the user on UWP",desc:"Making clear progress — mentorship of Carolina has reinforced her own user advocacy. Continue sharing early thinking and framing feedback with customer insights. Increase visibility of work upward.",status:"in-progress",progress:55},
-      {id:"g10",type:"PM",title:"Lead 1-2 facilitated sessions per quarter",desc:"Proactively identify moments in the project lifecycle for workshops or working sessions. Co-facilitate with Carolina and/or Pooja to build confidence. Target 1-2 sessions per quarter in H2.",status:"in-progress",progress:20},
+      {id:"g10",type:"PM",title:"Lead 1-2 facilitated sessions per quarter",desc:"Proactively identify moments in the project lifecycle for workshops or working sessions. Co-facilitate with Pooja to build confidence. Target 1-2 sessions per quarter in H2.",status:"in-progress",progress:20},
       {id:"g11",type:"GM",title:"Build data/analytics case study for Online Store",desc:"Create a case study showing how Online Store design improvements track directly to targeted outcomes. Partner with product and engineering to get access to relevant data.",status:"not-started",progress:0},
       {id:"g12",type:"GM",title:"Develop Harmony PRO adoption plan for UWP",desc:"Build on the Harmony Stress Test work and chart a clear path toward full design-system adoption for the Online Store / UWP. Collaborate with Design Systems team.",status:"in-progress",progress:20}
     ]
@@ -877,44 +914,6 @@ const initialDesigners=[
       {id:"g15",type:"GM",title:"Improve on-time delivery & planning",desc:"Break work into smaller scoped deliverables. Align with engineering timelines upfront. Proactively communicate risks and changes. Don't absorb scope changes silently.",status:"in-progress",progress:35},
       {id:"g16",type:"GM",title:"Raise design specs & handoff quality",desc:"Use Ready for Dev checklist consistently. Partner with Pooja to learn documentation and handoff best practices. Strengthen design and engineering relationships.",status:"in-progress",progress:30}
     ]
-  },
-  {
-    id:5,contact:{birthday:"",address:"",cell:"",email:"",personal:""},
-    projects:[
-      {category:"client",name:"Online Store / RealPro Dashboard",status:"current",fy:"FY26",detail:"Enterprise Systems contractor. Being mentored by Lauren Lang. Growing in confidence and design advocacy."},
-      {category:"client",name:"RealPro Dashboard — UWP",status:"future",fy:"FY27",detail:"Continued contribution expected as platform grows. Developing design advocacy and user-centered thinking."}
-    ],
-    name:"Carolina",
-    role:"Product Designer (Contractor)",
-    level:"Contractor — No formal review process",
-    area:"Online Store / RealPro Dashboard",
-    startDate:"9/10/2025",
-    location:"Mexico City, CST",
-    fy24Rating:"N/A (Contractor)",
-    fy25Rating:"N/A (Contractor)",
-    avatarColor:AVATARS[4],
-    strengths:[],
-    gaps:[],
-    skills:[],
-    summary:"Carolina is a contractor on the design team. She does not go through the standard performance review process. She is currently mentored by Lauren and has shown increased confidence and effectiveness in advocating for design decisions per Lauren's FY26 mid-year feedback. Important: Carolina is potentially rolling off at the end of June 2026. Confirm contract status before that date.",
-    nextSteps:[
-      "Confirm contract renewal or rolloff before end of June 2026",
-      "Ensure knowledge transfer if rolling off — document any work in progress",
-      "Continue mentorship with Lauren through end of contract"
-    ],
-    thrive:null,
-    reviewHistory:[],
-    notes:[
-      {type:"concern",fy:"FY26",text:"⚠️ Potential rolloff end of June 2026 — confirm contract status ASAP.",date:"May 2026"},
-      {type:"win",fy:"FY26",text:"Noted in Lauren's FY26 mid-year: Carolina has shown increased confidence and effectiveness in advocating for design decisions through Lauren's mentorship.",date:"FY26 Mid-Year"}
-    ],
-    pulseLog:[],
-    recognition:[],
-    goals:[
-      {id:"g17",type:"PM",title:"Confirm contract status / renewal",desc:"Determine whether Carolina's contract will be renewed past end of June 2026 or if she is rolling off. Plan accordingly for knowledge transfer if needed.",status:"not-started",progress:0}
-    ],
-    onLeave:null,
-    returnDate:null
   },
   {
     id:6,contact:{birthday:"",address:"",cell:"",email:"",personal:""},
@@ -1074,6 +1073,8 @@ function showView(view){
   else if(view==='goals')renderGoalsView();
   else if(view==='gaps')renderGaps();
   else if(view==='leave')renderLeaveView();
+  else if(view==='offboarding')renderOffboardingView();
+  else if(view==='backup')renderBackupView();
 }
 
 function showDesigner(id){
@@ -3144,7 +3145,7 @@ async function atSaveAccount(u, f){ /* no-op */ }
 
 // ── AUTH ──
 
-const AUTH_CREDS = {"smartt_admin": {"role": "admin", "designerId": null, "name": "Mirella"}, "will_grow": {"role": "designer", "designerId": 1, "name": "Will Soemargo"}, "pooja_grow": {"role": "designer", "designerId": 2, "name": "Pooja Sheth"}, "lauren_grow": {"role": "designer", "designerId": 3, "name": "Lauren Lang"}, "jon_grow": {"role": "designer", "designerId": 4, "name": "Jon Grimes"}, "carolina_grow": {"role": "designer", "designerId": 5, "name": "Carolina"}, "christina_grow": {"role": "designer", "designerId": 6, "name": "Christina Poon"}};
+const AUTH_CREDS = {"smartt_admin": {"role": "admin", "designerId": null, "name": "Mirella"}, "will_grow": {"role": "designer", "designerId": 1, "name": "Will Soemargo"}, "pooja_grow": {"role": "designer", "designerId": 2, "name": "Pooja Sheth"}, "lauren_grow": {"role": "designer", "designerId": 3, "name": "Lauren Lang"}, "jon_grow": {"role": "designer", "designerId": 4, "name": "Jon Grimes"}, "christina_grow": {"role": "designer", "designerId": 6, "name": "Christina Poon"}};
 let currentUser = null;
 
 function authLogin(){
@@ -3394,6 +3395,388 @@ function applyAcctOverrides(){
 
 function isAdmin(){ return currentUser && currentUser.role === 'admin'; }
 function getDesignerId(){ return currentUser ? currentUser.designerId : null; }
+
+// ── OFFBOARDING NOTES ─────────────────────────────────────────────────────────
+const OFFBOARD_STORAGE = 'rdc_offboard_v1';
+
+function loadOffboardNotes(){
+  try{ return JSON.parse(localStorage.getItem(OFFBOARD_STORAGE)||'{}'); }catch(e){return {};}
+}
+function saveOffboardNotes(data){
+  try{ localStorage.setItem(OFFBOARD_STORAGE, JSON.stringify(data)); }catch(e){}
+}
+
+function saveOffboardNote(key){
+  const ta = document.getElementById('obnote-'+key);
+  if(!ta) return;
+  const data = loadOffboardNotes();
+  data[key] = ta.value;
+  saveOffboardNotes(data);
+  const confirm = document.getElementById('obsave-confirm-'+key);
+  if(confirm){ confirm.style.display='inline'; setTimeout(()=>{confirm.style.display='none';},2000); }
+}
+
+function toggleActionItem(key, idx){
+  const data = loadOffboardNotes();
+  const actionKey = 'action_'+key+'_'+idx;
+  data[actionKey] = !data[actionKey];
+  saveOffboardNotes(data);
+  const check = document.getElementById('obcheck-'+key+'-'+idx);
+  const text  = document.getElementById('obtext-'+key+'-'+idx);
+  if(check){ check.classList.toggle('done', data[actionKey]); check.textContent = data[actionKey]?'✓':''; }
+  if(text) text.classList.toggle('done-text', data[actionKey]);
+}
+
+function renderOffboardingView(){
+  if(!isAdmin()){ document.getElementById('main-content').innerHTML='<div class="empty-state"><p>Access restricted.</p></div>'; return; }
+  const main = document.getElementById('main-content');
+  const notes = loadOffboardNotes();
+
+  function noteBlock(key, placeholder){
+    const val = notes[key]||'';
+    return `<div class="offboard-my-notes-area">
+      <div class="offboard-my-notes-label">My Notes <span>PRIVATE</span></div>
+      <textarea class="offboard-my-notes-ta" id="obnote-${key}" placeholder="${placeholder}">${val}</textarea>
+      <div class="offboard-save-row">
+        <button class="offboard-save-btn" onclick="saveOffboardNote('${key}')">Save</button>
+        <span class="offboard-save-confirm" id="obsave-confirm-${key}">✓ Saved</span>
+      </div>
+    </div>`;
+  }
+
+  function actionItem(key, idx, text){
+    const done = !!notes['action_'+key+'_'+idx];
+    return `<div class="offboard-action-item">
+      <div class="offboard-action-check ${done?'done':''}" id="obcheck-${key}-${idx}" onclick="toggleActionItem('${key}',${idx})">${done?'✓':''}</div>
+      <div class="offboard-action-text ${done?'done-text':''}" id="obtext-${key}-${idx}">${text}</div>
+    </div>`;
+  }
+
+  main.innerHTML = `
+  <div class="page-header">
+    <div>
+      <div class="page-title">Offboarding Notes</div>
+      <div class="page-subtitle">From Julie Brody · Confidential handoff — admin only</div>
+    </div>
+  </div>
+
+  <!-- FIRST 30 DAYS -->
+  <div class="offboard-section">
+    <div class="offboard-section-title">First 30 Days — Priority Actions</div>
+    <div class="offboard-card">
+      <div class="offboard-text">
+        <p>These are the focus areas Julie flagged beyond your onboarding guide. Each has a checkbox so you can track progress.</p>
+      </div>
+      <div style="margin-top:12px">
+        ${actionItem('30day',0,'Build design-level roadmaps — product roadmaps exist but designers need clarity on what they\'re actually designing and when in FY27. Provide a proposal and ask for feedback.')}
+        ${actionItem('30day',1,'Pick up the MVIP and Broker Portal legacy deprecation conversation — no design owner currently.')}
+        ${actionItem('30day',2,'Join Christina\'s return check-in (Julie will invite you). Once Christina is back, decide where Jon\'s focus sits post-MVIP migration.')}
+        ${actionItem('30day',3,'Help your team feel grounded through the RealPro Dashboard → Activate/Engage/MVIP reorganization. Clarity from you, even early, will help.')}
+      </div>
+      ${noteBlock('30day', 'Your thoughts, progress, follow-ups...')}
+    </div>
+  </div>
+
+  <!-- YOUR DIRECT REPORTS -->
+  <div class="offboard-section">
+    <div class="offboard-section-title">Direct Reports — Julie's Read</div>
+
+    <!-- Jon Grimes -->
+    <div class="offboard-card">
+      <div class="offboard-card-header">
+        <div>
+          <div class="offboard-person-name">Jon Grimes</div>
+          <div class="offboard-person-role">Product Designer · Austin · MVIP/RCC migration</div>
+        </div>
+        <span class="offboard-flag offboard-flag-watch">Monitor Closely</span>
+      </div>
+      <div class="offboard-text">
+        <p><strong>FY27 rating:</strong> Meeting expectations for a mid-level designer.</p>
+        <p><strong>Strengths:</strong> Solid delivery across Alpha features (broker signup, leads list, dispatch history, cancellation). Strong collaborator. Motivated to grow toward Senior.</p>
+        <p><strong>Growth areas:</strong> Accountability in delivery — proactive scoping, earlier alignment with engineering and product, stronger handoff specs. Pooja is a good internal model for documentation practices.</p>
+      </div>
+      <div class="offboard-alert">
+        <div class="offboard-alert-label">⚠ Attendance Note</div>
+        Jon has had 14 sick days so far this year. Subject to the 3-day/week in-office policy for Austin — on days he's unwell, he must take a sick day rather than WFH. Julie suggested an HR accommodation twice; he hasn't acted on it. He hasn't missed a deadline, but availability has been a factor in scoping. <strong>Revisit the accommodation conversation early.</strong>
+      </div>
+      <div class="offboard-text" style="margin-top:10px">
+        <p><strong>Open question:</strong> Most MVIP migration work will likely transition to Christina on her return. Decide where Jon's focus sits post-migration.</p>
+      </div>
+      ${noteBlock('jon', 'Your observations, 1:1 notes, next steps for Jon...')}
+    </div>
+
+    <!-- Christina Poon -->
+    <div class="offboard-card">
+      <div class="offboard-card-header">
+        <div>
+          <div class="offboard-person-name">Christina Poon</div>
+          <div class="offboard-person-role">Lead Product Designer · SF → LA · On parental leave</div>
+        </div>
+        <span class="offboard-flag offboard-flag-action">Return ~July 1</span>
+      </div>
+      <div class="offboard-text">
+        <p><strong>FY27 rating:</strong> Meeting expectations for a lead designer.</p>
+        <p>Strong, experienced designer. Background in LEX 2.0 (agent directory) before moving to MVIP/RCC migration. Julie has been covering her work. Handoff will be clean — Julie has a return check-in scheduled for a couple weeks before July 1 (starting on a Thursday).</p>
+        <p><strong>On return:</strong> Christina picks up MVIP migration work in flight and takes ownership of the Market VIP Live Transfer Agent Assignment brief (currently held by Julie with PM Charlie Lehman).</p>
+      </div>
+      <div class="offboard-alert">
+        <div class="offboard-alert-label">🗓 Action Required</div>
+        You should be in Christina's return check-in. Julie will facilitate, but you're the one continuing that relationship. Make sure you're added to that meeting.
+      </div>
+      ${noteBlock('christina', 'Return plan notes, handoff checklist, relationship-building ideas...')}
+    </div>
+
+    <!-- Pooja Sheth -->
+    <div class="offboard-card">
+      <div class="offboard-card-header">
+        <div>
+          <div class="offboard-person-name">Pooja Sheth</div>
+          <div class="offboard-person-role">Senior Product Designer · Chicago · RealPro Dashboard platform</div>
+        </div>
+        <span class="offboard-flag offboard-flag-key">Key Tenured Resource</span>
+      </div>
+      <div class="offboard-text">
+        <p>8+ years at RDC. Deepest platform expertise on the team. She knows the RealPro Dashboard information architecture better than almost anyone. Strong on documentation and handoff — Julie referenced her as a model for Jon.</p>
+        <p>Main contributor to earliest RPD migration: RealPro Select Seller Leads (fka Listing Toolkit for Teams), MVIP/RCC Alpha/Beta migration, and now LEX for Teams Alpha. Currently filling in on LEX for Teams.</p>
+        <p><strong>Ask her about:</strong> platform constraints, team history, information architecture decisions.</p>
+      </div>
+      ${noteBlock('pooja', 'Notes from your conversations with Pooja...')}
+    </div>
+
+    <!-- Will Soemargo -->
+    <div class="offboard-card">
+      <div class="offboard-card-header">
+        <div>
+          <div class="offboard-person-name">Will Soemargo</div>
+          <div class="offboard-person-role">Senior Product Designer · Vancouver · RealPro App (native mobile)</div>
+        </div>
+        <span class="offboard-flag offboard-flag-key">Mobile Lead</span>
+      </div>
+      <div class="offboard-text">
+        <p>Owns the native mobile experience for agents. Has worked across MVIP/RCC migration and UpNest/LTKA.</p>
+        <p><strong>Ask him about:</strong> the App roadmap, how the App integrates with RealPro Dashboard, and the overall agent experience.</p>
+      </div>
+      ${noteBlock('will', 'Notes from your conversations with Will...')}
+    </div>
+
+    <!-- Lauren Lang -->
+    <div class="offboard-card">
+      <div class="offboard-card-header">
+        <div>
+          <div class="offboard-person-name">Lauren Lang</div>
+          <div class="offboard-person-role">Senior Product Designer · Austin · Online Store + Billing</div>
+        </div>
+        <span class="offboard-flag offboard-flag-key">Online Store Lead</span>
+      </div>
+      <div class="offboard-text">
+        <p>Led the Online Store for a year. Core focus areas: billing, login, notifications. Also supported some MVIP/RCC migration work, particularly the Products & Billing Center.</p>
+      </div>
+      ${noteBlock('lauren', 'Notes from your conversations with Lauren...')}
+    </div>
+  </div>
+
+  <!-- ACTIVE WORK -->
+  <div class="offboard-section">
+    <div class="offboard-section-title">Active Work in Flight</div>
+
+    <div class="offboard-card">
+      <div class="offboard-card-header">
+        <div>
+          <div class="offboard-person-name">MVIP/RCC Migration — RealPro Dashboard</div>
+          <div class="offboard-person-role">Target: MVIP client migration complete end of Q3 FY27 · PM: Charlie Lehman · TPM: Dee Pena</div>
+        </div>
+        <span class="offboard-flag offboard-flag-action">High Priority</span>
+      </div>
+      <div class="offboard-text">
+        <p>Almost all migrated features are now in flight. Core design work is largely complete. Active Beta client feedback loop in progress, led by Tim Ballew. E2E design review stage gate completed 6/4.</p>
+        <p><strong>Key in-flight features:</strong> ISA role, Super admin role, CRM integration, New Broker/Team Lead signup, Agent removal, Prospect/PCL assignment, Buyer lead detail activity tab, Multi-transaction status updates.</p>
+      </div>
+      <div class="offboard-alert">
+        <div class="offboard-alert-label">⚠ Biggest Risk</div>
+        The risk is not the feature design — it's the data. Migrating clients off legacy platforms (Opcity Broker Portal/MVIP Portal) is technically complex: duplicate accounts, missing Party IDs/Broker Op IDs, outdated contact data. There's also no design plan yet for communicating legacy portal deprecation to clients. That work will likely transfer to Christina on her return.
+      </div>
+      <div class="offboard-text" style="margin-top:10px">
+        <p><strong>Key meetings for designers:</strong> Front-end eng standups M–Th 10am CT · Buyer Client Partner Design Sync biweekly Tues 1pm CT · UWP Requirements review weekly Tues 2pm CT · RPD weekly design sync Fri 1:30pm CT · Client x Design Systems Fri 1pm CT</p>
+      </div>
+      ${noteBlock('mvip', 'Your notes on migration status, risks, open questions...')}
+    </div>
+
+    <div class="offboard-card">
+      <div class="offboard-card-header">
+        <div>
+          <div class="offboard-person-name">Market VIP Live Transfer Agent Assignment</div>
+          <div class="offboard-person-role">PM: Charlie Lehman · Design: Julie → Christina on return · Phase: Q1 discovery complete, Q2 hypothesis testing</div>
+        </div>
+        <span class="offboard-flag offboard-flag-watch">Transferring to Christina</span>
+      </div>
+      <div class="offboard-text">
+        <p>Addresses a growing problem: as live transfer volume increases, clients have limited control over which agent receives a live transfer lead. Discovery scoped across ~600 MVIP clients before any build commitment. H2 build conditional on Q2 test results.</p>
+      </div>
+      <div class="offboard-alert">
+        <div class="offboard-alert-label">⚠ Engineering Risk</div>
+        Agent assignment logic lives in FocusFire, which is on the deprecation path. Eng coordination with Daniel and eng LT needed to confirm which system to build in for test and scale.
+      </div>
+      ${noteBlock('mvip_transfer', 'Notes on this brief and handoff to Christina...')}
+    </div>
+  </div>
+
+  <!-- CROSS-FUNCTIONAL PARTNERS -->
+  <div class="offboard-section">
+    <div class="offboard-section-title">Cross-Functional Relationships — Julie's Read</div>
+
+    <div class="offboard-card">
+      <div class="offboard-text">
+        <p><strong>Whitney Perez</strong> (Director, Product — your primary product partner): New and actively building her strategic vision. Thinks big, strong philosophical direction. Will need support tactically executing across a complex multi-surface product space. Pooja and Will can be real partners to product here, bringing tenured clarity and structure to ambiguity.</p>
+        <p style="margin-top:10px"><strong>Erin Bentel</strong> (Sr. PM, RealPro Dashboard → moving to Engage in FY27): Operates at scale, moves fast, grounds work in clear measurable outcomes. Indexes on design partnership early. <em>Recommendation: set regular time with her this month to get fully up to speed on RealPro Dashboard and MVIP/RCC migration.</em></p>
+        <p style="margin-top:10px"><strong>James Monsebroten</strong> (Engineering Manager): 25 years at RDC — carries institutional knowledge of the whole platform. Invaluable and frequently overextended. When he's not in a meeting, critical context gets missed; his tech leads often can't or won't fill the gap. He's aware of this and actively trying to bring them in more. <strong>Make sure James is in the room for anything high-stakes. When he's not, flag it — don't work around it.</strong></p>
+        <p style="margin-top:10px"><strong>Dee (Diana) Pena</strong> (TPM): Keeps the RealPro Dashboard train on the tracks. First person to turn to for ensuring design and engineering stay in lock step. Loop her in any time you need to schedule a cross-functional review.</p>
+      </div>
+      ${noteBlock('xfn', 'Your notes on these relationships, first impressions, how meetings are going...')}
+    </div>
+  </div>
+
+  <!-- ORG RESTRUCTURE -->
+  <div class="offboard-section">
+    <div class="offboard-section-title">Org Context — Whitney's Restructure</div>
+    <div class="offboard-card">
+      <div class="offboard-text">
+        <p>Whitney recently announced a shift from initiative-based to outcome-based PM ownership. The three new frames are <strong>Activation</strong> (Sean Rowland), <strong>Engagement</strong> (Erin Bentel), and <strong>Grow and Renew</strong> (James McDade).</p>
+        <p>This is not fully baked. Details are still being worked through. There is active ambiguity about how designer assignments map to the new PM structure. Designers are feeling the uncertainty — not pushback on the direction, but on the lack of clarity about scope and what they'll work on.</p>
+        <p>Ava is managing the design allocation decision. Julie's recommendation: <strong>creating design-level roadmaps from the product roadmaps is a high-priority early task.</strong></p>
+      </div>
+      ${noteBlock('org', 'Your take on the restructure, how you\'re planning to address team anxiety, design allocation ideas...')}
+    </div>
+  </div>`;
+}
+
+// ── BACKUP & RESTORE ──────────────────────────────────────────────────────────
+
+const BACKUP_KEYS = [
+  { key: 'rdc_designers',   label: 'Designer Profiles & Goals',   desc: 'All designer data, goals, notes, pulse logs, recognition' },
+  { key: 'rdc_acct_v1',     label: 'Account Settings',            desc: 'Profile photos, custom password overrides' },
+  { key: 'rdc_offboard_v1', label: 'Offboarding Notes',           desc: "Your private notes and action item checkboxes from Julie's handoff" },
+];
+
+function renderBackupView(){
+  if(!isAdmin()){ document.getElementById('main-content').innerHTML='<div class="empty-state"><p>Access restricted.</p></div>'; return; }
+  const main = document.getElementById('main-content');
+  const keySizes = BACKUP_KEYS.map(({key,label,desc})=>{
+    const raw = localStorage.getItem(key)||'';
+    const kb = raw ? (new Blob([raw]).size / 1024).toFixed(1) : 0;
+    const hasData = raw && raw !== '{}' && raw !== '[]' && raw !== 'null';
+    return {key,label,desc,kb,hasData};
+  });
+
+  main.innerHTML = `
+  <div class="page-header">
+    <div>
+      <div class="page-title">Backup & Restore</div>
+      <div class="page-subtitle">Export your data as a JSON file · Restore from a previous backup · All data lives in this browser's localStorage</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr;gap:16px;max-width:720px">
+
+    <div class="offboard-card">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px">
+        <div>
+          <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal);margin-bottom:4px">Export Backup</div>
+          <div style="font-size:12px;color:var(--gray-mid);line-height:1.6">Downloads a <code style="background:var(--warm-white);padding:1px 5px;border-radius:4px;font-size:11px">.json</code> file with a snapshot of all this tracker's data. Save it to Google Drive, Desktop, or email it to yourself.</div>
+        </div>
+        <button onclick="doExport()" style="flex-shrink:0;padding:9px 20px;background:var(--charcoal);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap">⬇ Export Now</button>
+      </div>
+      <div style="margin-top:16px;border-top:1px solid var(--gray-border);padding-top:14px">
+        <div style="font-size:11px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">What's included</div>
+        ${keySizes.map(({label,desc,kb,hasData})=>`
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--gray-border)">
+            <div style="width:8px;height:8px;border-radius:50%;background:${hasData?'var(--exceeds)':'var(--gray-border)'};flex-shrink:0"></div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:12px;font-weight:500;color:var(--charcoal)">${label}</div>
+              <div style="font-size:11px;color:var(--gray-mid)">${desc}</div>
+            </div>
+            <div style="font-size:11px;color:${hasData?'var(--gray-dark)':'var(--gray-mid)'};font-weight:${hasData?500:400};flex-shrink:0">${hasData?kb+' KB':'empty'}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="offboard-card">
+      <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal);margin-bottom:4px">Restore from Backup</div>
+      <div style="font-size:12px;color:var(--gray-mid);margin-bottom:14px;line-height:1.6">Choose a <code style="background:var(--warm-white);padding:1px 5px;border-radius:4px;font-size:11px">.json</code> file previously exported from this tool. Data will be merged into localStorage — then reload the page to see it take effect.</div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <label style="padding:8px 16px;background:var(--warm-white);border:1px solid var(--gray-border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;color:var(--charcoal);font-weight:500">
+          📂 Choose backup file
+          <input type="file" accept=".json" onchange="doImport(event)" style="display:none">
+        </label>
+        <span id="restore-status" style="font-size:12px;color:var(--gray-mid)"></span>
+      </div>
+      <div id="restore-preview" style="margin-top:12px;display:none"></div>
+    </div>
+
+    <div class="offboard-card">
+      <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal);margin-bottom:10px">Back Up Your Other Tools</div>
+      <div style="font-size:12px;color:var(--gray-dark);line-height:1.7;margin-bottom:12px">Each GitHub Pages tool (Radar, Priorities, Client Manager Guide, Dashboards) stores its data in a separate localStorage. Open any tool, press <kbd style="background:var(--warm-white);border:1px solid var(--gray-border);border-radius:3px;padding:1px 5px;font-size:11px">F12</kbd>, go to <strong>Console</strong>, paste this snippet and hit Enter — it instantly downloads a full backup of that tool.</div>
+      <div style="background:var(--charcoal);border-radius:8px;padding:14px 16px;position:relative">
+        <div style="font-family:monospace;font-size:11.5px;color:#e2e8f0;line-height:1.8;white-space:pre-wrap">const d={};for(let i=0;i&lt;localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
+const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));
+a.download='rdc-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();</div>
+        <button onclick="copySnippet(this)" style="position:absolute;top:10px;right:10px;padding:4px 10px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:5px;color:#fff;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Copy</button>
+      </div>
+    </div>
+
+    <div class="offboard-card" style="background:var(--warm-white);border-style:dashed">
+      <div style="font-size:12px;color:var(--gray-dark);line-height:1.7">
+        💡 <strong>Suggested rhythm:</strong> Export this tracker weekly (Fridays before EOD) and after any major session — new goals, performance notes, big 1:1 cycles. Store files in a dated Google Drive folder: <code style="background:#fff;padding:1px 5px;border-radius:4px;font-size:11px">RDC Tools / Backups / YYYY-MM-DD</code>. localStorage can be wiped by clearing cache, switching browsers, or OS updates — a weekly export eliminates the risk.
+      </div>
+    </div>
+
+  </div>`;
+}
+
+function doExport(){
+  const backup = { _meta: { tool: 'Design Career Growth Tracker', exported: new Date().toISOString(), version: '1.0' } };
+  BACKUP_KEYS.forEach(({key})=>{ const v=localStorage.getItem(key); if(v) backup[key]=v; });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:'application/json'}));
+  a.download = 'rdc-growth-tracker-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+function doImport(e){
+  const file = e.target.files[0]; if(!file) return;
+  const status = document.getElementById('restore-status');
+  const preview = document.getElementById('restore-preview');
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    try{
+      const data = JSON.parse(ev.target.result);
+      const meta = data._meta||{};
+      let restored=0, lines=[];
+      BACKUP_KEYS.forEach(({key,label})=>{
+        if(data[key]){
+          try{ localStorage.setItem(key,data[key]); restored++;
+            lines.push(`<div style="display:flex;gap:8px;padding:5px 0;font-size:12px;border-bottom:1px solid var(--gray-border)"><span style="color:var(--exceeds);font-weight:600">✓</span><span style="color:var(--charcoal)">${label}</span></div>`);
+          }catch(err){ lines.push(`<div style="display:flex;gap:8px;padding:5px 0;font-size:12px;border-bottom:1px solid var(--gray-border)"><span style="color:var(--red)">✕</span><span style="color:var(--gray-mid)">${label} (write failed)</span></div>`); }
+        } else {
+          lines.push(`<div style="display:flex;gap:8px;padding:5px 0;font-size:12px;border-bottom:1px solid var(--gray-border)"><span style="color:var(--gray-mid)">—</span><span style="color:var(--gray-mid)">${label} (not in backup)</span></div>`);
+        }
+      });
+      status.style.color='var(--exceeds)';
+      status.textContent=`✓ Restored ${restored} data set${restored!==1?'s':''}`+(meta.exported?' from '+new Date(meta.exported).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'');
+      preview.style.display='block';
+      preview.innerHTML=`<div style="background:var(--warm-white);border-radius:8px;padding:12px">${lines.join('')}<div style="font-size:11px;color:var(--gray-mid);margin-top:8px">Reload the page to see restored data.</div></div>`;
+    }catch(err){
+      status.style.color='var(--red)';
+      status.textContent='✕ Could not read file — make sure it\'s a valid backup from this tool.';
+    }
+  };
+  reader.readAsText(file);
+}
+
+function copySnippet(btn){
+  const snippet=`const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}\nconst a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));\na.download='rdc-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();`;
+  navigator.clipboard.writeText(snippet).then(()=>{ btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy',2000); });
+}
 
 </script>
 
