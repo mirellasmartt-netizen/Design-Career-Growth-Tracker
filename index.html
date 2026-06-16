@@ -1121,7 +1121,7 @@ function renderOverview(){
     </div>
     <div class="card card-full">
       <div class="card-label">Team Skills Comparison</div>
-      <div style="height:240px"><canvas id="teamChart"></canvas></div>
+      <div style="height:280px"><canvas id="teamChart"></canvas></div>
     </div>`;
   setTimeout(()=>renderTeamChart(),50);
 }
@@ -1129,17 +1129,18 @@ function renderOverview(){
 function renderTeamChart(){
   const ctx=document.getElementById('teamChart');
   if(!ctx)return;
-  const skillNames=['Execution','Collab','Design Systems','Leadership','Facilitation','Discovery'];
-  const colors=[AVATARS[0],AVATARS[1],AVATARS[2]];
+  // Derive shared skill label order from the first designer with skills data
+  const ref = designers.find(d=>d.skills&&d.skills.length);
+  const skillNames = ref ? ref.skills.map(s=>s.name) : ['Execution','Collab','Design Systems','Leadership','Facilitation','Discovery'];
   chartInstances.team=new Chart(ctx,{
     type:'bar',
     data:{
       labels:skillNames,
-      datasets:designers.slice(0,3).map((d,i)=>({
+      datasets:designers.filter(d=>d.skills&&d.skills.length).map(d=>({
         label:d.name.split(' ')[0],
         data:d.skills.map(s=>s.score),
-        backgroundColor:colors[i]+'33',
-        borderColor:colors[i],
+        backgroundColor:d.avatarColor+'33',
+        borderColor:d.avatarColor,
         borderWidth:2,
         borderRadius:4
       }))
