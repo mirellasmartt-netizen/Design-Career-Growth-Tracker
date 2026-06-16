@@ -134,7 +134,7 @@
   .empty-state-icon{font-size:32px;margin-bottom:10px}
   .empty-state p{font-size:13px}
   .overview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
-  .overview-card{background:#fff;border:1px solid var(--gray-border);border-radius:10px;padding:18px;cursor:pointer;transition:all .15s}
+  .overview-card{background:#fff;border:1px solid var(--gray-border);border-radius:10px;padding:18px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column}
   .overview-card:hover{border-color:var(--red);box-shadow:0 2px 8px rgba(217,48,37,.08)}
   .overview-name{font-family:'DM Serif Display',serif;font-size:17px;margin:8px 0 3px}
   .overview-role{font-size:11px;color:var(--gray-mid);margin-bottom:10px}
@@ -239,6 +239,56 @@
   .acct-remove-pic{font-size:11px;color:var(--gray-mid);cursor:pointer;margin-left:8px}
   .acct-remove-pic:hover{color:var(--red)}
 
+
+  /* 1:1 INDICATOR ON OVERVIEW CARDS */
+  .one-on-one-chip{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;cursor:pointer;border:none;font-family:'DM Sans',sans-serif}
+  .one-on-one-chip.urgent{background:#FDECEA;color:var(--red)}
+  .one-on-one-chip.soon{background:#FEF3C7;color:#92400E}
+  .one-on-one-chip.ok{background:var(--exceeds-bg);color:var(--exceeds)}
+  .one-on-one-chip.none{background:var(--gray-light);color:var(--gray-mid)}
+
+  /* ON MY RADAR */
+  .radar-pinned{background:#FFFBF0;border:1.5px solid #F59E0B;border-radius:8px;padding:12px 14px}
+  .radar-pinned-label{font-size:10px;font-weight:700;color:#B45309;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+  .radar-entry{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--gray-border)}
+  .radar-entry:last-child{border-bottom:none}
+  .radar-entry-dot{width:8px;height:8px;border-radius:50%;background:#F59E0B;flex-shrink:0;margin-top:4px}
+  .radar-ta{width:100%;border:1px solid var(--gray-border);border-radius:6px;padding:8px 10px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--charcoal);resize:vertical;min-height:72px;background:#fff;line-height:1.6}
+  .radar-ta:focus{outline:none;border-color:#F59E0B}
+
+  /* ROADMAP VIEW */
+  .roadmap-grid{display:grid;grid-template-columns:1fr;gap:0}
+  .roadmap-row{display:grid;grid-template-columns:160px 1fr 1fr 1fr 1fr;gap:0;border-bottom:1px solid var(--gray-border)}
+  .roadmap-row.header-row{background:var(--warm-white);font-size:10px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.6px}
+  .roadmap-cell{padding:10px 12px;border-right:1px solid var(--gray-border);font-size:12px;color:var(--gray-dark)}
+  .roadmap-cell:last-child{border-right:none}
+  .roadmap-cell.name-cell{font-weight:600;color:var(--charcoal);display:flex;align-items:center;gap:8px;font-size:12px}
+  .roadmap-pill{display:inline-block;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:500;line-height:1.5}
+  .roadmap-pill.active{background:#DBEAFE;color:#1E40AF}
+  .roadmap-pill.planned{background:var(--warm-white);color:var(--gray-mid);border:1px solid var(--gray-border)}
+  .roadmap-pill.tbd{background:#F3F4F6;color:#9CA3AF;font-style:italic}
+  .roadmap-pill.leave{background:#FEF3C7;color:#92400E}
+  .roadmap-pill.complete{background:var(--exceeds-bg);color:var(--exceeds)}
+  .roadmap-edit-btn{font-size:10px;color:var(--gray-mid);background:none;border:none;cursor:pointer;padding:2px 4px;border-radius:3px;font-family:'DM Sans',sans-serif}
+  .roadmap-edit-btn:hover{background:var(--gray-light);color:var(--charcoal)}
+
+  /* REVIEW CYCLE VIEW */
+  .review-stage{display:flex;align-items:center;gap:6px}
+  .review-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--gray-border);flex-shrink:0;cursor:pointer}
+  .review-dot.complete{background:var(--exceeds);border-color:var(--exceeds)}
+  .review-dot.pending{background:#FEF3C7;border-color:#F59E0B}
+  .review-row{display:grid;grid-template-columns:160px repeat(4,1fr) 140px;gap:0;border-bottom:1px solid var(--gray-border);align-items:center}
+  .review-row.header{background:var(--warm-white);font-size:10px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.6px}
+  .review-cell{padding:10px 12px;border-right:1px solid var(--gray-border);font-size:12px}
+  .review-cell:last-child{border-right:none}
+
+  /* ONBOARDING CHECKLIST */
+  .onboard-check-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--gray-border)}
+  .onboard-check-row:last-child{border-bottom:none}
+  .onboard-checkbox{width:16px;height:16px;border:2px solid var(--gray-border);border-radius:4px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px}
+  .onboard-checkbox.done{background:var(--exceeds);border-color:var(--exceeds);color:#fff;font-size:10px}
+  .onboard-check-text{font-size:12px;color:var(--gray-dark);line-height:1.6;flex:1}
+  .onboard-check-text.done{text-decoration:line-through;color:var(--gray-mid)}
 
   /* OFFBOARDING NOTES */
   .offboard-section{margin-bottom:28px}
@@ -350,8 +400,10 @@
   <div class="sidebar">
     <div class="sidebar-section">
       <div class="sidebar-label">Views</div>
-      <div class="nav-item active admin-only" id="nav-overview" onclick="showView('overview')">Team Overview</div>
+      <div class="nav-item admin-only" id="nav-overview" onclick="showView('overview')">Team Overview</div>
       <div class="nav-item admin-only" id="nav-goals" onclick="showView('goals')">FY27 Goals</div>
+      <div class="nav-item admin-only" id="nav-roadmap" onclick="showView('roadmap')">📍 Roadmap</div>
+      <div class="nav-item admin-only" id="nav-reviews" onclick="showView('reviews')">📋 Review Cycle</div>
       <div class="nav-item admin-only" id="nav-gaps" onclick="showView('gaps')">Skills & Gaps</div>
       <div class="nav-item admin-only" id="nav-leave" onclick="showView('leave')">Leave Tracker</div>
       <div class="nav-item admin-only" id="nav-offboarding" onclick="showView('offboarding')">📋 Offboarding Notes</div>
@@ -618,6 +670,13 @@ const initialDesigners=[
         peerQuotes: []
       }
     ],
+    nextOneOnOne:null,radarNote:"",
+    roadmap:[
+      {quarter:"Q1 FY27",project:"RealPro App UMA — Lead Designer",status:"active",notes:""},
+      {quarter:"Q2 FY27",project:"Discovery: IA/Navigation future state",status:"planned",notes:""},
+      {quarter:"Q3 FY27",project:"Staff-level impact — strategic storytelling",status:"planned",notes:""}
+    ],
+    reviewCycle:{selfReview:null,managerDraft:null,calibration:null,delivered:null,notes:""},
     dorChecks:{
       figma_linked:'green',
       engaged_early:'green',
@@ -729,6 +788,13 @@ const initialDesigners=[
         peerQuotes: []
       }
     ],
+    nextOneOnOne:null,radarNote:"",
+    roadmap:[
+      {quarter:"Q1 FY27",project:"RealPro Dashboard vision & strategy",status:"active",notes:""},
+      {quarter:"Q2 FY27",project:"PIPR presentation — design strategy",status:"planned",notes:""},
+      {quarter:"Q3 FY27",project:"Active mentorship program launch",status:"planned",notes:""}
+    ],
+    reviewCycle:{selfReview:null,managerDraft:null,calibration:null,delivered:null,notes:""},
     recognition:[
       {title:"PAC Promotion Nomination — T4 → T5 Lead Product Designer (PENDING)",detail:"Nominated by Ava DeVoe on April 20, 2026 for the June 1, 2026 PAC cycle. Recognized as foundational designer of RealPro Dashboard since April 2018. 5 pillars: end-to-end platform ownership, scalable design patterns, strategic discovery/vision-setting, research-driven problem-solving (RBAC), cross-functional leadership & designer enablement. Awaiting approval — confidential until confirmed.",type:"Milestone",sharedWith:"HR / Compensation — CONFIDENTIAL until approved",date:"April 20, 2026"}
     ],
@@ -814,6 +880,13 @@ const initialDesigners=[
         peerQuotes: []
       }
     ],
+    nextOneOnOne:null,radarNote:"",
+    roadmap:[
+      {quarter:"Q1 FY27",project:"UWP full integration",status:"active",notes:""},
+      {quarter:"Q2 FY27",project:"Facilitation leadership — 1:1 sessions",status:"planned",notes:""},
+      {quarter:"Q3 FY27",project:"Data/analytics case study for Online Store",status:"planned",notes:""}
+    ],
+    reviewCycle:{selfReview:null,managerDraft:null,calibration:null,delivered:null,notes:""},
     goals:[
       {id:"g9",type:"PM",title:"Establish voice of the user on UWP",desc:"Making clear progress — mentorship of Carolina has reinforced her own user advocacy. Continue sharing early thinking and framing feedback with customer insights. Increase visibility of work upward.",status:"in-progress",progress:55},
       {id:"g10",type:"PM",title:"Lead 1-2 facilitated sessions per quarter",desc:"Proactively identify moments in the project lifecycle for workshops or working sessions. Co-facilitate with Pooja to build confidence. Target 1-2 sessions per quarter in H2.",status:"in-progress",progress:20},
@@ -899,6 +972,13 @@ const initialDesigners=[
       edge_cases:'green',
       proactive_comms:'red'
     },
+    nextOneOnOne:null,radarNote:"",
+    roadmap:[
+      {quarter:"Q1 FY27",project:"RCC/MVIP UWP Beta rollout",status:"active",notes:""},
+      {quarter:"Q2 FY27",project:"Handoff quality improvement — Ready for Dev",status:"active",notes:""},
+      {quarter:"Q3 FY27",project:"TBD — pending Whitney restructure clarity",status:"tbd",notes:""}
+    ],
+    reviewCycle:{selfReview:null,managerDraft:null,calibration:null,delivered:null,notes:""},
     goals:[
       {id:"g13",type:"PM",title:"H2 UWP Beta rollout — RCC/MVIP Q4 launch",desc:"On track. Rollout and test UWP Beta for RCC/MVIP by Q4. Both onboarded clients at 100% engagement. Continue building toward launch.",status:"on-track",progress:55},
       {id:"g14",type:"PM",title:"Increase broker/team lead engagement in UWP",desc:"Current engagement tracking at 100% with Oasis and Zimmerman. Continue building toward broader rollout engagement targets.",status:"on-track",progress:60},
@@ -980,6 +1060,25 @@ const initialDesigners=[
     pulseLog:[],
     recognition:[
       {title:"FY26 Achieves Expectations — Lead Product Designer",detail:"Standout year across LEX 2.0 and MVIP/RCC. Led under ambiguity, stepped in as PM SME, mentored Jon, led AI workshop. Peer feedback universally praised her ownership, collaboration, and design talent.",type:"Review Season",sharedWith:"Ava DeVoe",date:"FY26 Review"}
+    ],
+    nextOneOnOne:null,radarNote:"",
+    roadmap:[
+      {quarter:"Q1 FY27",project:"Return from parental leave — ramp-up",status:"active",notes:""},
+      {quarter:"Q2 FY27",project:"MVIP/RCC migration handoff + Live Transfer brief",status:"planned",notes:""},
+      {quarter:"Q3 FY27",project:"Cross-squad strategic vision for premium Buyer leads",status:"planned",notes:""}
+    ],
+    reviewCycle:{selfReview:null,managerDraft:null,calibration:null,delivered:null,notes:""},
+    onboardingChecklist:[
+      {id:"oc1",text:"Join Christina's return check-in with Julie Brody (Julie facilitating)",done:false},
+      {id:"oc2",text:"Send welcome-back message before July 1",done:false},
+      {id:"oc3",text:"Share current team context doc / org restructure update",done:false},
+      {id:"oc4",text:"Schedule dedicated 1:1 for week of return — use Thrive survey as starting point",done:false},
+      {id:"oc5",text:"Walk through MVIP migration status and in-flight features",done:false},
+      {id:"oc6",text:"Brief on Market VIP Live Transfer Agent Assignment brief (Charlie Lehman PM)",done:false},
+      {id:"oc7",text:"Introduce Christina to Whitney Perez (new Director of Product)",done:false},
+      {id:"oc8",text:"Align on Jon's focus post-MVIP transition",done:false},
+      {id:"oc9",text:"Confirm Christina's FY27 roadmap and any shifts from pre-leave plan",done:false},
+      {id:"oc10",text:"No expectation to attend all meetings in week 1 — ease her in",done:false}
     ],
     goals:[
       {id:"g18",type:"PM",title:"Define cross-squad strategic vision for premium Buyer lead products",desc:"Work with MVIP and RPD product teams to define the broader strategic vision for the premium Buyer lead product post-migration. Shape the roadmap and influence product strategy based on deep team lead/broker knowledge.",status:"not-started",progress:0},
@@ -1064,6 +1163,8 @@ function showView(view){
   destroyCharts();
   if(view==='overview')renderOverview();
   else if(view==='goals')renderGoalsView();
+  else if(view==='roadmap')renderRoadmapView();
+  else if(view==='reviews')renderReviewCycleView();
   else if(view==='gaps')renderGaps();
   else if(view==='leave')renderLeaveView();
   else if(view==='offboarding')renderOffboardingView();
@@ -1096,24 +1197,45 @@ function renderOverview(){
         const done=d.goals.filter(g=>g.status==='complete').length;
         const onTrack=d.goals.filter(g=>g.status==='on-track').length;
         const atRisk=d.goals.filter(g=>g.status==='at-risk').length;
+        // 1:1 indicator
+        let oneOnOneChip='';
+        if(isAdmin()){
+          if(d.nextOneOnOne){
+            const diff=Math.round((new Date(d.nextOneOnOne+'T12:00:00')-new Date())/(1000*60*60*24));
+            const cls=diff<=1?'urgent':diff<=4?'soon':'ok';
+            const label=diff===0?'Today':diff<0?'Overdue':diff===1?'Tomorrow':diff+' days';
+            oneOnOneChip=`<button class="one-on-one-chip ${cls}" onclick="event.stopPropagation();openOneOnOneModal(${d.id})" title="Next 1:1">📅 1:1 ${label}</button>`;
+          } else {
+            oneOnOneChip=`<button class="one-on-one-chip none" onclick="event.stopPropagation();openOneOnOneModal(${d.id})" title="Set next 1:1">📅 Set 1:1</button>`;
+          }
+        }
+        // Radar note preview
+        const radarPreview = d.radarNote ? `<div style="margin-top:6px;padding:6px 8px;background:#FFFBF0;border-left:2px solid #F59E0B;border-radius:0 4px 4px 0;font-size:11px;color:#92400E;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">👁 ${d.radarNote.split('\n')[0]}</div>` : '';
         return`<div class="overview-card" onclick="showDesigner(${d.id})">
-          <div style="display:flex;align-items:center;gap:8px">
-            <div class="avatar" style="background:${d.avatarColor};width:38px;height:38px;font-size:14px">${d.name.split(' ').map(n=>n[0]).join('')}</div>
-            <span class="rating-badge ${getRatingClass(d.fy25Rating)}">${d.fy25Rating||'Achieves'}</span>${d.promoted?'<span style="font-size:9px;background:#EDE9FE;color:#5B21B6;padding:2px 7px;border-radius:10px;font-weight:600;margin-left:4px">⬆ Promoted</span>':''} ${d.promotionPending?'<span style="font-size:9px;background:#FEF3C7;color:#92400E;padding:2px 7px;border-radius:10px;font-weight:600;margin-left:4px">⏳ Promotion Pending</span>':''}
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="avatar" style="background:${d.avatarColor};width:38px;height:38px;font-size:14px">${d.name.split(' ').map(n=>n[0]).join('')}</div>
+              <span class="rating-badge ${getRatingClass(d.fy25Rating)}">${d.fy25Rating||'Achieves'}</span>${d.promoted?'<span style="font-size:9px;background:#EDE9FE;color:#5B21B6;padding:2px 7px;border-radius:10px;font-weight:600;margin-left:4px">⬆ Promoted</span>':''} ${d.promotionPending?'<span style="font-size:9px;background:#FEF3C7;color:#92400E;padding:2px 7px;border-radius:10px;font-weight:600;margin-left:4px">⏳ Promotion Pending</span>':''}
+            </div>
+            ${oneOnOneChip}
           </div>
           <div class="overview-name">${d.name}</div>
           <div class="overview-role" style="display:flex;align-items:center;gap:6px">${d.role} · ${d.area}${d.onLeave?`<span style="font-size:9px;background:#FEF3C7;color:#92400E;padding:1px 6px;border-radius:8px;font-weight:600">${d.onLeave}</span>`:''}</div>
+          ${radarPreview}
           <div class="divider" style="margin:10px 0"></div>
           <div style="font-size:11px;color:var(--gray-mid);margin-bottom:5px">Top Strengths</div>
           <div class="tag-list">${d.strengths.slice(0,3).map(s=>`<span class="tag tag-strength">${s}</span>`).join('')}</div>
           <div style="font-size:11px;color:var(--gray-mid);margin:8px 0 5px">Growth Areas</div>
           <div class="tag-list">${d.gaps.slice(0,2).map(g=>`<span class="tag tag-gap">${g}</span>`).join('')}</div>
-          <div class="divider" style="margin:10px 0"></div>
-          <div style="display:flex;gap:10px">
-            <div class="stat"><div class="stat-val stat-purple">${total}</div><div class="stat-label">FY27 Goals</div></div>
-            <div class="stat"><div class="stat-val stat-green">${onTrack+done}</div><div class="stat-label">On Track</div></div>
-            <div class="stat"><div class="stat-val stat-red">${atRisk}</div><div class="stat-label">At Risk</div></div>
-            <div class="stat"><div class="stat-val stat-blue">${d.notes.length}</div><div class="stat-label">Updates</div></div>
+          <div class="divider" style="margin:10px 0 10px;margin-top:auto"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;gap:10px">
+              <div class="stat"><div class="stat-val stat-purple">${total}</div><div class="stat-label">FY27 Goals</div></div>
+              <div class="stat"><div class="stat-val stat-green">${onTrack+done}</div><div class="stat-label">On Track</div></div>
+              <div class="stat"><div class="stat-val stat-red">${atRisk}</div><div class="stat-label">At Risk</div></div>
+              <div class="stat"><div class="stat-val stat-blue">${d.notes.length}</div><div class="stat-label">Updates</div></div>
+            </div>
+            ${isAdmin()?`<button onclick="event.stopPropagation();quickPulse(${d.id})" style="padding:4px 10px;background:var(--warm-white);border:1px solid var(--gray-border);border-radius:6px;font-size:11px;color:var(--gray-mid);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap" title="Quick pulse check-in">+ Pulse</button>`:''}
           </div>
         </div>`;
       }).join('')}
@@ -1328,6 +1450,7 @@ function renderDesigner(id){
 
     <div class="tabs" style="overflow-x:auto;flex-wrap:nowrap;white-space:nowrap;scrollbar-width:none;-ms-overflow-style:none">
       <div class="tab active" id="tab-overview" onclick="switchTab('overview',${d.id})">Overview</div>
+      <div class="tab" id="tab-radar" onclick="switchTab('radar',${d.id})">👁 On My Radar${d.radarNote?' ●':''}</div>
       <div class="tab" id="tab-history" onclick="switchTab('history',${d.id})">Review History</div>
       <div class="tab" id="tab-dor" onclick="switchTab('dor',${d.id})">DoR</div>
       <div class="tab" id="tab-goals" onclick="switchTab('goals',${d.id})">FY27 Goals (${d.goals.length})</div>
@@ -1337,6 +1460,7 @@ function renderDesigner(id){
       <div class="tab" id="tab-thrive" onclick="switchTab('thrive',${d.id})">Thrive${d.thrive?' ✓':''}</div>
       <div class="tab" id="tab-notes" onclick="switchTab('notes',${d.id})">Updates (${d.notes.length})</div>
       ${isAdmin()?`<div class="tab" id="tab-contact" onclick="switchTab('contact',${d.id})">Contact</div>`:''}
+      ${isAdmin()&&d.onboardingChecklist?`<div class="tab" id="tab-onboarding" onclick="switchTab('onboarding',${d.id})">✅ Return Checklist</div>`:''}
     </div>
     <div id="tab-content"></div>`;
 
@@ -1826,6 +1950,47 @@ function renderDesignerTab(tab, d){
       designerNotes.forEach(n=>{n.isRead=true;});
       save();
     }
+  } else if(tab==='radar'){
+    const notes = d.radarNote||'';
+    content.innerHTML=`
+      <div style="max-width:640px">
+        <div class="radar-pinned" style="margin-bottom:16px">
+          <div class="radar-pinned-label">👁 On My Radar — ${d.name.split(' ')[0]}</div>
+          <div style="font-size:12px;color:#92400E;line-height:1.6;margin-bottom:12px">A private pinned note for the 1-2 things you're actively watching for this person — things you'd want to remember before a 1:1 without scrolling through all your notes.</div>
+          <textarea class="radar-ta" id="radar-ta-${d.id}" placeholder="e.g.&#10;• Watching handoff quality on MVIP — flagged in mid-year, check in Q2&#10;• Monitor attendance pattern — revisit HR accommodation convo&#10;• Is she feeling grounded after the restructure?">${notes}</textarea>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+            <button class="btn btn-primary btn-sm" onclick="saveRadarNote(${d.id})">Save</button>
+            <span id="radar-saved-${d.id}" style="font-size:11px;color:var(--exceeds);opacity:0;transition:opacity .3s">✓ Saved</span>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--gray-mid);line-height:1.7;padding:10px 12px;background:var(--warm-white);border-radius:8px">
+          💡 This field also shows as a preview snippet on the Team Overview card so you can glance at it without opening the profile.
+        </div>
+      </div>`;
+  } else if(tab==='onboarding'){
+    if(!d.onboardingChecklist){ content.innerHTML=''; return; }
+    const checks = d.onboardingChecklist;
+    const doneCount = checks.filter(c=>c.done).length;
+    content.innerHTML=`
+      <div style="max-width:640px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div>
+            <div style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--charcoal)">Return Checklist — ${d.name.split(' ')[0]}</div>
+            <div style="font-size:12px;color:var(--gray-mid);margin-top:2px">${doneCount} of ${checks.length} complete · Based on Julie Brody's handoff notes</div>
+          </div>
+          <div style="font-size:22px;font-weight:600;color:${doneCount===checks.length?'var(--exceeds)':'var(--charcoal)'}">${Math.round(doneCount/checks.length*100)}%</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--gray-border);border-radius:10px;padding:4px 16px;margin-bottom:14px">
+          ${checks.map(c=>`
+            <div class="onboard-check-row">
+              <div class="onboard-checkbox ${c.done?'done':''}" onclick="toggleOnboardCheck(${d.id},'${c.id}')">${c.done?'✓':''}</div>
+              <div class="onboard-check-text ${c.done?'done':''}">${c.text}</div>
+            </div>`).join('')}
+        </div>
+        <div style="font-size:11px;color:var(--gray-mid);line-height:1.7;padding:10px 12px;background:var(--warm-white);border-radius:8px">
+          💡 This checklist is saved to localStorage and persists across sessions. Check off items as you complete them before and after ${d.name.split(' ')[0]}'s return on July 1.
+        </div>
+      </div>`;
   } else if(tab==='contact'){
     const c = d.contact || {};
 
@@ -3361,10 +3526,236 @@ document.addEventListener('click', function(e){
 
 // No-op stubs for legacy calls
 function applyAcctOverrides(){}
-function syncAccountsFromAirtable(){ return Promise.resolve(); }
 
 function isAdmin(){ return currentUser && currentUser.role === 'admin'; }
 function getDesignerId(){ return currentUser ? currentUser.designerId : null; }
+
+// ── ON MY RADAR ──────────────────────────────────────────────────────────────
+async function saveRadarNote(designerId){
+  const d=designers.find(x=>x.id===designerId); if(!d) return;
+  const ta=document.getElementById('radar-ta-'+designerId);
+  if(!ta) return;
+  d.radarNote = ta.value;
+  await save();
+  const conf=document.getElementById('radar-saved-'+designerId);
+  if(conf){ conf.style.opacity='1'; setTimeout(()=>conf.style.opacity='0',2000); }
+}
+
+// ── ONBOARDING CHECKLIST ──────────────────────────────────────────────────────
+async function toggleOnboardCheck(designerId, checkId){
+  const d=designers.find(x=>x.id===designerId); if(!d||!d.onboardingChecklist) return;
+  const item=d.onboardingChecklist.find(c=>c.id===checkId); if(!item) return;
+  item.done=!item.done;
+  await save();
+  renderDesignerTab('onboarding',d);
+  setTimeout(()=>switchTab('onboarding',designerId),10);
+}
+
+// ── 1:1 DATE MODAL ───────────────────────────────────────────────────────────
+function openOneOnOneModal(designerId){
+  const d=designers.find(x=>x.id===designerId); if(!d) return;
+  document.getElementById('oneOnOne-designer-id').value=designerId;
+  document.getElementById('oneOnOne-designer-name').textContent=d.name;
+  document.getElementById('oneOnOne-date').value=d.nextOneOnOne||'';
+  showModal('oneOnOne');
+}
+
+async function saveOneOnOne(){
+  const designerId=parseInt(document.getElementById('oneOnOne-designer-id').value);
+  const d=designers.find(x=>x.id===designerId); if(!d) return;
+  d.nextOneOnOne=document.getElementById('oneOnOne-date').value||null;
+  await save(); hideModal('oneOnOne');
+  if(currentView==='overview') renderOverview();
+  else if(currentDesignerId===designerId) renderDesigner(designerId);
+}
+
+// ── QUICK PULSE FROM OVERVIEW ─────────────────────────────────────────────────
+function quickPulse(designerId){
+  document.getElementById('pulse-designer-id').value=designerId;
+  const d=designers.find(x=>x.id===designerId);
+  if(d) document.getElementById('pulse-modal-title').textContent='Quick Pulse — '+d.name;
+  // Pre-fill with today's date
+  const today=new Date().toISOString().slice(0,10);
+  const wkEl=document.getElementById('pulse-week');
+  if(wkEl) wkEl.value=today;
+  showModal('pulse');
+}
+
+// ── ROADMAP VIEW ──────────────────────────────────────────────────────────────
+const QUARTERS=['Q1 FY27','Q2 FY27','Q3 FY27','Q4 FY27'];
+
+function renderRoadmapView(){
+  if(!isAdmin()){ document.getElementById('main-content').innerHTML='<div class="empty-state"><p>Access restricted.</p></div>'; return; }
+  const main=document.getElementById('main-content');
+  const pillHTML=(entry)=>{
+    if(!entry) return `<span class="roadmap-pill tbd">—</span>`;
+    const cls=entry.status==='active'?'active':entry.status==='complete'?'complete':entry.status==='leave'?'leave':entry.status==='tbd'?'tbd':'planned';
+    return `<div>
+      <span class="roadmap-pill ${cls}">${entry.project}</span>
+      ${entry.notes?`<div style="font-size:10px;color:var(--gray-mid);margin-top:3px">${entry.notes}</div>`:''}
+    </div>`;
+  };
+
+  main.innerHTML=`
+  <div class="page-header">
+    <div>
+      <div class="page-title">Team Roadmap</div>
+      <div class="page-subtitle">FY27 design work across all surfaces — edit entries by clicking a cell</div>
+    </div>
+  </div>
+  <div style="font-size:11px;margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap">
+    <span><span class="roadmap-pill active" style="font-size:10px">Active</span></span>
+    <span><span class="roadmap-pill planned" style="font-size:10px">Planned</span></span>
+    <span><span class="roadmap-pill complete" style="font-size:10px">Complete</span></span>
+    <span><span class="roadmap-pill leave" style="font-size:10px">On Leave</span></span>
+    <span><span class="roadmap-pill tbd" style="font-size:10px">TBD</span></span>
+  </div>
+  <div style="background:#fff;border:1px solid var(--gray-border);border-radius:10px;overflow:hidden">
+    <div class="roadmap-row header-row">
+      <div class="roadmap-cell">Designer</div>
+      ${QUARTERS.map(q=>`<div class="roadmap-cell">${q}</div>`).join('')}
+    </div>
+    ${designers.map(d=>`
+      <div class="roadmap-row">
+        <div class="roadmap-cell name-cell">
+          <div class="avatar" style="background:${d.avatarColor};width:22px;height:22px;font-size:9px;flex-shrink:0">${d.name.split(' ').map(n=>n[0]).join('')}</div>
+          <span>${d.name.split(' ')[0]}</span>
+        </div>
+        ${QUARTERS.map((q,qi)=>{
+          const entry=(d.roadmap||[]).find(r=>r.quarter===q);
+          const isLeave=d.onLeave&&qi===0;
+          const displayEntry=isLeave?{project:d.onLeave,status:'leave',notes:d.returnDate||''}:entry;
+          return`<div class="roadmap-cell" onclick="isAdmin()&&openRoadmapEdit(${d.id},'${q}')" style="cursor:pointer;transition:background .12s" onmouseover="this.style.background='var(--warm-white)'" onmouseout="this.style.background=''">${pillHTML(displayEntry)}</div>`;
+        }).join('')}
+      </div>`).join('')}
+  </div>`;
+}
+
+function openRoadmapEdit(designerId, quarter){
+  const d=designers.find(x=>x.id===designerId); if(!d) return;
+  if(!d.roadmap) d.roadmap=[];
+  let entry=d.roadmap.find(r=>r.quarter===quarter);
+  if(!entry){ entry={quarter,project:'',status:'planned',notes:''}; d.roadmap.push(entry); }
+  document.getElementById('rm-designer-id').value=designerId;
+  document.getElementById('rm-quarter').value=quarter;
+  document.getElementById('rm-quarter-label').textContent=d.name.split(' ')[0]+' — '+quarter;
+  document.getElementById('rm-project').value=entry.project;
+  document.getElementById('rm-status').value=entry.status;
+  document.getElementById('rm-notes').value=entry.notes;
+  showModal('roadmap');
+}
+
+async function saveRoadmapEntry(){
+  const designerId=parseInt(document.getElementById('rm-designer-id').value);
+  const quarter=document.getElementById('rm-quarter').value;
+  const d=designers.find(x=>x.id===designerId); if(!d) return;
+  if(!d.roadmap) d.roadmap=[];
+  let entry=d.roadmap.find(r=>r.quarter===quarter);
+  if(!entry){ entry={quarter,project:'',status:'planned',notes:''}; d.roadmap.push(entry); }
+  entry.project=document.getElementById('rm-project').value;
+  entry.status=document.getElementById('rm-status').value;
+  entry.notes=document.getElementById('rm-notes').value;
+  await save(); hideModal('roadmap'); renderRoadmapView();
+}
+
+// ── REVIEW CYCLE VIEW ─────────────────────────────────────────────────────────
+const REVIEW_STAGES=[
+  {key:'selfReview',label:'Self-Review'},
+  {key:'managerDraft',label:'Mgr Draft'},
+  {key:'calibration',label:'Calibration'},
+  {key:'delivered',label:'Delivered'}
+];
+
+function renderReviewCycleView(){
+  if(!isAdmin()){ document.getElementById('main-content').innerHTML='<div class="empty-state"><p>Access restricted.</p></div>'; return; }
+  const main=document.getElementById('main-content');
+  const stageCell=(d,stage)=>{
+    const rc=d.reviewCycle||{};
+    const val=rc[stage.key];
+    const isDone=!!val;
+    return`<div class="review-cell" style="cursor:pointer" onclick="toggleReviewStage(${d.id},'${stage.key}')" title="${isDone?'Mark incomplete':'Mark complete'}">
+      <div class="review-stage">
+        <div class="review-dot ${isDone?'complete':''}"></div>
+        <span style="font-size:11px;color:${isDone?'var(--exceeds)':'var(--gray-mid)'}">${isDone?val:'—'}</span>
+      </div>
+    </div>`;
+  };
+  const overallPct=d=>{
+    const rc=d.reviewCycle||{};
+    const done=REVIEW_STAGES.filter(s=>rc[s.key]).length;
+    return Math.round(done/REVIEW_STAGES.length*100);
+  };
+
+  main.innerHTML=`
+  <div class="page-header">
+    <div>
+      <div class="page-title">Review Cycle</div>
+      <div class="page-subtitle">Track mid-year and annual review progress — click a stage to mark complete</div>
+    </div>
+  </div>
+  <div style="background:#fff;border:1px solid var(--gray-border);border-radius:10px;overflow:hidden;margin-bottom:16px">
+    <div class="review-row header">
+      <div class="review-cell">Designer</div>
+      ${REVIEW_STAGES.map(s=>`<div class="review-cell">${s.label}</div>`).join('')}
+      <div class="review-cell">Progress</div>
+    </div>
+    ${designers.map(d=>`
+      <div class="review-row">
+        <div class="review-cell" style="display:flex;align-items:center;gap:8px;font-weight:500">
+          <div class="avatar" style="background:${d.avatarColor};width:22px;height:22px;font-size:9px;flex-shrink:0">${d.name.split(' ').map(n=>n[0]).join('')}</div>
+          ${d.name.split(' ')[0]}
+        </div>
+        ${REVIEW_STAGES.map(s=>stageCell(d,s)).join('')}
+        <div class="review-cell">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="flex:1;height:6px;background:var(--gray-border);border-radius:3px;overflow:hidden">
+              <div style="height:100%;width:${overallPct(d)}%;background:${overallPct(d)===100?'var(--exceeds)':'var(--red)'};border-radius:3px;transition:width .3s"></div>
+            </div>
+            <span style="font-size:11px;color:var(--gray-mid);min-width:28px">${overallPct(d)}%</span>
+          </div>
+        </div>
+      </div>`).join('')}
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">
+    ${designers.map(d=>{
+      const rc=d.reviewCycle||{};
+      return`<div class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <div class="avatar" style="background:${d.avatarColor};width:26px;height:26px;font-size:10px">${d.name.split(' ').map(n=>n[0]).join('')}</div>
+          <div style="font-size:13px;font-weight:500">${d.name.split(' ')[0]}</div>
+        </div>
+        <div class="form-group full" style="margin-bottom:8px">
+          <div class="contact-field-label" style="margin-bottom:4px">Notes</div>
+          <textarea class="form-input" id="rc-notes-${d.id}" rows="2" style="resize:none;font-size:12px" placeholder="Calibration notes, blockers, context...">${rc.notes||''}</textarea>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="saveReviewNotes(${d.id})">Save Notes</button>
+        <span id="rc-saved-${d.id}" style="font-size:11px;color:var(--exceeds);margin-left:6px;opacity:0;transition:opacity .3s">✓ Saved</span>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+async function toggleReviewStage(designerId, stageKey){
+  const d=designers.find(x=>x.id===designerId); if(!d) return;
+  if(!d.reviewCycle) d.reviewCycle={};
+  if(d.reviewCycle[stageKey]){
+    d.reviewCycle[stageKey]=null;
+  } else {
+    const today=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    d.reviewCycle[stageKey]=today;
+  }
+  await save(); renderReviewCycleView();
+}
+
+async function saveReviewNotes(designerId){
+  const d=designers.find(x=>x.id===designerId); if(!d) return;
+  if(!d.reviewCycle) d.reviewCycle={};
+  const ta=document.getElementById('rc-notes-'+designerId);
+  if(ta) d.reviewCycle.notes=ta.value;
+  await save();
+  const conf=document.getElementById('rc-saved-'+designerId);
+  if(conf){ conf.style.opacity='1'; setTimeout(()=>conf.style.opacity='0',2000); }
+}
 
 // ── OFFBOARDING NOTES ─────────────────────────────────────────────────────────
 const OFFBOARD_STORAGE = 'rdc_offboard_v1';
@@ -3937,6 +4328,58 @@ function copySnippet(btn){
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="hideModal('recognition')">Cancel</button>
       <button class="btn btn-primary" onclick="saveRecognition()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- 1:1 Date Modal -->
+<div class="modal-overlay" id="modal-oneOnOne">
+  <div class="modal" style="width:360px">
+    <div class="modal-title">Set Next 1:1 — <span id="oneOnOne-designer-name"></span></div>
+    <input type="hidden" id="oneOnOne-designer-id">
+    <div class="form-grid">
+      <div class="form-group full">
+        <label class="form-label">Date of next 1:1</label>
+        <input class="form-input" id="oneOnOne-date" type="date">
+        <div style="font-size:11px;color:var(--gray-mid);margin-top:4px">Shows as a color-coded chip on the Team Overview card — green (5+ days), amber (1–4 days), red (today/overdue).</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="hideModal('oneOnOne')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveOneOnOne()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Roadmap Edit Modal -->
+<div class="modal-overlay" id="modal-roadmap">
+  <div class="modal" style="width:420px">
+    <div class="modal-title" id="rm-quarter-label">Edit Roadmap Entry</div>
+    <input type="hidden" id="rm-designer-id">
+    <input type="hidden" id="rm-quarter">
+    <div class="form-grid">
+      <div class="form-group full">
+        <label class="form-label">Project / Work stream</label>
+        <input class="form-input" id="rm-project" placeholder="e.g. MVIP migration, LEX discovery...">
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="rm-status">
+          <option value="active">Active</option>
+          <option value="planned">Planned</option>
+          <option value="complete">Complete</option>
+          <option value="tbd">TBD</option>
+          <option value="leave">On Leave</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Notes <span style="font-weight:400;color:var(--gray-mid)">(optional)</span></label>
+        <input class="form-input" id="rm-notes" placeholder="e.g. pending Whitney restructure clarity">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="hideModal('roadmap')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveRoadmapEntry()">Save</button>
     </div>
   </div>
 </div>
