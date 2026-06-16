@@ -152,7 +152,7 @@
   .auth-box{background:#fff;border-radius:12px;padding:40px 44px;width:340px;text-align:center}
   .auth-logo{font-family:'DM Serif Display',serif;font-size:22px;color:var(--charcoal);margin-bottom:4px}
   .auth-sub{font-size:12px;color:var(--gray-mid);margin-bottom:28px}
-  .auth-input{width:100%;padding:10px 14px;border:1px solid var(--gray-border);border-radius:6px;font-size:13px;font-family:'DM Sans',sans-serif;margin-bottom:10px;outline:none}
+  .auth-input{width:100%;padding:10px 14px;border:1px solid var(--gray-border);border-radius:6px;font-size:13px;font-family:'DM Sans',sans-serif;margin-bottom:14px;outline:none}
   .auth-input:focus{border-color:var(--red)}
   .auth-btn{width:100%;padding:10px;background:var(--red);color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
   .auth-btn:hover{background:var(--red-dark)}
@@ -317,27 +317,15 @@
   <div class="acct-header">
     <div class="acct-avatar-wrap">
       <div id="acct-panel-pic"></div>
-      <label class="acct-avatar-edit" for="acct-pic-upload" title="Change photo">&#9998;</label>
-      <input type="file" id="acct-pic-upload" accept="image/*" style="display:none" onchange="handlePicUpload(event)">
     </div>
     <div>
       <div class="acct-name" id="acct-panel-name"></div>
       <div class="acct-role" id="acct-panel-role"></div>
-      <div style="margin-top:4px">
-        <label class="acct-upload-label" for="acct-pic-upload">Change photo</label>
-        <span class="acct-remove-pic" id="acct-remove-pic" onclick="removeProfilePic()" style="display:none">Remove</span>
-      </div>
     </div>
   </div>
   <div class="acct-body">
-    <div>
-      <div class="acct-field-label">Change Password</div>
-      <div class="acct-pw-row">
-        <input type="password" id="acct-new-pw" placeholder="New password" />
-        <input type="password" id="acct-confirm-pw" placeholder="Confirm" />
-        <button class="acct-save-btn" onclick="changePassword()">Save</button>
-      </div>
-      <div class="acct-msg" id="acct-pw-msg"></div>
+    <div style="font-size:12px;color:var(--gray-mid);line-height:1.6;padding:4px 0">
+      Passwords and profile photos are managed by your admin. This tool runs entirely in your browser — there's no server backend to securely store credential changes.
     </div>
   </div>
   <div class="acct-footer">
@@ -350,6 +338,9 @@
     <div class="auth-logo">Design Team Tracker</div>
     <div class="auth-sub">Enter your password to continue</div>
     <input class="auth-input" type="password" id="auth-pw" placeholder="Password" onkeydown="if(event.key==='Enter')authLogin()" />
+    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gray-mid);cursor:pointer;margin-bottom:16px">
+      <input type="checkbox" id="auth-remember" style="width:14px;height:14px;cursor:pointer;accent-color:var(--red)"> Keep me signed in
+    </label>
     <button class="auth-btn" onclick="authLogin()">Sign in</button>
     <div class="auth-error" id="auth-err"></div>
   </div>
@@ -545,7 +536,7 @@ const initialDesigners=[
       {category:"client",name:"LTKA/UpNest Migration → RealPro App",status:"past",fy:"FY26",detail:"Led discovery work using JTBD frameworks. Key designer on UpNest/LTK migration into RealPro App."},
       {category:"client",name:"RealPro App (UMA) — FY26 H1",status:"current",fy:"FY26",detail:"Exceeding PM expectations at mid-year. Hitting all H1 delivery targets. Connective tissue across Product, Eng, Research, and Design Systems."},
       {category:"client",name:"RealPro App UMA — Lead Designer",status:"future",fy:"FY27",detail:"Positioned as lead designer on UMA in FY27. Focus: design leadership, reducing reliance on Zeke, driving discovery independently."}
-    ],onLeave:"On Vacation",returnDate:"Early June",fy24Rating:"Achieves Expectations",fy25Rating:"Often Exceeds",promoted:true,promotionDate:"January 2026",promotionFrom:"T3 — Product Designer",promotionTo:"T4 — Senior Product Designer",avatarColor:AVATARS[0],
+    ],onLeave:null,returnDate:null,fy24Rating:"Achieves Expectations",fy25Rating:"Often Exceeds",promoted:true,promotionDate:"January 2026",promotionFrom:"T3 — Product Designer",promotionTo:"T4 — Senior Product Designer",avatarColor:AVATARS[0],
     strengths:["Execution & Delivery","Design-Eng Collaboration","Design Systems (Harmony PRO)","Documentation","Communication Growth","VQA & QA"],
     gaps:["Design Leadership / Ownership","Facilitation of Workshops","Discovery Work","Reducing reliance on Zeke"],
     skills:[
@@ -831,7 +822,7 @@ const initialDesigners=[
     ]
   },
   {
-    id:4,contact:{birthday:"",address:"",cell:"",email:"",personal:""},
+    id:4,contact:{birthday:"4/17",address:"1301 Parker Ln, Unit 642, Austin TX 78741",cell:"912-484-8154",email:"jogrimes94@gmail.com",personal:""},
     projects:[
       {category:"client",name:"RealPro Dashboard — Buyer Leads/MVIP",status:"current",fy:"FY26",detail:"Working on Buyer Leads and MVIP/RCC on the UWP/Client team. Strong product instincts and user advocacy. Both UWP Beta clients (Oasis and Zimmerman) at 100% engagement."},
       {category:"client",name:"RealPro Dashboard — UWP",status:"future",fy:"FY27",detail:"Continuing on UWP. Development focus: delivery accountability, design specs quality, and cross-functional relationships with Erin and Sandhya."}
@@ -932,7 +923,9 @@ const initialDesigners=[
     fy25Rating:"Achieves Expectations",
     avatarColor:AVATARS[5],
     onLeave:"Parental Leave",
-    returnDate:"July 2026",
+    leaveStart:null,
+    leaveEnd:"2026-07-01",
+    returnDate:"Returns July 1st",
     strengths:["Tackling Ambiguity & Strategic Clarity","Cross-functional Collaboration & Stakeholder Management","Mentorship (Jon Grimes)","AI Tools Leadership & Workshop Facilitation","Design Systems Thinking & Consistency","On-time Delivery Under Pressure"],
     gaps:["Cross-squad Strategic Vision (carried from FY25)","Co-leading as Equal Partner with Eng & Product","Executive Forum Presence & Visibility"],
     skills:[
@@ -2239,12 +2232,16 @@ async function getAIResponse(){
 
 function renderLeaveView(){
   const main=document.getElementById('main-content');
+  const fmt = d => new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
   main.innerHTML=`
     <div class="page-header">
       <div><div class="page-title">Leave Tracker</div><div class="page-subtitle">Team availability at a glance</div></div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
-      ${designers.map(d=>`
+      ${designers.map(d=>{
+        const dateRange = (d.leaveStart||d.leaveEnd) ? `<div style="font-size:11px;color:var(--gray-mid);margin-top:4px">📅 ${d.leaveStart?fmt(d.leaveStart):'?'} → ${d.leaveEnd?fmt(d.leaveEnd):'?'}</div>` : '';
+        const returnNote = d.returnDate && !d.leaveEnd ? `<div style="font-size:11px;color:var(--gray-mid);margin-top:4px">↩ ${d.returnDate}</div>` : '';
+        return `
         <div class="card">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
             <div class="avatar" style="background:${d.avatarColor};width:36px;height:36px;font-size:14px">${d.name.split(' ').map(n=>n[0]).join('')}</div>
@@ -2252,11 +2249,12 @@ function renderLeaveView(){
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between">
             <span style="font-size:13px;font-weight:500;padding:4px 10px;border-radius:16px;background:${d.onLeave?'#FEF3C7':'#E8F5EE'};color:${d.onLeave?'#92400E':'#1B7A3E'}">${d.onLeave||'✅ Active'}</span>
-            <button class="btn btn-outline btn-sm" onclick="showLeaveModal(${d.id})">Edit</button>
+            ${isAdmin()?`<button class="btn btn-outline btn-sm" onclick="showLeaveModal(${d.id})">Edit</button>`:''}
           </div>
-          ${d.returnDate?`<div style="font-size:11px;color:var(--gray-mid);margin-top:6px">↩ Returns: ${d.returnDate}</div>`:''}
+          ${dateRange}${returnNote}
           <div style="font-size:11px;color:var(--gray-mid);margin-top:4px">📍 ${d.location}</div>
-        </div>`).join('')}
+        </div>`;
+      }).join('')}
     </div>`;
 }
 
@@ -2691,22 +2689,62 @@ async function saveRecognition(){
   renderDesigner(designerId);setTimeout(()=>switchTab('recognition',designerId),50);
 }
 
+function leaveStatusChanged(){
+  const val = document.getElementById('leave-status').value;
+  const hasStat = !!val;
+  document.getElementById('leave-dates-section').style.display = hasStat ? 'block' : 'none';
+  document.getElementById('leave-return-section').style.display = hasStat ? 'block' : 'none';
+}
+
 function showLeaveModal(designerId){
   document.getElementById('leave-designer-id').value=designerId;
   const d=designers.find(x=>x.id===designerId);
   document.getElementById('leave-status').value=d?.onLeave||'';
+  document.getElementById('leave-start').value=d?.leaveStart||'';
+  document.getElementById('leave-end').value=d?.leaveEnd||'';
   document.getElementById('leave-return').value=d?.returnDate||'';
+  leaveStatusChanged();
   showModal('leave');
 }
 
 async function saveLeave(){
   const designerId=parseInt(document.getElementById('leave-designer-id').value);
   const d=designers.find(x=>x.id===designerId);if(!d)return;
-  d.onLeave=document.getElementById('leave-status').value||null;
-  d.returnDate=document.getElementById('leave-return').value||null;
+  const status = document.getElementById('leave-status').value||null;
+  const leaveStart = document.getElementById('leave-start').value||null;
+  const leaveEnd = document.getElementById('leave-end').value||null;
+  const returnNote = document.getElementById('leave-return').value||null;
+  d.onLeave = status;
+  d.leaveStart = leaveStart;
+  d.leaveEnd = leaveEnd;
+  // Auto-build returnDate string from end date if no manual note
+  if(returnNote){
+    d.returnDate = returnNote;
+  } else if(leaveEnd){
+    d.returnDate = 'Returns '+new Date(leaveEnd+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric'});
+  } else {
+    d.returnDate = null;
+  }
   await save();hideModal('leave');initSidebar();
   if(currentView==='overview')renderOverview();
+  else if(currentView==='leave')renderLeaveView();
   else if(currentDesignerId===designerId)renderDesigner(designerId);
+}
+
+function checkLeaveExpiry(){
+  // Auto-clear leave status if leaveEnd date has passed
+  const today = new Date(); today.setHours(0,0,0,0);
+  let changed = false;
+  designers.forEach(d=>{
+    if(d.onLeave && d.leaveEnd){
+      const end = new Date(d.leaveEnd+'T12:00:00');
+      if(end < today){
+        d.onLeave = null; d.leaveEnd = null; d.leaveStart = null; d.returnDate = null;
+        changed = true;
+      }
+    }
+  });
+  if(changed) save();
 }
 
 async function generate1on1Prep(designerId){
@@ -2764,6 +2802,7 @@ function copyPrep(){
 
 // ── Slack Integration ──
 document.addEventListener('DOMContentLoaded', () => {
+  checkLeaveExpiry();
   const sel = document.getElementById('slack-designer');
   if(sel) sel.innerHTML = designers.map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
   document.getElementById('slack-channel')?.addEventListener('change', function(){
@@ -3146,7 +3185,7 @@ async function atSaveAccount(u, f){ /* no-op */ }
 // ── AUTH ──
 
 const AUTH_CREDS = {"smartt_admin": {"role": "admin", "designerId": null, "name": "Mirella"}, "will_grow": {"role": "designer", "designerId": 1, "name": "Will Soemargo"}, "pooja_grow": {"role": "designer", "designerId": 2, "name": "Pooja Sheth"}, "lauren_grow": {"role": "designer", "designerId": 3, "name": "Lauren Lang"}, "jon_grow": {"role": "designer", "designerId": 4, "name": "Jon Grimes"}, "christina_grow": {"role": "designer", "designerId": 6, "name": "Christina Poon"}};
-let currentUser = null;
+const SESSION_KEY = 'rdc_session_v1';
 
 function authLogin(){
   syncAccountsFromAirtable().then(applyAcctOverrides);
@@ -3154,20 +3193,23 @@ function authLogin(){
   const err = document.getElementById('auth-err');
   const user = AUTH_CREDS[pw];
   if(!user){ err.textContent = 'Incorrect password. Please try again.'; return; }
+  const remember = document.getElementById('auth-remember')?.checked;
+  if(remember){ try{ localStorage.setItem(SESSION_KEY, pw); }catch(e){} }
+  authBegin(pw, user);
+}
+
+function authBegin(pw, user){
   currentUser = {...user, password: pw};
   document.getElementById('auth-gate').style.display = 'none';
   document.getElementById('app-layout').style.display = 'flex';
   document.getElementById('app-header').style.display = 'flex';
-  // Show user badge
   const badge = document.getElementById('user-badge');
   const logoutBtn = document.getElementById('logout-btn');
   if(badge){ badge.textContent = user.name; badge.style.display = 'inline-block'; }
   if(logoutBtn) logoutBtn.style.display = 'inline-block';
   renderAccountTrigger();
-  // Designer mode restrictions
   if(user.role === 'designer'){
     document.body.classList.add('designer-mode');
-    // Load and show only their profile
     initApp(user.designerId);
   } else {
     document.body.classList.remove('designer-mode');
@@ -3177,6 +3219,7 @@ function authLogin(){
 
 function authLogout(){
   currentUser = null;
+  try{ localStorage.removeItem(SESSION_KEY); }catch(e){}
   document.getElementById('auth-gate').style.display = 'flex';
   document.getElementById('app-layout').style.display = 'none';
   document.getElementById('app-header').style.display = 'none';
@@ -3192,6 +3235,16 @@ function authLogout(){
   const panel = document.getElementById('acct-panel');
   if(panel) panel.classList.remove('open');
 }
+
+// Auto-login if a saved session exists
+(function tryAutoLogin(){
+  try{
+    const saved = localStorage.getItem(SESSION_KEY);
+    if(saved && AUTH_CREDS[saved]){
+      authBegin(saved, AUTH_CREDS[saved]);
+    }
+  }catch(e){}
+})();
 
 
 
@@ -3286,16 +3339,6 @@ function renderAccountPanel(){
   if(nameEl) nameEl.textContent = currentUser.name;
   const roleEl = document.getElementById('acct-panel-role');
   if(roleEl) roleEl.textContent = currentUser.role==='admin' ? 'Admin' : 'Designer';
-  const removeEl = document.getElementById('acct-remove-pic');
-  if(removeEl) removeEl.style.display = hasPic ? 'inline' : 'none';
-
-  // Clear pw fields
-  const np = document.getElementById('acct-new-pw');
-  const cp = document.getElementById('acct-confirm-pw');
-  const msg = document.getElementById('acct-pw-msg');
-  if(np) np.value='';
-  if(cp) cp.value='';
-  if(msg){ msg.textContent=''; msg.className='acct-msg'; }
 }
 
 function toggleAccountPanel(){
@@ -3315,83 +3358,9 @@ document.addEventListener('click', function(e){
   }
 });
 
-function handlePicUpload(event){
-  const file = event.target.files[0];
-  if(!file || !currentUser) return;
-  if(file.size > 2*1024*1024){ alert('Please choose an image under 2MB.'); return; }
-  const reader = new FileReader();
-  reader.onload = function(e){
-    const data = loadAcctData();
-    const username = currentUser.password;
-    if(!data[username]) data[username]={};
-    data[username].pic = e.target.result;
-    saveAcctData(data);
-    renderAccountPanel();
-    renderAccountTrigger();
-    // If designer, also update their sidebar card avatar
-    if(currentUser.designerId){
-      const card = document.querySelector('#dcard-'+currentUser.designerId+' .avatar');
-      if(card){
-        card.style.backgroundImage='url('+e.target.result+')';
-        card.style.backgroundSize='cover';
-        card.style.backgroundPosition='center';
-        card.textContent='';
-      }
-    }
-  };
-  reader.readAsDataURL(file);
-  event.target.value='';
-}
-
-function removeProfilePic(){
-  if(!currentUser) return;
-  const data = loadAcctData();
-  const username = currentUser.password;
-  if(data[username]) delete data[username].pic;
-  saveAcctData(data);
-  renderAccountPanel();
-  renderAccountTrigger();
-}
-
-function changePassword(){
-  const np = document.getElementById('acct-new-pw').value.trim();
-  const cp = document.getElementById('acct-confirm-pw').value.trim();
-  const msg = document.getElementById('acct-pw-msg');
-  if(!np){ msg.textContent='Please enter a new password.'; msg.className='acct-msg err'; return; }
-  if(np.length < 6){ msg.textContent='Password must be at least 6 characters.'; msg.className='acct-msg err'; return; }
-  if(np !== cp){ msg.textContent='Passwords do not match.'; msg.className='acct-msg err'; return; }
-  // Store password override in acct data
-  const data = loadAcctData();
-  const username = currentUser.password;
-  if(!data[username]) data[username]={};
-  data[username].passwordOverride = np;
-  // Update the in-memory creds so it works immediately
-  // We need to remove old key and add new one
-  const userInfo = AUTH_CREDS[username];
-  if(userInfo){
-    delete AUTH_CREDS[username];
-    AUTH_CREDS[np] = userInfo;
-    currentUser.password = np;
-  }
-  saveAcctData(data);
-  // Trigger a fresh download so the new password is baked in
-  msg.textContent = 'Password updated. Download a new copy to make it permanent.';
-  msg.className = 'acct-msg ok';
-  document.getElementById('acct-new-pw').value='';
-  document.getElementById('acct-confirm-pw').value='';
-}
-
-// Apply stored password overrides on load (called after authLogin)
-function applyAcctOverrides(){
-  const data = loadAcctData();
-  Object.entries(data).forEach(([oldPw, acctData])=>{
-    if(acctData.passwordOverride && AUTH_CREDS[oldPw]){
-      const info = AUTH_CREDS[oldPw];
-      delete AUTH_CREDS[oldPw];
-      AUTH_CREDS[acctData.passwordOverride] = info;
-    }
-  });
-}
+// No-op stubs for legacy calls
+function applyAcctOverrides(){}
+function syncAccountsFromAirtable(){ return Promise.resolve(); }
 
 function isAdmin(){ return currentUser && currentUser.role === 'admin'; }
 function getDesignerId(){ return currentUser ? currentUser.designerId : null; }
@@ -3973,23 +3942,32 @@ function copySnippet(btn){
 
 <!-- Leave Modal -->
 <div class="modal-overlay" id="modal-leave">
-  <div class="modal" style="width:420px">
+  <div class="modal" style="width:440px">
     <div class="modal-title">Update Leave Status</div>
     <input type="hidden" id="leave-designer-id">
     <div class="form-grid">
       <div class="form-group full">
-        <label class="form-label">Leave status</label>
-        <select class="form-select" id="leave-status">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="leave-status" onchange="leaveStatusChanged()">
           <option value="">No leave — active</option>
-          <option value="On Vacation">On Vacation</option>
-          <option value="Parental Leave">Parental Leave</option>
-          <option value="Medical Leave">Medical Leave</option>
-          <option value="OOO">OOO</option>
+          <option value="On Vacation">🏖 On Vacation</option>
+          <option value="Parental Leave">👶 Parental Leave</option>
+          <option value="Medical Leave">🏥 Medical Leave</option>
+          <option value="OOO">📵 OOO</option>
         </select>
       </div>
-      <div class="form-group full">
-        <label class="form-label">Return date (optional)</label>
-        <input class="form-input" id="leave-return" placeholder="e.g. Early June, June 10...">
+      <div class="form-group full" id="leave-dates-section" style="display:none">
+        <label class="form-label">Date range <span style="font-weight:400;color:var(--gray-mid)">(optional)</span></label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input class="form-input" id="leave-start" type="date" style="flex:1" title="Start date">
+          <span style="color:var(--gray-mid);font-size:12px;flex-shrink:0">to</span>
+          <input class="form-input" id="leave-end" type="date" style="flex:1" title="End date / return date">
+        </div>
+        <div style="font-size:11px;color:var(--gray-mid);margin-top:5px">If you set an end date, the status will auto-clear when that date passes.</div>
+      </div>
+      <div class="form-group full" id="leave-return-section" style="display:none">
+        <label class="form-label">Return note <span style="font-weight:400;color:var(--gray-mid)">(shown on leave tracker)</span></label>
+        <input class="form-input" id="leave-return" placeholder="e.g. Returns July 1st, Back mid-June...">
       </div>
     </div>
     <div class="modal-actions">
