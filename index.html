@@ -4121,13 +4121,44 @@ async function generateCareerRecs(designerId){
   recsContent.innerHTML=`<div style="display:flex;align-items:center;gap:8px;color:var(--gray-mid)"><div class="typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div> Analyzing career path...</div>`;
 
   const goalSummary = (d.goals||[]).map(g=>`[${g.status}] ${g.title}`).join('\n');
-  const recentNotes = (d.notes||[]).slice(-5).map(n=>`[${n.type}] ${n.text}`).join('\n');
   const dimSummary = criteria.dimensions.map(dim=>{
     const ev = (evidence.dimensions||{})[dim.id]||{signal:'gap',evidence:'No data'};
     return`${dim.label}: ${ev.signal.toUpperCase()} — ${ev.evidence}`;
   }).join('\n');
 
-  const prompt = `You are helping Mirella, a design manager at Realtor.com, develop a personalized career growth plan for ${d.name}.
+  // Use a designer-appropriate framing that doesn't leak admin-only notes
+  const viewerIsDesigner = !isAdmin();
+  const prompt = viewerIsDesigner
+    ? `You are a career development advisor helping ${d.name}, a ${d.role} at Realtor.com, understand their path to the next level.
+
+CURRENT LEVEL: ${d.level}
+PRODUCT AREA: ${d.area}
+FY25 RATING: ${d.fy25Rating}
+STRENGTHS: ${d.strengths.join(', ')}
+GROWTH AREAS: ${d.gaps.join(', ')}
+
+CAREER LADDER ANALYSIS — Path to next level (${criteria.label}):
+${dimSummary}
+
+CURRENT FY27 GOALS:
+${goalSummary}
+
+Based on this designer's profile and the RDC career ladder criteria, generate a clear and encouraging career growth plan written directly to the designer (use "you").
+
+Structure your response as:
+
+**Where You Stand**
+2-3 honest, supportive sentences on your overall readiness for the next level.
+
+**Your Biggest Lever**
+The single most impactful thing to focus on right now. Be specific — name the opportunity and why it unlocks the most growth.
+
+**3 Actions for the Next 90 Days**
+Specific, achievable things you can do. Reference your actual work and product area. Not generic advice.
+
+**Things to Watch**
+1-2 honest flags or risks on your path — things to stay mindful of.`
+    : `You are helping Mirella, a design manager at Realtor.com, develop a personalized career growth plan for ${d.name}.
 
 DESIGNER:
 Name: ${d.name}
@@ -4145,7 +4176,7 @@ CURRENT FY27 GOALS:
 ${goalSummary}
 
 RECENT NOTES:
-${recentNotes||'None'}
+${(d.notes||[]).slice(-5).map(n=>`[${n.type}] ${n.text}`).join('\n')||'None'}
 
 Based on the RDC career ladder criteria, the designer's actual evidence, their current goals, and their review history, generate a smart, specific, and actionable career development plan. Be direct and personalized — not generic.
 
@@ -4171,6 +4202,10 @@ One or two sentences Mirella can actually say to open this conversation naturall
       method:'POST', headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})
     });
+    if(!response.ok){
+      const err = await response.json().catch(()=>({}));
+      throw new Error(`API ${response.status}: ${JSON.stringify(err)}`);
+    }
     const data = await response.json();
     const text = data.content?.[0]?.text||'Could not generate recommendations.';
     recsContent.innerHTML = text
@@ -4179,7 +4214,8 @@ One or two sentences Mirella can actually say to open this conversation naturall
       .replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--charcoal)">$1</strong>');
     window['_careerRecs_'+designerId] = text;
   } catch(e){
-    recsContent.innerHTML = 'Something went wrong generating recommendations. Please try again.';
+    console.error('Career recs error:', e);
+    recsContent.innerHTML = `Something went wrong generating recommendations. Please try again.<br><span style="font-size:10px;color:var(--gray-mid)">${e.message||''}</span>`;
   }
 }
 
