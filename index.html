@@ -290,6 +290,23 @@
   .onboard-check-text{font-size:12px;color:var(--gray-dark);line-height:1.6;flex:1}
   .onboard-check-text.done{text-decoration:line-through;color:var(--gray-mid)}
 
+  /* CAREER PATH TAB */
+  .career-level-bar{display:flex;align-items:center;gap:0;margin-bottom:24px;border-radius:8px;overflow:hidden;border:1px solid var(--gray-border)}
+  .career-level-seg{flex:1;padding:8px 10px;text-align:center;font-size:11px;font-weight:500;background:#fff;color:var(--gray-mid);border-right:1px solid var(--gray-border);transition:all .15s;line-height:1.3}
+  .career-level-seg:last-child{border-right:none}
+  .career-level-seg.current{background:var(--charcoal);color:#fff}
+  .career-level-seg.past{background:var(--exceeds-bg);color:var(--exceeds)}
+  .career-level-seg.next{background:#EDE9FE;color:#5B21B6;font-weight:600}
+  .career-dim-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--gray-border)}
+  .career-dim-row:last-child{border-bottom:none}
+  .career-dim-bar{width:80px;flex-shrink:0;margin-top:2px}
+  .career-dim-indicator{height:6px;border-radius:3px;margin-bottom:2px}
+  .career-dim-label{font-size:9px;color:var(--gray-mid);text-align:center}
+  .career-signal{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;margin-right:4px;margin-bottom:3px}
+  .career-signal-strong{background:var(--exceeds-bg);color:var(--exceeds)}
+  .career-signal-developing{background:#FEF3C7;color:#92400E}
+  .career-signal-gap{background:var(--red-light);color:var(--red-dark)}
+
   /* OFFBOARDING NOTES */
   .offboard-section{margin-bottom:28px}
   .offboard-section-title{font-size:11px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
@@ -408,6 +425,11 @@
       <div class="nav-item admin-only" id="nav-leave" onclick="showView('leave')">Leave Tracker</div>
       <div class="nav-item admin-only" id="nav-offboarding" onclick="showView('offboarding')">📋 Offboarding Notes</div>
       <div class="nav-item admin-only" id="nav-backup" onclick="showView('backup')" style="margin-top:4px;border-top:1px solid var(--gray-border);padding-top:10px">💾 Backup & Restore</div>
+    </div>
+    <div class="sidebar-section" style="border-bottom:none">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLScT0sbDefkcSiuBDT4va4brHJFEhWCL4DaHdCvI-_2W-jQ6Rw/viewform" target="_blank" style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;font-size:12px;color:var(--gray-dark);text-decoration:none;transition:background .12s;border:1px dashed var(--gray-border)" onmouseover="this.style.background='var(--warm-white)'" onmouseout="this.style.background=''">
+        <span>💬</span><span>Give Tracker Feedback</span>
+      </a>
     </div>
     <div class="sidebar-section" style="flex:1">
       <div class="sidebar-label">Designers</div>
@@ -570,6 +592,8 @@
 
 <script>
 const AVATARS=["#D93025","#1B7A3E","#1A56A0","#7C3AED","#B45309","#0F766E"];
+const GROWTH_FORM_BASE = "https://docs.google.com/forms/d/e/1FAIpQLSf5F1Mx-G42W3HCA__xniS-t5HYauliksdT1DqRmRDNAbt2Tw/viewform?usp=pp_url&entry.592657234=";
+const GROWTH_FORM_NAMES = {1:"Will",2:"Pooja",3:"Lauren",4:"Jon",6:"Christina"};
 const SHEETS_URL = ''; // Paste your Google Apps Script Web App URL here
 const statusColors={
   'not-started':'#6B7280','in-progress':'#1D4ED8','on-track':'#1B7A3E','at-risk':'#B45309','complete':'#065F46'
@@ -679,15 +703,16 @@ const initialDesigners=[
     reviewCycle:{selfReview:null,managerDraft:null,calibration:null,delivered:null,notes:""},
     dorChecks:{
       figma_linked:'green',
+      rfd_checklist:'green',
+      design_reviewed:'green',
+      accessibility:'green',
+      edge_cases:'green',
       engaged_early:'green',
       linked_2wks:'green',
       dependencies:'green',
-      responsive:'green',
-      accessibility:'green',
-      rfd_checklist:'green',
+      proactive_comms:'green',
       handoff_quality:'green',
-      edge_cases:'green',
-      proactive_comms:'green'
+      responsive:'green'
     },
     recognition:[
       {title:"Out-of-Cycle Promotion — T3 → T4 Senior Product Designer",detail:"Nominated by Ava DeVoe in January 2026. Recognized for sustained Senior-level impact across MVIP/RCC end-to-end execution, LTKA/UpNest discovery leadership, design systems ownership, and cross-functional influence spanning VP-level stakeholders. Promoted well ahead of the annual PAC cycle.",type:"Milestone",sharedWith:"HR / Compensation team",date:"January 2026"}
@@ -962,15 +987,16 @@ const initialDesigners=[
     recognition:[],
     dorChecks:{
       figma_linked:'yellow',
+      rfd_checklist:'yellow',
+      design_reviewed:'yellow',
+      accessibility:'yellow',
+      edge_cases:'green',
       engaged_early:'yellow',
       linked_2wks:'red',
       dependencies:'yellow',
-      responsive:'yellow',
-      accessibility:'yellow',
-      rfd_checklist:'yellow',
+      proactive_comms:'red',
       handoff_quality:'red',
-      edge_cases:'green',
-      proactive_comms:'red'
+      responsive:'yellow'
     },
     nextOneOnOne:null,radarNote:"",
     roadmap:[
@@ -1110,10 +1136,11 @@ KEY CONTEXT:
 
 Be concise, warm, and actionable. Reference specific review data. Help with 1:1 prep, goal refinement, identifying patterns, and supporting growth conversations.
 
-DEFINITION OF READY (DoR) — Client Mobile Team v1.0:
-Design Lead must: engage on stories at N+3/4 (not N+1), link final Figma files 2+ weeks before sprint, flag design dependencies early, deliver all states/responsive specs/accessibility annotations, use Ready for Dev checklist.
-N+2 Backlog Fidelity: N+1/N+2=100% fidelity (Ready to Build), N+3/N+4=60-80% (Shaping), N+5/N+8=40-60% (Discovery), N+8+=10-40% (Horizon).
-DoR compliance by designer: Will=strong across all areas (explicitly praised for documentation/handoff). Jon=consistent gaps in on-time delivery, handoff quality, and proactive communication with Eng/Product (flagged in both 90-day and mid-year). Lauren=improving, uses Ready for Dev checklist, annotated Figma board approach is strong. Pooja=strong facilitator and documenter. Christina=strong (mentors Jon on handoff practices).
+DEFINITION OF READY (DoR) — Engagement Client Team v1.0:
+Design Lead must: engage on stories at N+3/4 (not N+1), link final Figma files 2+ weeks before sprint, flag design dependencies early, deliver all states/responsive specs/accessibility annotations (WCAG 2.1 AA, lint pass against Haven/RDC-UI), complete Ready for Dev checklist, ensure design reviewed and approved by PM & Eng before sprint start.
+N+2 Backlog Fidelity: N+1/N+2=80-100% Ready to Build (HiFi designs linked, ACs complete, all Qs closed), N+3=70-80% Refinement (HiFi design reviews, rough scope estimate, edge cases), N+4=60-70% Shaping (wireframes, key Qs documented, ACs 60-80%), N+5-N+8=40-60% Discovery (shell stories, problem statement), N+8+=10-40% Horizon (themes/epics only).
+DoR is a three-way commitment — PM owns story readiness/ACs, Eng owns feasibility/estimates, Design owns experience readiness.
+DoR compliance by designer: Will=strong across all areas (praised for documentation/handoff quality). Jon=consistent gaps in on-time delivery, Figma linking timing, handoff quality, and proactive communication (flagged in both 90-day and mid-year — two review cycles). Lauren=improving, uses Ready for Dev checklist, annotated Figma board approach is strong. Pooja=strong facilitator and documenter. Christina=strong (mentors Jon on handoff practices).
 
 FY27 AI ADOPTION STRATEGY (3 dimensions):
 1. Enablement Pulse Survey — 4 questions twice per quarter: Q1 Anchor (how often does AI help?), Q2 Friction (where useful/not), Q3 Confidence (know which tool to use?), Q4 Integration (fit with workflow/handoffs)
@@ -1128,14 +1155,66 @@ TEAM AI SNAPSHOT:
 - Jon: Unknown — no AI data yet
 - Carolina: Unknown (contractor)
 
-REALTOR.COM PRODUCT DESIGN CAREER LADDER (IC Track):
-- T2 Associate Product Designer: Junior, guided work, limited complexity, building fundamentals
-- T3 Product Designer (Mid-Level): Independent on moderate complexity features, solid cross-functional collaboration, building strategic thinking. Jon is T3.
-- T4 Senior Product Designer: Complex ambiguous problems, owns major product areas, mentors juniors, influences strategy, strong cross-functional leadership. Will (just promoted) and Lauren are T4.
-- T5 Lead Product Designer: Broad strategic impact across multiple teams/squads, co-leads with PM/Eng as equal partners, defines cross-team design direction, executive presence, systems-level thinking. Christina (T5) and Pooja (nominated for T5) are at this level.
-- T6 Staff/Principal: Org-wide influence, sets design strategy at company level.
+REALTOR.COM PRODUCT DESIGN CAREER LADDER (IC Track — Full Criteria):
 
-Use this to calibrate promotion readiness assessments, goal setting, and growth conversations accurately.`;
+T3 → T4 PROMOTION CRITERIA (Mid-Level → Senior):
+- Handle larger, more ambiguous projects with minimal supervision (multiple user flows, many unknowns)
+- Demonstrate leadership: drive a design sprint, coordinate designers on a sub-project
+- Consistent delivery of high-quality designs with strong cross-functional relationships
+- Contribute to team improvements (process tweaks, design system updates)
+- Move from solid contributor to driver of design efforts
+- Competency: Strong in interaction + visual design, developing strategic/product thinking
+- Behavior: Ownership of outcomes (not just deliverables), proactive, manages complexity
+
+T4 → T5 PROMOTION CRITERIA (Senior → Lead):
+- Influence multiple projects or product areas (not just one)
+- Set cross-team design direction and co-lead with PM/Eng as equal partners
+- Drive initiatives affecting entire product or company (major redesign, new platform)
+- Mastery of craft expected — growth is about scope and influence, not craft
+- Build portfolio of successfully launched high-impact projects
+- Recognized as thought leader by both design org AND cross-functional leadership
+- Executive presence: present design strategy in executive forums
+- Deep mentorship: mentor multiple designers across teams (not just one or two)
+- Systems-level thinking: oversee design system evolution, design ecosystems
+
+COMPETENCY DOMAINS (applies across all levels, expectations scale by level):
+1. User Research & Analysis — ethnographic research, usability testing, data synthesis
+2. Interaction & Product Design — IA, wireframing, prototyping, interaction design, accessibility
+3. Visual & UI Design — layout, typography, color, high-fidelity mockups, polish
+4. Service Design & Systems Thinking — user journeys, service blueprints, end-to-end holistic thinking
+5. Facilitation & Communication — design thinking workshops, presenting, storytelling
+6. Collaboration & Leadership — cross-functional teamwork, feedback, mentoring, project management
+7. Strategic & Product Thinking — business acumen, KPIs, metrics, roadmap influence
+
+Use this to calibrate promotion readiness assessments, goal setting, and growth conversations accurately.
+When assessing a designer, explicitly map their evidence (from reviews, goals, notes) to these criteria.`;
+
+const LADDER_CRITERIA = {
+  T3_to_T4: {
+    label: 'T3 → T4 (Mid-Level → Senior)',
+    dimensions: [
+      { id: 'ambiguity', label: 'Handles Ambiguous / Multi-flow Projects', desc: 'Takes on projects with many unknowns, multiple user flows, minimal supervision' },
+      { id: 'leadership_moment', label: 'Demonstrates Leadership Moments', desc: 'Has driven a design sprint, coordinated other designers, led a design effort' },
+      { id: 'delivery', label: 'Consistent High-Quality Delivery', desc: 'Reliable, on-time, strong handoff specs, VQA, documentation' },
+      { id: 'xfn', label: 'Strong Cross-Functional Relationships', desc: 'Trusted partner to PM and Eng; proactive communication, early alignment' },
+      { id: 'team_contribution', label: 'Contributes to Team Improvements', desc: 'Process improvements, design system contributions, advocates for design practice' },
+      { id: 'product_thinking', label: 'Strategic / Product Thinking', desc: 'Understands business goals, KPIs, user problems behind the design — not just execution' },
+      { id: 'ownership', label: 'Outcome Ownership', desc: 'Follows through post-handoff, does UX QA, iterates based on data/feedback' }
+    ]
+  },
+  T4_to_T5: {
+    label: 'T4 → T5 (Senior → Lead)',
+    dimensions: [
+      { id: 'multi_area', label: 'Influences Multiple Product Areas', desc: 'Impact beyond a single feature — cross-squad, cross-surface influence' },
+      { id: 'cross_team_direction', label: 'Sets Cross-Team Design Direction', desc: 'Defines patterns and vision that guide other designers\' work' },
+      { id: 'colead', label: 'Co-leads with PM & Eng as Equal Partner', desc: 'Shapes roadmap and strategy, not just executing on it. Questions constraints, negotiates.' },
+      { id: 'exec_presence', label: 'Executive Forum Presence', desc: 'Presents design strategy clearly in PIPR, exec forums, product strategy meetings' },
+      { id: 'thought_leadership', label: 'Recognized as Thought Leader', desc: 'Design org and cross-functional leadership look to them for design direction and expertise' },
+      { id: 'mentorship_scale', label: 'Mentorship at Scale', desc: 'Actively develops multiple designers across teams, not just 1:1 guidance' },
+      { id: 'systems_thinking', label: 'Systems-Level & Strategic Vision', desc: 'Oversees design system evolution, defines design ecosystems, long-range thinking' }
+    ]
+  }
+};
 
 function getRatingClass(r){if(!r)return'rating-achieves';if(r.includes('Exceeds'))return'rating-exceeds';if(r.includes('Below'))return'rating-below';return'rating-achieves';}
 function getRatingDot(r){if(!r)return'#1A56A0';if(r.includes('Exceeds'))return'#1B7A3E';if(r.includes('Below'))return'#B45309';return'#1A56A0';}
@@ -1437,6 +1516,7 @@ function renderDesigner(id){
           <div style="display:flex;gap:6px;align-items:center">
             <button class="btn btn-outline btn-sm" onclick="generate1on1Prep(${d.id})">1:1 Prep</button>
             <button class="btn btn-outline btn-sm" onclick="exportGrowthProfile(${d.id})">Share Profile</button>
+            ${(()=>{const fname=GROWTH_FORM_NAMES[d.id];return fname?`<a href="${GROWTH_FORM_BASE}${encodeURIComponent(fname)}" target="_blank" class="btn btn-primary btn-sm" style="text-decoration:none">📋 Request Growth Meeting</a>`:''})()}
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap">
@@ -1451,6 +1531,7 @@ function renderDesigner(id){
     <div class="tabs" style="overflow-x:auto;flex-wrap:nowrap;white-space:nowrap;scrollbar-width:none;-ms-overflow-style:none">
       <div class="tab active" id="tab-overview" onclick="switchTab('overview',${d.id})">Overview</div>
       <div class="tab" id="tab-radar" onclick="switchTab('radar',${d.id})">👁 On My Radar${d.radarNote?' ●':''}</div>
+      <div class="tab" id="tab-career" onclick="switchTab('career',${d.id})">🎯 Career Path</div>
       <div class="tab" id="tab-history" onclick="switchTab('history',${d.id})">Review History</div>
       <div class="tab" id="tab-dor" onclick="switchTab('dor',${d.id})">DoR</div>
       <div class="tab" id="tab-goals" onclick="switchTab('goals',${d.id})">FY27 Goals (${d.goals.length})</div>
@@ -1619,17 +1700,17 @@ function renderDesignerTab(tab, d){
     const dorNotes = (d.notes||[]).filter(n=>n.type==='dor').slice().reverse();
     const dorChecks = d.dorChecks || {};
 
-    const checkItem = (key, label, owner) => {
+    const checkItem = (key, label, owner, note) => {
       const val = dorChecks[key];
       const color = val==='green'?'#1B7A3E':val==='yellow'?'#B45309':val==='red'?'#D93025':'#999';
       const bg = val==='green'?'#E8F5EE':val==='yellow'?'#FEF3C7':val==='red'?'#FDECEA':'#F5F5F5';
-      const icon = val==='green'?'✅':val==='yellow'?'⚠️':val==='red'?'❌':'○';
-      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--gray-border)">
-        <div style="flex:1">
-          <span style="font-size:13px;color:var(--gray-dark)">${label}</span>
+      return `<div style="display:flex;align-items:flex-start;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--gray-border);gap:12px">
+        <div style="flex:1;min-width:0">
+          <span style="font-size:12px;color:var(--gray-dark)">${label}</span>
           <span style="font-size:10px;color:var(--gray-mid);margin-left:6px">${owner}</span>
+          ${note?`<div style="font-size:10px;color:var(--gray-mid);margin-top:2px;font-style:italic">${note}</div>`:''}
         </div>
-        <div style="display:flex;gap:4px">
+        <div style="display:flex;gap:4px;flex-shrink:0">
           <button onclick="setDorCheck(${d.id},'${key}','green')" style="padding:3px 7px;border-radius:4px;border:1px solid ${val==='green'?'#1B7A3E':'var(--gray-border)'};background:${val==='green'?'#E8F5EE':'#fff'};cursor:pointer;font-size:11px">✅</button>
           <button onclick="setDorCheck(${d.id},'${key}','yellow')" style="padding:3px 7px;border-radius:4px;border:1px solid ${val==='yellow'?'#B45309':'var(--gray-border)'};background:${val==='yellow'?'#FEF3C7':'#fff'};cursor:pointer;font-size:11px">⚠️</button>
           <button onclick="setDorCheck(${d.id},'${key}','red')" style="padding:3px 7px;border-radius:4px;border:1px solid ${val==='red'?'#D93025':'var(--gray-border)'};background:${val==='red'?'#FDECEA':'#fff'};cursor:pointer;font-size:11px">❌</button>
@@ -1646,7 +1727,7 @@ function renderDesignerTab(tab, d){
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
         <div>
           <div style="font-size:13px;font-weight:500">Definition of Ready — Design Compliance</div>
-          <div style="font-size:11px;color:var(--gray-mid)">Client Mobile Team DoR v1.0 · Design Lead responsibilities</div>
+          <div style="font-size:11px;color:var(--gray-mid)">Engagement Client Team · DoR v1.0 · Design Lead responsibilities</div>
         </div>
         <div style="display:flex;gap:8px;align-items:center">
           ${dorScore>0?`<span style="font-size:11px;color:#1B7A3E;background:#E8F5EE;padding:3px 8px;border-radius:10px">✅ ${greenCount}</span><span style="font-size:11px;color:#B45309;background:#FEF3C7;padding:3px 8px;border-radius:10px">⚠️ ${yellowCount}</span><span style="font-size:11px;color:#D93025;background:#FDECEA;padding:3px 8px;border-radius:10px">❌ ${redCount}</span>`:'<span style="font-size:11px;color:var(--gray-mid)">Not yet assessed</span>'}
@@ -1658,22 +1739,27 @@ function renderDesignerTab(tab, d){
         <div class="card">
           <div class="card-label">Design Readiness Checklist</div>
           <div style="font-size:11px;color:var(--gray-mid);margin-bottom:10px">Rate each area: ✅ Consistently meeting · ⚠️ Needs attention · ❌ Consistent gap</div>
-          ${checkItem('figma_linked','Final Figma files linked in Jira (all states)','Design Lead')}
-          ${checkItem('engaged_early','Engaging on stories at N+3/4 stage — not N+1','Design Lead')}
-          ${checkItem('linked_2wks','Figma files linked 2+ weeks before sprint start','Design Lead')}
-          ${checkItem('dependencies','Flags design dependencies early in shaping phase','Design Lead')}
-          ${checkItem('responsive','Mobile, tablet, desktop states specified','Design Lead')}
-          ${checkItem('accessibility','Accessibility requirements noted (WCAG 2.1 AA)','Design Lead')}
-          ${checkItem('rfd_checklist','Uses Ready for Dev checklist consistently','Design Lead')}
-          ${checkItem('handoff_quality','Handoff quality — minimal clarification needed during build','Design Lead')}
-          ${checkItem('edge_cases','Edge cases and error states documented','Design + PM')}
-          ${checkItem('proactive_comms','Proactively communicates risks/changes — no surprises','Design Lead')}
+
+          <div style="font-size:10px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.6px;padding:6px 0 4px">Design & UX</div>
+          ${checkItem('figma_linked','Final Figma files linked in Jira (all states, flows, responsive specs)','Design Lead','Figma or equivalent — all states included')}
+          ${checkItem('rfd_checklist','Completed the Ready for Dev checklist','Design Lead','1. Comprehensive states  2. Comprehensive flows  3. Annotations  4. Final content/copy')}
+          ${checkItem('design_reviewed','Design reviewed and approved by PM & Eng','Design + PM + Eng','Aligned on intent before sprint start')}
+          ${checkItem('accessibility','Accessibility requirements noted (WCAG 2.1 AA min)','Design Lead','Lint pass against Haven / RDC-UI + accessibility pass')}
+          ${checkItem('edge_cases','Edge cases and error states documented','Design + PM','Including empty states')}
+
+          <div style="font-size:10px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.6px;padding:10px 0 4px">Timing & Process</div>
+          ${checkItem('engaged_early','Engages on stories at N+3/4 stage — not N+1','Design Lead','')}
+          ${checkItem('linked_2wks','Final Figma files linked 2+ weeks before sprint start','Design Lead','')}
+          ${checkItem('dependencies','Flags design dependencies early in shaping phase','Design Lead','')}
+          ${checkItem('proactive_comms','Proactively communicates risks/changes — no surprises','Design Lead','')}
+
+          <div style="font-size:10px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.6px;padding:10px 0 4px">Handoff Quality</div>
+          ${checkItem('handoff_quality','Handoff quality — minimal eng clarification needed during build','Design Lead','')}
+          ${checkItem('responsive','Mobile, tablet, desktop states specified','Design Lead','')}
         </div>
 
         <div class="card">
-          <div class="card-label" style="justify-content:space-between">
-            <span>📋 DoR Notes & Observations</span>
-          </div>
+          <div class="card-label">📋 DoR Notes & Observations</div>
           ${dorNotes.length===0?`<div class="empty-state" style="padding:20px"><div class="empty-state-icon">📋</div><p>No DoR notes yet. Log observations after sprint planning or grooming.</p></div>`:''}
           ${dorNotes.map(n=>`
             <div style="padding:10px 0;border-bottom:1px solid var(--gray-border)">
@@ -1681,23 +1767,76 @@ function renderDesignerTab(tab, d){
                 ${n.fy?`<span style="font-size:10px;font-weight:600;padding:1px 7px;border-radius:8px;background:#E8F0FB;color:#1A56A0">${n.fy}</span>`:''}
                 <span style="font-size:11px;color:var(--gray-mid)">${n.date}</span>
               </div>
-              <div style="font-size:13px;color:var(--gray-dark);line-height:1.5">${n.text}</div>
+              <div style="font-size:12px;color:var(--gray-dark);line-height:1.5">${n.text}</div>
             </div>`).join('')}
         </div>
 
-        <div class="card card-full" style="background:#FAFAFA;border-color:#E0E0E0">
-          <div class="card-label">DoR Design Lead Responsibilities (Reference)</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:12px">
-            <div>
-              <div style="font-weight:600;color:var(--charcoal);margin-bottom:6px">Must Do Before Story Is Ready</div>
-              ${['Engage on stories at N+3/4 stage (not N+1)','Have final Figma files linked 2+ weeks before sprint start','Flag design dependencies early in the shaping phase','Deliver all states, responsive specs, accessibility annotations','Use Ready for Dev checklist as baseline'].map(s=>`<div style="display:flex;gap:6px;padding:4px 0;border-bottom:1px solid #EEEEEE;color:var(--gray-dark)"><span style="color:var(--red);flex-shrink:0">→</span>${s}</div>`).join('')}
-            </div>
-            <div>
-              <div style="font-weight:600;color:var(--charcoal);margin-bottom:6px">N+2 Backlog Fidelity Model</div>
-              ${[['N+1/N+2 Ready to Build','100% fidelity — final designs linked, all states, ACs complete'],['N+3/N+4 Shaping','60–80% — wireframes, open questions documented'],['N+5/N+8 Discovery','40–60% — exploring, shell stories'],['N+8+ Horizon','10–40% — themes/epics only']].map(([stage,desc])=>`<div style="padding:5px 0;border-bottom:1px solid #EEEEEE"><div style="font-weight:500;color:var(--charcoal);font-size:11px">${stage}</div><div style="color:var(--gray-mid);font-size:11px">${desc}</div></div>`).join('')}
-            </div>
+        <div class="card card-full" style="background:#FAFAFA">
+          <div class="card-label">N+2 Backlog Fidelity Model</div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid var(--gray-border);border-radius:8px;overflow:hidden;font-size:11px">
+            ${[
+              {stage:'N+1 & N+2',label:'Ready to Build',pct:'80–100%',owner:'PM · Eng + Design',color:'#1B7A3E',bg:'#E8F5EE',items:['Epic with problem statement & business case','Stories fully written — title, description, user story format','Acceptance criteria complete, unambiguous, testable','All open questions closed, answers in Jira','High-fidelity designs linked in story','Eng scope estimates refined']},
+              {stage:'N+3',label:'Refinement',pct:'70–80%',owner:'PM · Eng + Design',color:'#1A56A0',bg:'#E8F0FB',items:['Product, Eng & Design reviews for feedback','High fidelity design reviews complete','Rough scope estimate (S/M/L/XL) from Eng','Edge cases and error states documented','Dependencies identified and resolved','Story independently workable']},
+              {stage:'N+4',label:'Shaping',pct:'60–70%',owner:'PM · Design · Eng check',color:'#B45309',bg:'#FEF3C7',items:['Epic with customer problem statement','Skeleton stories with titles & brief descriptions','Wireframes or prototype to convey intent','Key open questions documented (not yet answered)','ACs drafted (60–80% complete)','Dependencies identified']},
+              {stage:'N+5–N+8',label:'Discovery',pct:'40–60%',owner:'PM · Design exploring',color:'#7C3AED',bg:'#EDE9FE',items:['Runway epic or rock created','Clear priority level assigned','Customer problem or opportunity statement','Shell stories per sprint where possible','High-level roadmap intent documented','No filler — only work worth shipping']},
+              {stage:'N+8+',label:'Horizon',pct:'10–40%',owner:'PM awareness only',color:'#666',bg:'#F5F5F5',items:['Themes or epics only — no stories required','Listed to show directional intent','Subject to change; not committed']}
+            ].map(t=>`
+              <div style="padding:10px 12px;border-right:1px solid var(--gray-border);background:${t.bg}">
+                <div style="font-weight:700;color:${t.color};font-size:11px">${t.stage}</div>
+                <div style="font-weight:600;color:var(--charcoal);margin:2px 0">${t.label}</div>
+                <div style="font-size:10px;color:${t.color};font-weight:600;margin-bottom:6px">${t.pct}</div>
+                <div style="font-size:10px;color:var(--gray-mid);margin-bottom:4px">${t.owner}</div>
+                ${t.items.map(i=>`<div style="font-size:10px;color:var(--gray-dark);padding:2px 0;border-top:1px solid rgba(0,0,0,.05);line-height:1.4">· ${i}</div>`).join('')}
+              </div>`).join('')}
           </div>
         </div>
+
+        <div class="card card-full" style="background:#FAFAFA">
+          <div class="card-label">Ceremonies & Cadence</div>
+          <div style="border:1px solid var(--gray-border);border-radius:8px;overflow:hidden;font-size:11px">
+            <div style="display:grid;grid-template-columns:1.5fr 1.2fr 0.8fr 2fr;background:var(--warm-white);font-size:10px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.5px">
+              <div style="padding:8px 12px;border-right:1px solid var(--gray-border)">Ceremony</div>
+              <div style="padding:8px 12px;border-right:1px solid var(--gray-border)">Who</div>
+              <div style="padding:8px 12px;border-right:1px solid var(--gray-border)">Frequency</div>
+              <div style="padding:8px 12px">Purpose</div>
+            </div>
+            ${[
+              ['Core Leads Sync','PM Lead + Eng Leads + Design Lead','Weekly','Review N+3 stories for DoR compliance; unblock shaping work'],
+              ['Refinement & Backlog Grooming','Full Team','Weekly, 1 hour','Refine story tickets, discuss priorities, planning focus'],
+              ['Sprint Planning','Full Team','Bi-weekly, Wednesdays','Go into planning with stories already assigned. Discuss the plan.'],
+              ['Retros','Full Team','Bi-weekly (end of sprint)','Retrospective of previous sprint'],
+              ['Requirements Refinement','Full Team + Dependent Teams','As needed','Bring in stakeholders across eng to review requirements/designs'],
+              ['Sprint Review','Full Team + Directors + Stakeholders','Bi-weekly (end of sprint)','Demos of work across Eng/Design/PM'],
+              ['Director Backlog Review','PM + Director','Weekly (in 1:1)','Review N+2 rolling readiness; escalate blockers'],
+              ['Quarterly Skeleton Audit','PM','Quarterly','Ensure all upcoming quarter work has skeleton stories with correct fidelity']
+            ].map(([cer,who,freq,purpose])=>`
+              <div style="display:grid;grid-template-columns:1.5fr 1.2fr 0.8fr 2fr;border-top:1px solid var(--gray-border)">
+                <div style="padding:8px 12px;border-right:1px solid var(--gray-border);font-weight:500;color:var(--charcoal)">${cer}</div>
+                <div style="padding:8px 12px;border-right:1px solid var(--gray-border);color:var(--gray-dark)">${who}</div>
+                <div style="padding:8px 12px;border-right:1px solid var(--gray-border);color:var(--gray-mid)">${freq}</div>
+                <div style="padding:8px 12px;color:var(--gray-dark)">${purpose}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+
+        <div class="card card-full" style="background:#FAFAFA">
+          <div class="card-label">Health Signals</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--gray-border);border-radius:8px;overflow:hidden;font-size:12px">
+            <div style="padding:10px 14px;background:#E8F5EE;font-size:10px;font-weight:700;color:#1B7A3E;text-transform:uppercase;letter-spacing:.5px;border-right:1px solid var(--gray-border)">✅ Healthy Signals</div>
+            <div style="padding:10px 14px;background:#FEF3C7;font-size:10px;font-weight:700;color:#92400E;text-transform:uppercase;letter-spacing:.5px">⚠️ Warning Signals</div>
+            ${[
+              ['Sprint planning takes < 30 minutes','Sprint planning runs long or stories get pulled back'],
+              ['No stories re-queued out of sprint for being unready','Engineering waiting on ACs or designs at sprint start'],
+              ['Engineering provides estimates at grooming, not planning','Open questions remain unanswered going into sprint'],
+              ['Design is engaged 3–4 sprints ahead, not 1','Designs delivered after sprint start'],
+              ['Director backlog review is a confirmation, not a scramble','Director review surfaces gaps requiring last-minute work'],
+              ['N+2 confidence is a byproduct of your workflow','N+2 confidence is a weekly reactive exercise']
+            ].map(([good,warn])=>`
+              <div style="padding:8px 14px;border-top:1px solid var(--gray-border);color:#1B7A3E;border-right:1px solid var(--gray-border)">· ${good}</div>
+              <div style="padding:8px 14px;border-top:1px solid var(--gray-border);color:#92400E">· ${warn}</div>`).join('')}
+          </div>
+        </div>
+
       </div>`;
 
   
@@ -1950,6 +2089,8 @@ function renderDesignerTab(tab, d){
       designerNotes.forEach(n=>{n.isRead=true;});
       save();
     }
+  } else if(tab==='career'){
+    renderCareerTab(d, content);
   } else if(tab==='radar'){
     const notes = d.radarNote||'';
     content.innerHTML=`
@@ -3755,6 +3896,232 @@ async function saveReviewNotes(designerId){
   await save();
   const conf=document.getElementById('rc-saved-'+designerId);
   if(conf){ conf.style.opacity='1'; setTimeout(()=>conf.style.opacity='0',2000); }
+}
+
+// ── CAREER PATH TAB ───────────────────────────────────────────────────────────
+
+// Per-designer evidence mapping against ladder criteria
+// signal: 'strong' | 'developing' | 'gap'
+const CAREER_EVIDENCE = {
+  1: { // Will Soemargo — T4, path to T5
+    targetLevel: 'T4_to_T5',
+    dimensions: {
+      multi_area:         { signal:'developing', evidence:'Primarily focused on RPA. Some MVIP/RCC cross-surface work in FY25/26 but not sustained. Needs broader cross-squad influence.' },
+      cross_team_direction:{ signal:'gap',       evidence:'No evidence yet of setting design direction others follow. Still executing within his own product area.' },
+      colead:             { signal:'developing', evidence:'Connective tissue across PM/Eng/Research/Design Systems noted at mid-year — but not yet co-leading at strategy level. Relies on Zeke for direction.' },
+      exec_presence:      { signal:'gap',       evidence:'No PIPR or executive forum presence documented. Not yet presenting strategy to leadership.' },
+      thought_leadership: { signal:'developing', evidence:'Promoted to T4 out-of-cycle — recognized internally. Not yet recognized cross-functionally as a thought leader.' },
+      mentorship_scale:   { signal:'gap',       evidence:'No formal mentorship of other designers documented. Facilitation goal in progress but not at scale yet.' },
+      systems_thinking:   { signal:'developing', evidence:'Strong design systems (Harmony PRO) but working within the system, not architecting it. Discovery work on IA/Navigation is a positive signal.' }
+    }
+  },
+  2: { // Pooja Sheth — T4 (pending T5 PAC), path to T5
+    targetLevel: 'T4_to_T5',
+    dimensions: {
+      multi_area:         { signal:'strong',    evidence:'8+ years foundational to RealPro Dashboard across RBAC, LEX Teams, CRM integration, onboarding. Cross-squad platform expertise well-established.' },
+      cross_team_direction:{ signal:'strong',   evidence:'Sets platform patterns and design system standards others follow. Documented as the RPD IA expert others consult.' },
+      colead:             { signal:'developing', evidence:'Strong delivery partner to PM/Eng but not yet consistently co-leading strategy. Needs to move from executing the vision to shaping the roadmap upstream.' },
+      exec_presence:      { signal:'gap',       evidence:'Has not presented at PIPR. Executive communication identified as a gap in FY25 and FY26 reviews. Growth goal set but not yet demonstrated.' },
+      thought_leadership: { signal:'developing', evidence:'Highly respected within the design team and by Erin Bentel. PAC nomination is strong signal. Not yet recognized broadly across product/eng leadership.' },
+      mentorship_scale:   { signal:'developing', evidence:'Onboarded Lauren and other designers. Good foundation but still onboarding-mode, not formal active mentorship with accountability.' },
+      systems_thinking:   { signal:'strong',    evidence:'Platform and design system thinking is core strength. Scalable patterns, RBAC, CRM integration all reflect systems-level scope.' }
+    }
+  },
+  3: { // Lauren Lang — T4 (newer), path to T5 eventually but T4 solidification first
+    targetLevel: 'T4_to_T5',
+    dimensions: {
+      multi_area:         { signal:'developing', evidence:'Moving from Online Store to UWP in Q2 — positive signal. Still early in building cross-surface breadth.' },
+      cross_team_direction:{ signal:'gap',       evidence:'Not yet setting direction others follow. Primarily executing within her own workstream.' },
+      colead:             { signal:'gap',       evidence:'Still building confidence in design reviews. Needs to grow assertiveness before co-leading at strategy level.' },
+      exec_presence:      { signal:'gap',       evidence:'No executive forum presence. Confidence in design reviews still a growth area per FY26 mid-year.' },
+      thought_leadership: { signal:'developing', evidence:'Self-initiated Online Store vision project is a strong positive signal. Not yet recognized cross-functionally.' },
+      mentorship_scale:   { signal:'gap',       evidence:'No mentorship of other designers documented yet. Junior-to-mid trajectory.' },
+      systems_thinking:   { signal:'developing', evidence:'Harmony Stress Test work and system adoption are positive signals. Not yet at strategic systems level.' }
+    }
+  },
+  4: { // Jon Grimes — T3, path to T4
+    targetLevel: 'T3_to_T4',
+    dimensions: {
+      ambiguity:          { signal:'developing', evidence:'Handled Buyer Leads/MVIP — complex domain. Ramped quickly. But scoping and planning gaps suggest he\'s not yet navigating ambiguity with full independence.' },
+      leadership_moment:  { signal:'gap',       evidence:'No documented leadership moments — no design sprint facilitation, no coordination of other designers. Strong peer collaboration but not leading yet.' },
+      delivery:           { signal:'gap',       evidence:'Consistent gap across 90-day and mid-year: on-time delivery planning, design specs quality, handoff documentation. Two review cycles in a row.' },
+      xfn:                { signal:'developing', evidence:'Good peer trust noted in 90-day. Needs tighter 1:1 relationships with Erin and Sandhya (engineering). Proactive comm still developing.' },
+      team_contribution:  { signal:'developing', evidence:'Strong product thinking and edge case identification adds value to the team. No design system or process contributions documented.' },
+      product_thinking:   { signal:'strong',    evidence:'Standout strength across both reviews. Rapid domain learning, challenges assumptions, advocates for users in meetings. Peers noted this explicitly.' },
+      ownership:          { signal:'developing', evidence:'Doesn\'t miss deadlines but scope absorption and handoff follow-through need improvement. Mid-year noted need for more proactive risk communication.' }
+    }
+  },
+  6: { // Christina Poon — T5, path to future growth (T5 solidification on return)
+    targetLevel: 'T4_to_T5',
+    dimensions: {
+      multi_area:         { signal:'strong',    evidence:'Led LEX 2.0 and MVIP/RCC Buyer Leads simultaneously. Brought Buyer and Seller design teams together on tag consistency — cross-squad by nature.' },
+      cross_team_direction:{ signal:'strong',   evidence:'Mentored Jon formally. Set design direction for MVIP/RCC migration. Stepped in as PM SME when PM went on leave.' },
+      colead:             { signal:'developing', evidence:'Strong execution partner but FY27 goal explicitly targets co-leading as equal partner — recognized as growth edge even at T5.' },
+      exec_presence:      { signal:'developing', evidence:'FY27 goal: present in executive forums and product strategy meetings. Not yet consistently demonstrated. Gap acknowledged in her own review.' },
+      thought_leadership: { signal:'strong',    evidence:'Led full-day AI workshop. Team\'s AI SME. Universally praised in peer feedback for design talent and ownership.' },
+      mentorship_scale:   { signal:'strong',    evidence:'Active mentor of Jon Grimes. Foundational influence on MVIP/RCC team. Returning from leave with opportunity to expand mentorship scope.' },
+      systems_thinking:   { signal:'strong',    evidence:'Brought cross-team tag consistency initiative. Strong design systems thinking. Vision-setting for MVIP migration at strategic level.' }
+    }
+  }
+};
+
+function renderCareerTab(d, content){
+  const evidence = CAREER_EVIDENCE[d.id];
+  const levels = ['T2','T3','T4','T5','T6'];
+  const levelLabels = {'T2':'Associate','T3':'Mid-Level','T4':'Senior','T5':'Lead','T6':'Principal'};
+  const currentLevelKey = d.level.match(/T(\d)/)?.[0] || 'T3';
+  const nextLevelKey = 'T'+( parseInt(currentLevelKey.replace('T','')) + 1 );
+
+  const levelBar = levels.map(l=>{
+    const cls = l===currentLevelKey?'current':levels.indexOf(l)<levels.indexOf(currentLevelKey)?'past':l===nextLevelKey?'next':'';
+    return`<div class="career-level-seg ${cls}">${l}<div style="font-size:9px;opacity:.75">${levelLabels[l]||''}</div></div>`;
+  }).join('');
+
+  if(!evidence){
+    content.innerHTML=`<div style="max-width:680px">
+      <div class="career-level-bar">${levelBar}</div>
+      <div class="empty-state"><p>Career path analysis not yet configured for this designer.</p></div>
+    </div>`; return;
+  }
+
+  const criteria = LADDER_CRITERIA[evidence.targetLevel];
+  const dims = evidence.dimensions;
+  const signalCounts = {strong:0,developing:0,gap:0};
+  criteria.dimensions.forEach(dim=>{ const s=(dims[dim.id]||{}).signal||'gap'; signalCounts[s]++; });
+
+  const dimRows = criteria.dimensions.map(dim=>{
+    const ev = dims[dim.id]||{signal:'gap',evidence:'No evidence collected yet.'};
+    const colors = {strong:'var(--exceeds)',developing:'#F59E0B',gap:'var(--red)'};
+    const widths = {strong:'100%',developing:'55%',gap:'20%'};
+    const labels = {strong:'Strong',developing:'Developing',gap:'Gap'};
+    const cls = {strong:'career-signal-strong',developing:'career-signal-developing',gap:'career-signal-gap'};
+    return`<div class="career-dim-row">
+      <div class="career-dim-bar">
+        <div class="career-dim-indicator" style="background:${colors[ev.signal]};width:${widths[ev.signal]}"></div>
+        <div class="career-dim-label">${labels[ev.signal]}</div>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:600;color:var(--charcoal);margin-bottom:3px">${dim.label}</div>
+        <div style="font-size:11px;color:var(--gray-mid);line-height:1.6">${dim.desc}</div>
+        <div style="font-size:11px;color:var(--gray-dark);margin-top:5px;line-height:1.6;padding:6px 8px;background:var(--warm-white);border-radius:5px;border-left:2px solid ${colors[ev.signal]}">
+          ${ev.evidence}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  content.innerHTML=`<div style="max-width:720px">
+    <div class="career-level-bar">${levelBar}</div>
+    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+      <div style="flex:1;min-width:180px;background:var(--exceeds-bg);border-radius:8px;padding:12px 14px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:var(--exceeds)">${signalCounts.strong}</div>
+        <div style="font-size:11px;color:var(--exceeds);font-weight:500">Strong</div>
+      </div>
+      <div style="flex:1;min-width:180px;background:#FEF3C7;border-radius:8px;padding:12px 14px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:#92400E">${signalCounts.developing}</div>
+        <div style="font-size:11px;color:#92400E;font-weight:500">Developing</div>
+      </div>
+      <div style="flex:1;min-width:180px;background:var(--red-light);border-radius:8px;padding:12px 14px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:var(--red)">${signalCounts.gap}</div>
+        <div style="font-size:11px;color:var(--red);font-weight:500">Gaps</div>
+      </div>
+      <div style="flex:1;min-width:180px;background:#EDE9FE;border-radius:8px;padding:12px 14px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:#5B21B6">${Math.round(signalCounts.strong/criteria.dimensions.length*100)}%</div>
+        <div style="font-size:11px;color:#5B21B6;font-weight:500">Readiness</div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div>
+        <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal)">Path to ${nextLevelKey}</div>
+        <div style="font-size:12px;color:var(--gray-mid);margin-top:2px">${criteria.label} — based on RDC career ladder</div>
+      </div>
+      <button onclick="generateCareerRecs(${d.id})" style="padding:8px 16px;background:var(--charcoal);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px">
+        ✦ AI Recommendations
+      </button>
+    </div>
+
+    <div style="background:#fff;border:1px solid var(--gray-border);border-radius:10px;padding:4px 16px;margin-bottom:16px">
+      ${dimRows}
+    </div>
+
+    <div id="career-recs-${d.id}" style="display:none">
+      <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal);margin-bottom:12px">AI Growth Recommendations</div>
+      <div id="career-recs-content-${d.id}" style="background:#fff;border:1px solid var(--gray-border);border-radius:10px;padding:16px;font-size:12px;color:var(--gray-dark);line-height:1.8"></div>
+    </div>
+  </div>`;
+}
+
+async function generateCareerRecs(designerId){
+  const d = designers.find(x=>x.id===designerId); if(!d) return;
+  const evidence = CAREER_EVIDENCE[designerId]; if(!evidence) return;
+  const criteria = LADDER_CRITERIA[evidence.targetLevel];
+  const recsContainer = document.getElementById('career-recs-'+designerId);
+  const recsContent = document.getElementById('career-recs-content-'+designerId);
+  recsContainer.style.display='block';
+  recsContent.innerHTML=`<div style="display:flex;align-items:center;gap:8px;color:var(--gray-mid)"><div class="typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div> Analyzing career path...</div>`;
+
+  const goalSummary = (d.goals||[]).map(g=>`[${g.status}] ${g.title}`).join('\n');
+  const recentNotes = (d.notes||[]).slice(-5).map(n=>`[${n.type}] ${n.text}`).join('\n');
+  const dimSummary = criteria.dimensions.map(dim=>{
+    const ev = (evidence.dimensions||{})[dim.id]||{signal:'gap',evidence:'No data'};
+    return`${dim.label}: ${ev.signal.toUpperCase()} — ${ev.evidence}`;
+  }).join('\n');
+
+  const prompt = `You are helping Mirella, a design manager at Realtor.com, develop a personalized career growth plan for ${d.name}.
+
+DESIGNER:
+Name: ${d.name}
+Current Level: ${d.level}
+Area: ${d.area}
+FY25 Rating: ${d.fy25Rating}
+Strengths: ${d.strengths.join(', ')}
+Growth Areas: ${d.gaps.join(', ')}
+Summary: ${d.summary}
+
+CAREER LADDER ANALYSIS (${criteria.label}):
+${dimSummary}
+
+CURRENT FY27 GOALS:
+${goalSummary}
+
+RECENT NOTES:
+${recentNotes||'None'}
+
+Based on the RDC career ladder criteria, the designer's actual evidence, their current goals, and their review history, generate a smart, specific, and actionable career development plan. Be direct and personalized — not generic.
+
+Structure your response as:
+
+**Where They Stand**
+2-3 sentences on their overall readiness for the next level. Be honest.
+
+**Biggest Lever** (the single most impactful thing they should focus on)
+Be specific. Name the opportunity. Explain why this unlocks the most.
+
+**3 Concrete Next Actions**
+Specific, achievable things they can do in the next 90 days. Reference their actual work, goals, or product area. Not generic advice.
+
+**What to Watch**
+1-2 honest flags or risks on their path. Things that could slow them down if not addressed.
+
+**How to Frame This in Your Next 1:1**
+One or two sentences Mirella can actually say to open this conversation naturally and constructively.`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+    });
+    const data = await response.json();
+    const text = data.content?.[0]?.text||'Could not generate recommendations.';
+    recsContent.innerHTML = text
+      .replace(/\n\n/g,'<br><br>')
+      .replace(/\n/g,'<br>')
+      .replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--charcoal)">$1</strong>');
+    window['_careerRecs_'+designerId] = text;
+  } catch(e){
+    recsContent.innerHTML = 'Something went wrong generating recommendations. Please try again.';
+  }
 }
 
 // ── OFFBOARDING NOTES ─────────────────────────────────────────────────────────
