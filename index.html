@@ -1523,8 +1523,8 @@ function renderDesigner(id){
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
           <div class="page-title">${d.name}</div>
           <div style="display:flex;gap:6px;align-items:center">
-            <button class="btn btn-outline btn-sm" onclick="generate1on1Prep(${d.id})">1:1 Prep</button>
-            <button class="btn btn-outline btn-sm" onclick="exportGrowthProfile(${d.id})">Share Profile</button>
+            ${isAdmin()?`<button class="btn btn-outline btn-sm" onclick="generate1on1Prep(${d.id})">1:1 Prep</button>`:''}
+            ${isAdmin()?`<button class="btn btn-outline btn-sm" onclick="exportGrowthProfile(${d.id})">Share Profile</button>`:''}
             ${(()=>{const fname=GROWTH_FORM_NAMES[d.id];return fname?`<a href="${GROWTH_FORM_BASE}${encodeURIComponent(fname)}" target="_blank" class="btn btn-primary btn-sm" style="text-decoration:none">📋 Request Growth Meeting</a>`:''})()}
           </div>
         </div>
@@ -1539,7 +1539,7 @@ function renderDesigner(id){
 
     <div class="tabs" style="overflow-x:auto;flex-wrap:nowrap;white-space:nowrap;scrollbar-width:none;-ms-overflow-style:none">
       <div class="tab active" id="tab-overview" onclick="switchTab('overview',${d.id})">Overview</div>
-      <div class="tab" id="tab-radar" onclick="switchTab('radar',${d.id})">On My Radar${d.radarNote?' ●':''}</div>
+      ${isAdmin()?`<div class="tab" id="tab-radar" onclick="switchTab('radar',${d.id})">On My Radar${d.radarNote?' ●':''}</div>`:''}
       <div class="tab" id="tab-career" onclick="switchTab('career',${d.id})">Career Path</div>
       <div class="tab" id="tab-history" onclick="switchTab('history',${d.id})">Review History</div>
       <div class="tab" id="tab-dor" onclick="switchTab('dor',${d.id})">DoR</div>
