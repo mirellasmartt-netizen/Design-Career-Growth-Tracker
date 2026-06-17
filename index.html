@@ -582,6 +582,13 @@
         </select>
       </div>
       <div class="form-group full"><label class="form-label">Note</label><textarea class="form-textarea" id="note-text" placeholder="What happened? Be specific..."></textarea></div>
+      <div class="form-group full">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;color:var(--gray-dark)">
+          <input type="checkbox" id="note-visible" style="width:14px;height:14px;accent-color:var(--red);cursor:pointer">
+          <span>Show this to the designer on their homepage</span>
+        </label>
+        <div style="font-size:11px;color:var(--gray-mid);margin-top:4px;margin-left:22px">When checked, this note appears in a "From Mirella" section when the designer logs in.</div>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="hideModal('addNote')">Cancel</button>
@@ -1541,7 +1548,7 @@ function renderDesigner(id){
       <div class="tab" id="tab-pulse" onclick="switchTab('pulse',${d.id})">Pulse${d.pulseLog&&d.pulseLog.length?` (${d.pulseLog.length})`:''}</div>
       <div class="tab" id="tab-recognition" onclick="switchTab('recognition',${d.id})">Recognition${d.recognition&&d.recognition.length?` (${d.recognition.length})`:''}</div>
       <div class="tab" id="tab-thrive" onclick="switchTab('thrive',${d.id})">Thrive${d.thrive?' ✓':''}</div>
-      <div class="tab" id="tab-notes" onclick="switchTab('notes',${d.id})">Updates (${d.notes.length})</div>
+      ${isAdmin()?`<div class="tab" id="tab-notes" onclick="switchTab('notes',${d.id})">Updates (${d.notes.filter(n=>n.type!=='designer-submitted'&&n.type!=='career-request').length})</div>`:''}
       ${(isAdmin()||currentUser?.designerId===d.id)?`<div class="tab" id="tab-contact" onclick="switchTab('contact',${d.id})">Contact</div>`:''}
       ${isAdmin()&&d.onboardingChecklist?`<div class="tab" id="tab-onboarding" onclick="switchTab('onboarding',${d.id})">Return Checklist</div>`:''}
     </div>
@@ -1572,7 +1579,46 @@ function renderDesignerTab(tab, d){
   const content=document.getElementById('tab-content');
 
   if(tab==='overview'){
+    // For designers, show "From Mirella" notifications for visibleToDesigner notes
+    const visibleNotes = !isAdmin()
+      ? (d.notes||[]).filter(n=>n.visibleToDesigner)
+      : [];
+    const unreadVisible = visibleNotes.filter(n=>!n.visibleRead);
+    const typeLabels={win:'Win',concern:'Heads up',goal:'Goal update',feedback:'Feedback',general:'Note',dor:'DoR'};
+    const typeColors={win:['#E8F5EE','#1B7A3E'],concern:['#FEF3C7','#92400E'],goal:['#EDE9FE','#5B21B6'],feedback:['#E8F0FB','#1A56A0'],general:['#F5F5F5','#555'],dor:['#F5F5F5','#555']};
+
+    const fromMirellaSection = visibleNotes.length>0 ? `
+      <div style="background:#fff;border:1.5px solid var(--charcoal);border-radius:10px;padding:16px 18px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="font-size:13px;font-weight:600;color:var(--charcoal)">From Mirella</div>
+            ${unreadVisible.length>0?`<span style="font-size:10px;font-weight:700;background:var(--red);color:#fff;padding:2px 8px;border-radius:10px">${unreadVisible.length} new</span>`:''}
+          </div>
+          <div style="font-size:11px;color:var(--gray-mid)">Notes shared with you</div>
+        </div>
+        ${visibleNotes.slice().reverse().map(n=>{
+          const [bg,col]=(typeColors[n.type]||typeColors.general);
+          return`<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--gray-border);align-items:flex-start">
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap">
+                <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:${bg};color:${col}">${typeLabels[n.type]||'Note'}</span>
+                <span style="font-size:11px;color:var(--gray-mid)">${n.date}</span>
+                ${!n.visibleRead?`<span style="font-size:10px;font-weight:600;background:var(--red);color:#fff;padding:1px 7px;border-radius:8px">New</span>`:''}
+              </div>
+              <div style="font-size:13px;color:var(--gray-dark);line-height:1.6">${n.text}</div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>` : '';
+
+    // Mark visible notes as read
+    if(!isAdmin() && unreadVisible.length>0){
+      unreadVisible.forEach(n=>{ n.visibleRead=true; });
+      save();
+    }
+
     content.innerHTML=`
+      ${fromMirellaSection}
       <div class="cards-grid">
         <div class="card card-full">
           <div class="card-label">FY25 Summary</div>
@@ -2037,23 +2083,27 @@ function renderDesignerTab(tab, d){
       const itemClass = n.type==='designer-submitted'?'note-item designer-submitted':n.type==='career-request'?'note-item career-request':'note-item';
       const badge = n.type==='career-request'?'<span style="font-size:10px;background:#EDE9FE;color:#5B21B6;padding:1px 8px;border-radius:8px;font-weight:600">Career Request</span>':
                     n.type==='designer-submitted'?'<span style="font-size:10px;background:#E8F0FB;color:#1A56A0;padding:1px 8px;border-radius:8px;font-weight:600">From Designer</span>':''
+      const sharedBadge = n.visibleToDesigner?'<span style="font-size:10px;background:#E8F5EE;color:#1B7A3E;padding:1px 8px;border-radius:8px;font-weight:600">👁 Shared with designer</span>':'';
       const replySection = isDesignerNote && isAdmin() ? `
         ${n.adminReply?`<div class="admin-reply"><div class="admin-reply-label">Mirella replied</div>${n.adminReply}</div>`:`
         <div class="reply-input-row">
           <input class="reply-input" id="reply-input-${idx}" placeholder="Reply to ${n.submittedBy||'designer'}…" />
           <button class="reply-submit" onclick="submitAdminReply(${d.id},${idx})">Reply</button>
         </div>`}` : n.adminReply&&!isAdmin()?`<div class="admin-reply"><div class="admin-reply-label">Mirella replied</div>${n.adminReply}</div>`:'';
+      const noteIndex = d.notes.indexOf(n);
+      const visibilityToggle = isAdmin()&&!isDesignerNote ? `<button onclick="toggleNoteVisibility(${d.id},${noteIndex})" style="font-size:10px;padding:1px 8px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;color:var(--gray-mid);font-family:'DM Sans',sans-serif;margin-top:5px">${n.visibleToDesigner?'Hide from designer':'Share with designer'}</button>` : '';
       return `<div class="${itemClass}" style="display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--gray-border)">
         <div style="font-size:16px">${icon}</div>
         <div style="flex:1">
           <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap">
             ${n.fy?`<span style="font-size:10px;font-weight:600;padding:1px 7px;border-radius:8px;background:${fyBg[n.fy]||'#eee'};color:${fyCol[n.fy]||'#333'}">${n.fy}</span>`:''}
-            ${badge}
+            ${badge}${sharedBadge}
             <span style="font-size:11px;color:var(--gray-mid)">${n.date}</span>
             ${n.submittedBy&&isAdmin()?`<span style="font-size:11px;color:var(--gray-mid)">· ${n.submittedBy}</span>`:''}
             ${!n.isRead&&isAdmin()?'<span style="font-size:10px;background:#D93025;color:#fff;padding:1px 7px;border-radius:8px;font-weight:600">New</span>':''}
           </div>
           <div style="font-size:13px;color:var(--gray-dark);line-height:1.5">${n.text}</div>
+          ${visibilityToggle}
           ${replySection}
         </div>
       </div>`;
@@ -2380,10 +2430,28 @@ function addNote(){
   if(!text)return alert('Please add a note.');
   const d=designers.find(x=>x.id===designerId);
   if(!d)return;
-  d.notes.push({type:document.getElementById('note-type').value,text,fy:'FY27',date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})});
-  save();hideModal('addNote');document.getElementById('note-text').value='';
+  const visible=document.getElementById('note-visible')?.checked||false;
+  d.notes.push({
+    type:document.getElementById('note-type').value,
+    text,fy:'FY27',
+    date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),
+    visibleToDesigner:visible,
+    visibleRead:false
+  });
+  save();hideModal('addNote');
+  document.getElementById('note-text').value='';
+  if(document.getElementById('note-visible')) document.getElementById('note-visible').checked=false;
   if(currentDesignerId===designerId)renderDesigner(designerId);
   else if(currentView==='overview')renderOverview();
+}
+
+async function toggleNoteVisibility(designerId, noteIndex){
+  const d=designers.find(x=>x.id===designerId); if(!d) return;
+  const n=d.notes[noteIndex]; if(!n) return;
+  n.visibleToDesigner=!n.visibleToDesigner;
+  if(!n.visibleToDesigner) n.visibleRead=false;
+  await save();
+  renderDesignerTab('notes', d);
 }
 
 function submitDesignerNote(designerId){
