@@ -4095,9 +4095,9 @@ function renderCareerTab(d, content){
         <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal)">Path to ${nextLevelKey}</div>
         <div style="font-size:12px;color:var(--gray-mid);margin-top:2px">${criteria.label} — based on RDC career ladder</div>
       </div>
-      <button onclick="generateCareerRecs(${d.id})" style="padding:8px 16px;background:var(--charcoal);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px">
+      ${isAdmin()?`<button onclick="generateCareerRecs(${d.id})" style="padding:8px 16px;background:var(--charcoal);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px">
         ✦ AI Recommendations
-      </button>
+      </button>`:''}
     </div>
 
     <div style="background:#fff;border:1px solid var(--gray-border);border-radius:10px;padding:4px 16px;margin-bottom:16px">
@@ -4108,6 +4108,7 @@ function renderCareerTab(d, content){
       <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal);margin-bottom:12px">AI Growth Recommendations</div>
       <div id="career-recs-content-${d.id}" style="background:#fff;border:1px solid var(--gray-border);border-radius:10px;padding:16px;font-size:12px;color:var(--gray-dark);line-height:1.8"></div>
     </div>
+    ${!isAdmin()?`<div style="margin-top:8px;padding:10px 14px;background:var(--warm-white);border-radius:8px;font-size:12px;color:var(--gray-mid);line-height:1.6">AI-powered recommendations are available to your manager. Ask Mirella to share insights from your career path analysis in your next 1:1.</div>`:''}
   </div>`;
 }
 
