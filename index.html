@@ -2630,8 +2630,27 @@ function renderLeaveView(){
 
 // Load from persistent storage on startup
 async function loadAndInit(filterDesignerId){
-  // This function is now superseded by the Airtable-aware version below
-  // but kept as a no-op shell for compatibility
+  // Restore any saved designer data from localStorage
+  try {
+    const saved = localStorage.getItem('rdc_designers');
+    if(saved){
+      const savedDesigners = JSON.parse(saved);
+      if(Array.isArray(savedDesigners)){
+        // Merge saved data back into designers array by id
+        savedDesigners.forEach(saved => {
+          const idx = designers.findIndex(d => d.id === saved.id);
+          if(idx !== -1){
+            // Merge mutable fields — preserve initialDesigners structure but restore user data
+            const mutableFields = ['pulseLog','notes','goals','thrive','dorChecks','contact','nextOneOnOne','radarNote','roadmap','reviewCycle','onboardingChecklist','leaveStart','leaveEnd','onLeave','returnDate'];
+            mutableFields.forEach(field => {
+              if(saved[field] !== undefined) designers[idx][field] = saved[field];
+            });
+          }
+        });
+      }
+    }
+  } catch(e){ console.error('Failed to restore designer data:', e); }
+
   initSidebar(filterDesignerId);
   if(filterDesignerId){
     showDesigner(filterDesignerId);
