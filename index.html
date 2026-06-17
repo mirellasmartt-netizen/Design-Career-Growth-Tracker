@@ -1047,7 +1047,7 @@ const initialDesigners=[
     ],
     summary:"Christina is a Lead Product Designer (T5) currently on parental leave until July 2026. Her FY26 performance review (Achieves Expectations) highlights a standout year — she led LEX 2.0 discovery and delivery under pivoting business priorities and NAR constraints, stepped in as SME when her PM went on leave, and launched on time with meaningful revenue impact. She also led the highly complex MVIP/RCC Buyer Leads migration into RealPro Dashboard while closely mentoring Jon Grimes. She led a full-day AI productivity workshop for the Client design team, positioning herself as the team's AI SME. Growth areas: defining cross-squad strategic vision and stepping into co-leadership with Product and Engineering in executive forums.",
     nextSteps:[
-      "Welcome-back 1:1 in July — use Thrive survey as starting point",
+      "Welcome-back 1:1 in July — use Work Preferences survey as starting point",
       "Define broader strategic vision for premium Buyer lead products (MVIP + RPD)",
       "Step into co-leadership with Product and Engineering — question constraints, negotiate for best experience",
       "Present design strategy in executive forums and product strategy meetings",
@@ -1105,7 +1105,7 @@ const initialDesigners=[
       {id:"oc1",text:"Join Christina's return check-in with Julie Brody (Julie facilitating)",done:false},
       {id:"oc2",text:"Send welcome-back message before July 1",done:false},
       {id:"oc3",text:"Share current team context doc / org restructure update",done:false},
-      {id:"oc4",text:"Schedule dedicated 1:1 for week of return — use Thrive survey as starting point",done:false},
+      {id:"oc4",text:"Schedule dedicated 1:1 for week of return — use Work Preferences survey as starting point",done:false},
       {id:"oc5",text:"Walk through MVIP migration status and in-flight features",done:false},
       {id:"oc6",text:"Brief on Market VIP Live Transfer Agent Assignment brief (Charlie Lehman PM)",done:false},
       {id:"oc7",text:"Introduce Christina to Whitney Perez (new Director of Product)",done:false},
@@ -1116,7 +1116,7 @@ const initialDesigners=[
     goals:[
       {id:"g18",type:"PM",title:"Define cross-squad strategic vision for premium Buyer lead products",desc:"Work with MVIP and RPD product teams to define the broader strategic vision for the premium Buyer lead product post-migration. Shape the roadmap and influence product strategy based on deep team lead/broker knowledge.",status:"not-started",progress:0},
       {id:"g19",type:"PM",title:"Co-lead in executive forums and product strategy meetings",desc:"Step into co-leadership role with Product and Engineering. Question constraints, negotiate for best client experience. Present design strategy clearly in executive forums, product meetings, and with key clients.",status:"not-started",progress:0},
-      {id:"g20",type:"GM",title:"Welcome-back onboarding & Thrive survey",desc:"Schedule welcome-back 1:1 for July. Use Thrive survey to understand preferences and needs. Reconnect with team and projects before ramping back up.",status:"not-started",progress:0},
+      {id:"g20",type:"GM",title:"Welcome-back onboarding & Work Preferences survey",desc:"Schedule welcome-back 1:1 for July. Use Work Preferences survey to understand preferences and needs. Reconnect with team and projects before ramping back up.",status:"not-started",progress:0},
       {id:"g21",type:"GM",title:"Continue AI tools leadership & Jon mentorship",desc:"Build on full-day AI workshop success. Continue as team AI SME. Continue mentorship of Jon Grimes on product strategy, communication, and delivery quality.",status:"not-started",progress:0}
     ]
   }
@@ -1549,7 +1549,7 @@ function renderDesigner(id){
       <div class="tab" id="tab-skills" onclick="switchTab('skills',${d.id})">Skills</div>
       <div class="tab" id="tab-pulse" onclick="switchTab('pulse',${d.id})">Pulse${d.pulseLog&&d.pulseLog.length?` (${d.pulseLog.length})`:''}</div>
       <div class="tab" id="tab-recognition" onclick="switchTab('recognition',${d.id})">Recognition${d.recognition&&d.recognition.length?` (${d.recognition.length})`:''}</div>
-      <div class="tab" id="tab-thrive" onclick="switchTab('thrive',${d.id})">Thrive${d.thrive?' ✓':''}</div>
+      <div class="tab" id="tab-thrive" onclick="switchTab('thrive',${d.id})">Work Preferences${d.thrive?' ✓':''}</div>
       ${isAdmin()?`<div class="tab" id="tab-notes" onclick="switchTab('notes',${d.id})">Updates (${d.notes.filter(n=>n.type!=='designer-submitted'&&n.type!=='career-request').length})</div>`:''}
       ${(isAdmin()||currentUser?.designerId===d.id)?`<div class="tab" id="tab-contact" onclick="switchTab('contact',${d.id})">Contact</div>`:''}
       ${isAdmin()&&d.onboardingChecklist?`<div class="tab" id="tab-onboarding" onclick="switchTab('onboarding',${d.id})">Return Checklist</div>`:''}
@@ -4609,7 +4609,7 @@ function copySnippet(btn){
 <!-- Thrive Survey Modal -->
 <div class="modal-overlay" id="modal-thrive">
   <div class="modal" style="width:620px">
-    <div class="modal-title">Setting Us Up to Thrive</div>
+    <div class="modal-title">Work Preferences</div>
     <input type="hidden" id="thrive-designer-id">
 
     <div style="font-size:12px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Section 1: How We Work Together</div>
