@@ -1251,6 +1251,8 @@ function showView(view){
 }
 
 function showDesigner(id){
+  // Designers can only view their own profile
+  if(!isAdmin() && currentUser?.designerId !== id) return;
   currentDesignerId=id;currentView=null;
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.designer-card').forEach(el=>el.classList.remove('active'));
@@ -1540,7 +1542,7 @@ function renderDesigner(id){
       <div class="tab" id="tab-recognition" onclick="switchTab('recognition',${d.id})">Recognition${d.recognition&&d.recognition.length?` (${d.recognition.length})`:''}</div>
       <div class="tab" id="tab-thrive" onclick="switchTab('thrive',${d.id})">Thrive${d.thrive?' ✓':''}</div>
       <div class="tab" id="tab-notes" onclick="switchTab('notes',${d.id})">Updates (${d.notes.length})</div>
-      ${isAdmin()?`<div class="tab" id="tab-contact" onclick="switchTab('contact',${d.id})">Contact</div>`:''}
+      ${(isAdmin()||currentUser?.designerId===d.id)?`<div class="tab" id="tab-contact" onclick="switchTab('contact',${d.id})">Contact</div>`:''}
       ${isAdmin()&&d.onboardingChecklist?`<div class="tab" id="tab-onboarding" onclick="switchTab('onboarding',${d.id})">Return Checklist</div>`:''}
     </div>
     <div id="tab-content"></div>`;
@@ -2069,17 +2071,6 @@ function renderDesignerTab(tab, d){
           <span>Updates & Notes</span>
           ${isAdmin()?`<button class="btn btn-outline btn-sm" onclick="document.getElementById('note-designer').value=${d.id};showModal('addNote')">+ Add</button>`:''}
         </div>
-        ${!isAdmin()?`
-        <div class="designer-note-panel" style="margin:0 0 12px">
-          <h4>&#128221; Add a note for Mirella</h4>
-          <textarea class="designer-note-textarea" id="designer-note-input-tab" placeholder="Share an update, question, or reflection…" rows="3"></textarea>
-          <br><button class="designer-note-submit" onclick="submitDesignerNoteFromTab(${d.id})">Submit note</button>
-        </div>
-        <div class="career-req-panel" style="margin:0 0 12px">
-          <h4>&#128172; Request a career discussion <span class="career-req-badge">Private</span></h4>
-          <textarea class="designer-note-textarea" id="career-req-input-tab" placeholder="What would you like to discuss?…" rows="2"></textarea>
-          <br><button class="designer-note-submit" style="background:#5B21B6" onclick="submitCareerRequestFromTab(${d.id})">Send request</button>
-        </div>`:''}
         ${adminNotes.length===0&&isAdmin()?`<div class="empty-state"><div class="empty-state-icon">📝</div><p>No admin notes yet.</p></div>`:
           adminNotes.slice().reverse().map((n,i)=>renderNoteItem(n,i,false)).join('')}
       </div>`;
@@ -2218,7 +2209,7 @@ function renderDesignerTab(tab, d){
           </div>
         </div>
 
-        <div class="contact-card contact-section-full">
+        ${isAdmin()?`<div class="contact-card contact-section-full">
           <div class="contact-card-label">Edit Contact Info</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
             <div>
@@ -2244,7 +2235,7 @@ function renderDesignerTab(tab, d){
           </div>
           <button class="btn btn-primary btn-sm" onclick="saveContactInfo(${d.id})">Save Contact Info</button>
           <span id="ci-saved-${d.id}" style="font-size:11px;color:var(--exceeds);margin-left:8px;opacity:0;transition:opacity .3s"></span>
-        </div>
+        </div>`:''}
       </div>`;
   }
 }
