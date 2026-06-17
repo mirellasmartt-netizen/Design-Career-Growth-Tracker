@@ -29,6 +29,7 @@
   .btn-outline{background:transparent;color:var(--gray-dark);border:1px solid var(--gray-border)}.btn-outline:hover{border-color:var(--red);color:var(--red)}
   .layout{display:flex;height:calc(100vh - 63px);width:100%;overflow:hidden}
   .sidebar{width:220px;background:#fff;border-right:1px solid var(--gray-border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+  body.designer-mode .sidebar{display:none}
   .sidebar-section{padding:14px;border-bottom:1px solid var(--gray-border)}
   .sidebar-label{font-size:10px;font-weight:600;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
   .designer-card{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;cursor:pointer;transition:background .12s;margin-bottom:2px}
@@ -419,16 +420,16 @@
       <div class="sidebar-label">Views</div>
       <div class="nav-item admin-only" id="nav-overview" onclick="showView('overview')">Team Overview</div>
       <div class="nav-item admin-only" id="nav-goals" onclick="showView('goals')">FY27 Goals</div>
-      <div class="nav-item admin-only" id="nav-roadmap" onclick="showView('roadmap')">📍 Roadmap</div>
-      <div class="nav-item admin-only" id="nav-reviews" onclick="showView('reviews')">📋 Review Cycle</div>
+      <div class="nav-item admin-only" id="nav-roadmap" onclick="showView('roadmap')">Roadmap</div>
+      <div class="nav-item admin-only" id="nav-reviews" onclick="showView('reviews')">Review Cycle</div>
       <div class="nav-item admin-only" id="nav-gaps" onclick="showView('gaps')">Skills & Gaps</div>
       <div class="nav-item admin-only" id="nav-leave" onclick="showView('leave')">Leave Tracker</div>
-      <div class="nav-item admin-only" id="nav-offboarding" onclick="showView('offboarding')">📋 Offboarding Notes</div>
-      <div class="nav-item admin-only" id="nav-backup" onclick="showView('backup')" style="margin-top:4px;border-top:1px solid var(--gray-border);padding-top:10px">💾 Backup & Restore</div>
+      <div class="nav-item admin-only" id="nav-offboarding" onclick="showView('offboarding')">Offboarding Notes</div>
+      <div class="nav-item admin-only" id="nav-backup" onclick="showView('backup')" style="margin-top:4px;border-top:1px solid var(--gray-border);padding-top:10px">Backup & Restore</div>
     </div>
     <div class="sidebar-section" style="border-bottom:none">
       <a href="https://docs.google.com/forms/d/e/1FAIpQLScT0sbDefkcSiuBDT4va4brHJFEhWCL4DaHdCvI-_2W-jQ6Rw/viewform" target="_blank" style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;font-size:12px;color:var(--gray-dark);text-decoration:none;transition:background .12s;border:1px dashed var(--gray-border)" onmouseover="this.style.background='var(--warm-white)'" onmouseout="this.style.background=''">
-        <span>💬</span><span>Give Tracker Feedback</span>
+        <span>Give Tracker Feedback</span>
       </a>
     </div>
     <div class="sidebar-section" style="flex:1">
@@ -1525,7 +1526,8 @@ function renderDesigner(id){
           <div style="display:flex;gap:6px;align-items:center">
             ${isAdmin()?`<button class="btn btn-outline btn-sm" onclick="generate1on1Prep(${d.id})">1:1 Prep</button>`:''}
             ${isAdmin()?`<button class="btn btn-outline btn-sm" onclick="exportGrowthProfile(${d.id})">Share Profile</button>`:''}
-            ${(()=>{const fname=GROWTH_FORM_NAMES[d.id];return fname?`<a href="${GROWTH_FORM_BASE}${encodeURIComponent(fname)}" target="_blank" class="btn btn-primary btn-sm" style="text-decoration:none">📋 Request Growth Meeting</a>`:''})()}
+            ${!isAdmin()?`<a href="https://docs.google.com/forms/d/e/1FAIpQLScT0sbDefkcSiuBDT4va4brHJFEhWCL4DaHdCvI-_2W-jQ6Rw/viewform" target="_blank" class="btn btn-outline btn-sm" style="text-decoration:none">Give Feedback</a>`:''}
+            ${(()=>{const fname=GROWTH_FORM_NAMES[d.id];return fname?`<a href="${GROWTH_FORM_BASE}${encodeURIComponent(fname)}" target="_blank" class="btn btn-primary btn-sm" style="text-decoration:none">Request Growth Meeting</a>`:''})()}
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap">
@@ -2908,15 +2910,17 @@ function renderPulseTab(d, content){
 
   // Trend chart
   out += '<div class="card card-full" style="margin-bottom:14px"><div class="card-label">Recent Trend</div>';
-  out += '<div style="display:flex;gap:6px;align-items:flex-end;height:60px;padding-bottom:4px">';
+  out += '<div style="display:flex;gap:6px;align-items:flex-end;height:48px">';
   const chartLogs = logs.slice(0,12).reverse();
   chartLogs.forEach(function(p){
     const s = pColors[p.status] ? p.status : 'green';
-    const h = s==='green'?40:s==='yellow'?28:16;
-    out += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">';
-    out += '<div style="width:100%;background:' + pBg[s] + ';border:1px solid ' + pColors[s] + ';border-radius:4px;height:' + h + 'px"></div>';
-    out += '<div style="font-size:9px;color:var(--gray-mid);writing-mode:vertical-rl;transform:rotate(180deg)">' + (p.week||'').replace('Week of ','') + '</div>';
-    out += '</div>';
+    const h = s==='green'?44:s==='yellow'?28:14;
+    out += '<div style="flex:1;height:' + h + 'px;background:' + pBg[s] + ';border:1px solid ' + pColors[s] + ';border-radius:4px"></div>';
+  });
+  out += '</div>';
+  out += '<div style="display:flex;gap:6px;margin-top:4px">';
+  chartLogs.forEach(function(p){
+    out += '<div style="flex:1;font-size:9px;color:var(--gray-mid);text-align:center;writing-mode:vertical-rl;transform:rotate(180deg);height:52px;overflow:hidden">' + (p.week||'').replace('Week of ','') + '</div>';
   });
   out += '</div></div>';
 
