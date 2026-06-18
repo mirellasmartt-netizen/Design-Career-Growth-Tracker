@@ -1546,7 +1546,7 @@ function renderDesigner(id){
       ${isAdmin()?`<div class="tab" id="tab-radar" onclick="switchTab('radar',${d.id})">On My Radar${d.radarNote?' ●':''}</div>`:''}
       <div class="tab" id="tab-career" onclick="switchTab('career',${d.id})">Career Path</div>
       <div class="tab" id="tab-history" onclick="switchTab('history',${d.id})">Review History</div>
-      ${isAdmin()?`<div class="tab" id="tab-docs" onclick="switchTab('docs',${d.id})">Documents${d.documents&&d.documents.length?` (${d.documents.length})`:''}</div>`:''}
+      <div class="tab" id="tab-docs" onclick="switchTab('docs',${d.id})">Documents${d.documents&&d.documents.length?` (${d.documents.length})`:''}</div>
       <div class="tab" id="tab-dor" onclick="switchTab('dor',${d.id})">DoR</div>
       <div class="tab" id="tab-goals" onclick="switchTab('goals',${d.id})">Goals</div>
       <div class="tab" id="tab-skills" onclick="switchTab('skills',${d.id})">Skills</div>
@@ -1903,10 +1903,10 @@ function renderDesignerTab(tab, d){
             <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal)">Documents</div>
             <div style="font-size:12px;color:var(--gray-mid);margin-top:2px">Performance reviews, mid-year docs, promotion write-ups, and other reference materials</div>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="openAddDocModal(${d.id})">+ Add Document</button>
+          ${isAdmin()?`<button class="btn btn-primary btn-sm" onclick="openAddDocModal(${d.id})">+ Add Document</button>`:''}
         </div>
         <div style="background:#fff;border:1px solid var(--gray-border);border-radius:10px;overflow:hidden">
-          ${docs.length===0?`<div class="empty-state" style="padding:32px"><div class="empty-state-icon">📄</div><p>No documents yet. Add links to performance reviews, mid-year docs, or any other reference materials.</p></div>`:''}
+          ${docs.length===0?`<div class="empty-state" style="padding:32px"><div class="empty-state-icon">📄</div><p>${isAdmin()?'No documents yet. Add links to performance reviews, mid-year docs, or any other reference materials.':'No documents have been shared yet.'}</p></div>`:''}
           ${docs.map((doc,i)=>`
             <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--gray-border)">
               <div style="flex:1;min-width:0">
@@ -1916,7 +1916,7 @@ function renderDesignerTab(tab, d){
               </div>
               <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
                 <a href="${doc.url}" target="_blank" style="padding:5px 12px;background:var(--warm-white);border:1px solid var(--gray-border);border-radius:6px;font-size:11px;color:var(--charcoal);text-decoration:none;font-family:'DM Sans',sans-serif;white-space:nowrap">Open →</a>
-                <button onclick="removeDoc(${d.id},${i})" style="padding:5px 8px;background:none;border:1px solid var(--gray-border);border-radius:6px;font-size:11px;color:var(--gray-mid);cursor:pointer;font-family:'DM Sans',sans-serif">✕</button>
+                ${isAdmin()?`<button onclick="removeDoc(${d.id},${i})" style="padding:5px 8px;background:none;border:1px solid var(--gray-border);border-radius:6px;font-size:11px;color:var(--gray-mid);cursor:pointer;font-family:'DM Sans',sans-serif">✕</button>`:''}
               </div>
             </div>`).join('')}
         </div>
