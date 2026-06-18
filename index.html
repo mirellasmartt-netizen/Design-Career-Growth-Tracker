@@ -1546,6 +1546,7 @@ function renderDesigner(id){
       ${isAdmin()?`<div class="tab" id="tab-radar" onclick="switchTab('radar',${d.id})">On My Radar${d.radarNote?' ●':''}</div>`:''}
       <div class="tab" id="tab-career" onclick="switchTab('career',${d.id})">Career Path</div>
       <div class="tab" id="tab-history" onclick="switchTab('history',${d.id})">Review History</div>
+      ${isAdmin()?`<div class="tab" id="tab-docs" onclick="switchTab('docs',${d.id})">Documents${d.documents&&d.documents.length?` (${d.documents.length})`:''}</div>`:''}
       <div class="tab" id="tab-dor" onclick="switchTab('dor',${d.id})">DoR</div>
       <div class="tab" id="tab-goals" onclick="switchTab('goals',${d.id})">Goals</div>
       <div class="tab" id="tab-skills" onclick="switchTab('skills',${d.id})">Skills</div>
@@ -1892,6 +1893,34 @@ function renderDesignerTab(tab, d){
       </div>`;
 
   
+  } else if(tab==='docs'){
+    if(!d.documents) d.documents = [];
+    const docs = d.documents;
+    content.innerHTML = `
+      <div style="max-width:640px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div>
+            <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal)">Documents</div>
+            <div style="font-size:12px;color:var(--gray-mid);margin-top:2px">Performance reviews, mid-year docs, promotion write-ups, and other reference materials</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openAddDocModal(${d.id})">+ Add Document</button>
+        </div>
+        <div style="background:#fff;border:1px solid var(--gray-border);border-radius:10px;overflow:hidden">
+          ${docs.length===0?`<div class="empty-state" style="padding:32px"><div class="empty-state-icon">📄</div><p>No documents yet. Add links to performance reviews, mid-year docs, or any other reference materials.</p></div>`:''}
+          ${docs.map((doc,i)=>`
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--gray-border)">
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12px;font-weight:500;color:var(--charcoal)">${doc.title}</div>
+                ${doc.category?`<div style="font-size:10px;font-weight:600;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.5px;margin-top:2px">${doc.category}</div>`:''}
+                ${doc.notes?`<div style="font-size:11px;color:var(--gray-mid);margin-top:3px">${doc.notes}</div>`:''}
+              </div>
+              <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
+                <a href="${doc.url}" target="_blank" style="padding:5px 12px;background:var(--warm-white);border:1px solid var(--gray-border);border-radius:6px;font-size:11px;color:var(--charcoal);text-decoration:none;font-family:'DM Sans',sans-serif;white-space:nowrap">Open →</a>
+                <button onclick="removeDoc(${d.id},${i})" style="padding:5px 8px;background:none;border:1px solid var(--gray-border);border-radius:6px;font-size:11px;color:var(--gray-mid);cursor:pointer;font-family:'DM Sans',sans-serif">✕</button>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>`;
   } else if(tab==='history'){
     const history = d.reviewHistory || [];
     const fyColors = {'FY25':'#1A56A0','FY26':'#1B7A3E','FY27':'#7C3AED'};
@@ -2641,7 +2670,7 @@ async function loadAndInit(filterDesignerId){
           const idx = designers.findIndex(d => d.id === saved.id);
           if(idx !== -1){
             // Merge mutable fields — preserve initialDesigners structure but restore user data
-            const mutableFields = ['pulseLog','notes','goals','thrive','dorChecks','contact','nextOneOnOne','radarNote','roadmap','reviewCycle','onboardingChecklist','leaveStart','leaveEnd','onLeave','returnDate'];
+            const mutableFields = ['pulseLog','notes','goals','thrive','dorChecks','contact','nextOneOnOne','radarNote','roadmap','reviewCycle','onboardingChecklist','leaveStart','leaveEnd','onLeave','returnDate','documents'];
             mutableFields.forEach(field => {
               if(saved[field] !== undefined) designers[idx][field] = saved[field];
             });
@@ -4245,6 +4274,46 @@ One or two sentences Mirella can actually say to open this conversation naturall
   }
 }
 
+// ── DOCUMENTS ────────────────────────────────────────────────────────────────
+function openAddDocModal(designerId){
+  document.getElementById('doc-designer-id').value = designerId;
+  document.getElementById('doc-title').value = '';
+  document.getElementById('doc-url').value = '';
+  document.getElementById('doc-category').value = '';
+  document.getElementById('doc-notes').value = '';
+  showModal('addDoc');
+}
+
+async function saveDoc(){
+  const designerId = parseInt(document.getElementById('doc-designer-id').value);
+  const title = document.getElementById('doc-title').value.trim();
+  const url = document.getElementById('doc-url').value.trim();
+  if(!title) return alert('Please add a title.');
+  if(!url) return alert('Please add a URL.');
+  const d = designers.find(x=>x.id===designerId); if(!d) return;
+  if(!d.documents) d.documents = [];
+  d.documents.push({
+    title,
+    url,
+    category: document.getElementById('doc-category').value || '',
+    notes: document.getElementById('doc-notes').value.trim() || '',
+    added: new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+  });
+  await save();
+  hideModal('addDoc');
+  renderDesignerTab('docs', d);
+  setTimeout(()=>switchTab('docs', designerId), 10);
+}
+
+async function removeDoc(designerId, idx){
+  const d = designers.find(x=>x.id===designerId); if(!d||!d.documents) return;
+  if(!confirm('Remove this document link?')) return;
+  d.documents.splice(idx, 1);
+  await save();
+  renderDesignerTab('docs', d);
+  setTimeout(()=>switchTab('docs', designerId), 10);
+}
+
 // ── OFFBOARDING NOTES ─────────────────────────────────────────────────────────
 const OFFBOARD_STORAGE = 'rdc_offboard_v1';
 
@@ -4868,6 +4937,44 @@ function copySnippet(btn){
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="hideModal('roadmap')">Cancel</button>
       <button class="btn btn-primary" onclick="saveRoadmapEntry()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Document Modal -->
+<div class="modal-overlay" id="modal-addDoc">
+  <div class="modal" style="width:420px">
+    <div class="modal-title">Add Document</div>
+    <input type="hidden" id="doc-designer-id">
+    <div class="form-grid">
+      <div class="form-group full">
+        <label class="form-label">Title</label>
+        <input class="form-input" id="doc-title" placeholder="e.g. FY26 Annual Performance Review">
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Category <span style="font-weight:400;color:var(--gray-mid)">(optional)</span></label>
+        <select class="form-select" id="doc-category">
+          <option value="">— None —</option>
+          <option value="Performance Review">Performance Review</option>
+          <option value="Mid-Year Review">Mid-Year Review</option>
+          <option value="Promotion Doc">Promotion Doc</option>
+          <option value="PIP">PIP</option>
+          <option value="Career Development">Career Development</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label class="form-label">URL</label>
+        <input class="form-input" id="doc-url" placeholder="https://docs.google.com/...">
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Notes <span style="font-weight:400;color:var(--gray-mid)">(optional)</span></label>
+        <input class="form-input" id="doc-notes" placeholder="e.g. Shared with Ava, FY26 Q4">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="hideModal('addDoc')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveDoc()">Add</button>
     </div>
   </div>
 </div>
