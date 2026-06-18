@@ -30,7 +30,7 @@
   .layout{display:flex;height:calc(100vh - 63px);width:100%;overflow:hidden}
   .sidebar{width:220px;background:#fff;border-right:1px solid var(--gray-border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
   body.designer-mode .sidebar{display:none}
-  .viewer-banner{display:none;background:#EDE9FE;border-bottom:1px solid #C4B5FD;padding:6px 20px;font-size:11px;color:#5B21B6;font-weight:500}
+  .viewer-banner{display:none;background:#EDE9FE;border-bottom:1px solid #C4B5FD;padding:5px 20px;font-size:11px;color:#5B21B6;font-weight:500;width:100%;box-sizing:border-box}
   body.viewer-mode .viewer-banner{display:block}
   .sidebar-section{padding:14px;border-bottom:1px solid var(--gray-border)}
   .sidebar-label{font-size:10px;font-weight:600;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
@@ -384,7 +384,7 @@
   </div>
 </div>
 
-
+<div class="viewer-banner">You're viewing as Ava DeVoe — read-only access. Changes made here won't sync.</div>
 
 <div class="sync-indicator" id="sync-indicator"><span class="sync-dot"></span><span id="sync-label">Syncing...</span></div>
 <!-- Account Panel -->
@@ -422,7 +422,6 @@
 </div>
 
 <div class="layout" id="app-layout" style="display:none">
-  <div class="viewer-banner">You're viewing as Ava DeVoe — read-only access. Changes made here won't sync.</div>
   <div class="sidebar">
     <div class="sidebar-section">
       <div class="sidebar-label">Views</div>
@@ -3654,7 +3653,7 @@ async function atSaveAccount(u, f){ /* no-op */ }
 
 // ── AUTH ──
 
-const AUTH_CREDS = {"smartt_admin": {"role": "admin", "designerId": null, "name": "Mirella"}, "devoe_view": {"role": "viewer", "designerId": null, "name": "Ava DeVoe"}, "will_grow": {"role": "designer", "designerId": 1, "name": "Will Soemargo"}, "pooja_grow": {"role": "designer", "designerId": 2, "name": "Pooja Sheth"}, "lauren_grow": {"role": "designer", "designerId": 3, "name": "Lauren Lang"}, "jon_grow": {"role": "designer", "designerId": 4, "name": "Jon Grimes"}, "christina_grow": {"role": "designer", "designerId": 6, "name": "Christina Poon"}};
+const AUTH_CREDS = {"smartt_admin": {"role": "admin", "designerId": null, "name": "Mirella"}, "ava_view": {"role": "viewer", "designerId": null, "name": "Ava DeVoe"}, "will_grow": {"role": "designer", "designerId": 1, "name": "Will Soemargo"}, "pooja_grow": {"role": "designer", "designerId": 2, "name": "Pooja Sheth"}, "lauren_grow": {"role": "designer", "designerId": 3, "name": "Lauren Lang"}, "jon_grow": {"role": "designer", "designerId": 4, "name": "Jon Grimes"}, "christina_grow": {"role": "designer", "designerId": 6, "name": "Christina Poon"}};
 const SESSION_KEY = 'rdc_session_v1';
 
 function authLogin(){
