@@ -327,7 +327,7 @@
   .onboard-check-text.done{text-decoration:line-through;color:var(--gray-mid)}
 
   /* CAREER PATH TAB */
-  .career-progress-track{position:relative;margin-bottom:36px;padding:0 4px}
+  .career-progress-track{position:relative;margin-bottom:36px;padding:0}
   .career-progress-bar-bg{height:6px;background:#E5E7EB;border-radius:3px;position:relative;margin:44px 0 8px}
   .career-progress-bar-fill{height:100%;border-radius:3px;background:var(--charcoal);transition:width .4s}
   .career-level-nodes{display:flex;justify-content:space-between;position:absolute;top:-8px;left:0;right:0}
@@ -2689,7 +2689,7 @@ async function saveGoalEdit(){
   g.progress = parseInt(document.getElementById('edit-goal-progress').value)||0;
   await save();
   hideModal('editGoal');
-  if(currentDesignerId===designerId) renderDesigner(designerId);
+  if(currentDesignerId===designerId){ renderDesigner(designerId); setTimeout(()=>switchTab('goals',designerId),50); }
   else if(currentView==='goals') renderGoalsView();
 }
 
@@ -2701,7 +2701,7 @@ async function deleteGoal(){
   d.goals = d.goals.filter(g=>g.id!==goalId);
   await save();
   hideModal('editGoal');
-  if(currentDesignerId===designerId) renderDesigner(designerId);
+  if(currentDesignerId===designerId){ renderDesigner(designerId); setTimeout(()=>switchTab('goals',designerId),50); }
   else if(currentView==='goals') renderGoalsView();
 }
 
@@ -4570,7 +4570,7 @@ function renderCareerTab(d, content){
       </div>
     </div>`;
 
-  content.innerHTML=`<div style="max-width:760px">
+  content.innerHTML=`<div style="width:100%">
     ${progressHTML}
     ${contextNote}
     ${summaryHTML}
