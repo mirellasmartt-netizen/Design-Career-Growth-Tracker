@@ -4357,27 +4357,45 @@ function renderReviewCycleView(){
     </div>
   </div>
   <div style="background:#fff;border:1px solid var(--gray-border);border-radius:10px;overflow:hidden;margin-bottom:16px">
-    <div class="review-row header">
-      <div class="review-cell">Designer</div>
-      ${REVIEW_STAGES.map(s=>`<div class="review-cell">${s.label}</div>`).join('')}
-      <div class="review-cell">Progress</div>
-    </div>
-    ${designers.map(d=>`
-      <div class="review-row">
-        <div class="review-cell" style="display:flex;align-items:center;gap:8px;font-weight:500">
-          <div class="avatar" style="background:${d.avatarColor};width:22px;height:22px;font-size:9px;flex-shrink:0">${d.name.split(' ').map(n=>n[0]).join('')}</div>
-          ${d.name.split(' ')[0]}
-        </div>
-        ${REVIEW_STAGES.map(s=>stageCell(d,s)).join('')}
-        <div class="review-cell">
-          <div style="display:flex;align-items:center;gap:6px">
-            <div style="flex:1;height:6px;background:var(--gray-border);border-radius:3px;overflow:hidden">
-              <div style="height:100%;width:${overallPct(d)}%;background:${overallPct(d)===100?'var(--exceeds)':'var(--red)'};border-radius:3px;transition:width .3s"></div>
-            </div>
-            <span style="font-size:11px;color:var(--gray-mid);min-width:28px">${overallPct(d)}%</span>
-          </div>
-        </div>
-      </div>`).join('')}
+    <table style="width:100%;border-collapse:collapse;font-family:'DM Sans',sans-serif">
+      <thead>
+        <tr style="background:var(--warm-white);font-size:10px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.6px">
+          <th style="padding:10px 14px;text-align:left;border-bottom:1px solid var(--gray-border);border-right:1px solid var(--gray-border);width:160px">Designer</th>
+          ${REVIEW_STAGES.map(s=>`<th style="padding:10px 14px;text-align:left;border-bottom:1px solid var(--gray-border);border-right:1px solid var(--gray-border)">${s.label}</th>`).join('')}
+          <th style="padding:10px 14px;text-align:left;border-bottom:1px solid var(--gray-border);width:140px">Progress</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${designers.map(d=>`
+          <tr style="border-bottom:1px solid var(--gray-border)">
+            <td style="padding:10px 14px;border-right:1px solid var(--gray-border)">
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500">
+                <div class="avatar" style="background:${d.avatarColor};width:22px;height:22px;font-size:9px;flex-shrink:0">${d.name.split(' ').map(n=>n[0]).join('')}</div>
+                ${d.name.split(' ')[0]}
+              </div>
+            </td>
+            ${REVIEW_STAGES.map(s=>{
+              const rc=d.reviewCycle||{};
+              const val=rc[s.key];
+              const isDone=!!val;
+              return`<td style="padding:10px 14px;border-right:1px solid var(--gray-border);cursor:pointer" onclick="canEdit()&&toggleReviewStage(${d.id},'${s.key}')" title="${isDone?'Mark incomplete':'Mark complete'}">
+                <div style="display:flex;align-items:center;gap:6px">
+                  <div class="review-dot ${isDone?'complete':''}" style="flex-shrink:0"></div>
+                  <span style="font-size:11px;color:${isDone?'var(--exceeds)':'var(--gray-mid)'}">${isDone?val:'—'}</span>
+                </div>
+              </td>`;
+            }).join('')}
+            <td style="padding:10px 14px">
+              <div style="display:flex;align-items:center;gap:6px">
+                <div style="flex:1;height:6px;background:var(--gray-border);border-radius:3px;overflow:hidden">
+                  <div style="height:100%;width:${overallPct(d)}%;background:${overallPct(d)===100?'var(--exceeds)':'var(--red)'};border-radius:3px;transition:width .3s"></div>
+                </div>
+                <span style="font-size:11px;color:var(--gray-mid);min-width:28px">${overallPct(d)}%</span>
+              </div>
+            </td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">
     ${designers.map(d=>{
