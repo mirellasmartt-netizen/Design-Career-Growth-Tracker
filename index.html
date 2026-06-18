@@ -77,6 +77,7 @@
   .goal-type{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px}
   .goal-type-pm{background:#EDE9FE;color:#5B21B6}
   .goal-type-gm{background:#FEF9C3;color:#92400E}
+  .goal-type-growth{background:#E8F5EE;color:#1B7A3E}
   .goal-desc{font-size:12px;color:var(--gray-mid);margin-bottom:8px;line-height:1.5}
   .goal-footer{display:flex;align-items:center;justify-content:space-between}
   .status-badge{font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px}
@@ -167,6 +168,31 @@
   .auth-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
   /* DESIGNER VIEW OVERRIDES */
   body.designer-mode .admin-only{display:none!important}
+  body.viewer-mode .admin-only{display:none!important}
+  body.viewer-mode .can-edit-only{display:none!important}
+  body.viewer-mode input:not([type="search"]),
+  body.viewer-mode textarea,
+  body.viewer-mode select,
+  body.viewer-mode .roadmap-cell[onclick],
+  body.viewer-mode .review-dot,
+  body.viewer-mode .onboard-checkbox,
+  body.viewer-mode .offboard-action-check,
+  body.viewer-mode .offboard-my-notes-area,
+  body.viewer-mode .offboard-save-btn,
+  body.viewer-mode .radar-ta,
+  body.viewer-mode .one-on-one-chip[onclick]{
+    pointer-events:none!important;
+    opacity:.6;
+    cursor:default!important;
+  }
+  body.viewer-mode .radar-pinned .btn,
+  body.viewer-mode [onclick*="setDorCheck"],
+  body.viewer-mode [onclick*="toggleReview"],
+  body.viewer-mode [onclick*="openRoadmapEdit"]{
+    pointer-events:none!important;
+    opacity:.5;
+    cursor:default!important;
+  }
   body.designer-mode .header-right .btn:not(.designer-visible){display:none!important}
   /* DESIGNER NOTE PANEL */
   .designer-note-panel{background:#F0F7FF;border:1px solid #B8D4F0;border-radius:8px;padding:16px;margin-bottom:16px}
@@ -426,7 +452,7 @@
     <div class="sidebar-section">
       <div class="sidebar-label">Views</div>
       <div class="nav-item admin-only" id="nav-overview" onclick="showView('overview')">Team Overview</div>
-      <div class="nav-item admin-only" id="nav-goals" onclick="showView('goals')">FY27 Goals</div>
+      <div class="nav-item admin-only" id="nav-goals" onclick="showView('goals')">Goals</div>
       <div class="nav-item admin-only" id="nav-roadmap" onclick="showView('roadmap')">Roadmap</div>
       <div class="nav-item admin-only" id="nav-reviews" onclick="showView('reviews')">Review Cycle</div>
       <div class="nav-item admin-only" id="nav-gaps" onclick="showView('gaps')">Skills & Gaps</div>
@@ -544,13 +570,27 @@
 <!-- Add Goal Modal -->
 <div class="modal-overlay" id="modal-addGoal">
   <div class="modal">
-    <div class="modal-title">Add FY27 Goal</div>
+    <div class="modal-title">Add Goal</div>
     <div class="form-grid">
       <div class="form-group"><label class="form-label">Designer</label><select class="form-select" id="goal-designer"></select></div>
       <div class="form-group"><label class="form-label">Type</label>
         <select class="form-select" id="goal-type">
           <option value="PM">Performance Measure (PM)</option>
           <option value="GM">General Measure (GM)</option>
+          <option value="Growth">Personal / Growth Goal</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Year / Cycle</label>
+        <select class="form-select" id="goal-year">
+          <option value="FY27">FY27 — Annual</option>
+          <option value="FY27 Mid-Year">FY27 — Mid-Year</option>
+          <option value="FY26">FY26 — Annual</option>
+          <option value="FY26 Mid-Year">FY26 — Mid-Year</option>
+          <option value="Ongoing">Ongoing</option>
+          <option value="Q1 FY27">Q1 FY27</option>
+          <option value="Q2 FY27">Q2 FY27</option>
+          <option value="Q3 FY27">Q3 FY27</option>
+          <option value="Q4 FY27">Q4 FY27</option>
         </select>
       </div>
       <div class="form-group full"><label class="form-label">Goal Title</label><input class="form-input" id="goal-title" placeholder="e.g. Lead UMA design independently"></div>
@@ -1326,7 +1366,7 @@ function renderOverview(){
           <div class="divider" style="margin:10px 0 10px;margin-top:auto"></div>
           <div style="display:flex;align-items:center;justify-content:space-between">
             <div style="display:flex;gap:10px">
-              <div class="stat"><div class="stat-val stat-purple">${total}</div><div class="stat-label">FY27 Goals</div></div>
+              <div class="stat"><div class="stat-val stat-purple">${total}</div><div class="stat-label">Goals</div></div>
               <div class="stat"><div class="stat-val stat-green">${onTrack+done}</div><div class="stat-label">On Track</div></div>
               <div class="stat"><div class="stat-val stat-red">${atRisk}</div><div class="stat-label">At Risk</div></div>
               <div class="stat"><div class="stat-val stat-blue">${d.notes.length}</div><div class="stat-label">Updates</div></div>
@@ -1385,7 +1425,7 @@ function renderGoalsView(){
 
   main.innerHTML=`
     <div class="page-header">
-      <div><div class="page-title">FY27 Goals</div><div class="page-subtitle">All goals across your team · ${allGoals.length} total</div></div>
+      <div><div class="page-title">Goals</div><div class="page-subtitle">All goals across your team · ${allGoals.length} total</div></div>
       <button class="btn btn-primary btn-sm" onclick="showModal('addGoal')">+ Add Goal</button>
     </div>
     <div class="cards-grid" style="margin-bottom:20px">
@@ -2473,7 +2513,10 @@ function addGoal(){
   const d=designers.find(x=>x.id===designerId);
   if(!d)return;
   d.goals.push({
-    id:'g'+Date.now(),type:document.getElementById('goal-type').value,title,
+    id:'g'+Date.now(),
+    type:document.getElementById('goal-type').value,
+    year:document.getElementById('goal-year')?.value||'FY27',
+    title,
     desc:document.getElementById('goal-desc').value,
     status:document.getElementById('goal-status').value,
     progress:parseInt(document.getElementById('goal-progress').value)||0
@@ -3838,6 +3881,7 @@ function applyAcctOverrides(){}
 
 function isAdmin(){ return currentUser && (currentUser.role === 'admin' || currentUser.role === 'viewer'); }
 function canEdit(){ return currentUser && currentUser.role === 'admin'; }
+function isViewer(){ return currentUser && currentUser.role === 'viewer'; }
 function getDesignerId(){ return currentUser ? currentUser.designerId : null; }
 
 // ── ON MY RADAR ──────────────────────────────────────────────────────────────
