@@ -30,6 +30,8 @@
   .layout{display:flex;height:calc(100vh - 63px);width:100%;overflow:hidden}
   .sidebar{width:220px;background:#fff;border-right:1px solid var(--gray-border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
   body.designer-mode .sidebar{display:none}
+  .viewer-banner{display:none;background:#EDE9FE;border-bottom:1px solid #C4B5FD;padding:6px 20px;font-size:11px;color:#5B21B6;font-weight:500}
+  body.viewer-mode .viewer-banner{display:block}
   .sidebar-section{padding:14px;border-bottom:1px solid var(--gray-border)}
   .sidebar-label{font-size:10px;font-weight:600;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
   .designer-card{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;cursor:pointer;transition:background .12s;margin-bottom:2px}
@@ -142,7 +144,12 @@
   .stat{flex:1}.stat-val{font-size:18px;font-weight:600}.stat-label{font-size:10px;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.5px}
   .stat-green{color:var(--exceeds)}.stat-red{color:var(--red)}.stat-blue{color:var(--achieves)}.stat-purple{color:#5B21B6}
   ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--gray-border);border-radius:2px}
-  .tabs{display:flex;gap:2px;margin-bottom:18px;border-bottom:1px solid var(--gray-border);overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;-ms-overflow-style:none}.tabs::-webkit-scrollbar{display:none}
+  .tabs-wrapper{position:relative;margin-bottom:18px}
+  .tabs-wrapper .tab-scroll-btn{position:absolute;top:0;bottom:1px;width:32px;display:none;align-items:center;justify-content:center;background:linear-gradient(to right,#fff 60%,transparent);border:none;cursor:pointer;font-size:14px;color:var(--gray-mid);z-index:2;padding:0}
+  .tabs-wrapper .tab-scroll-btn.right{right:0;background:linear-gradient(to left,#fff 60%,transparent)}
+  .tabs-wrapper .tab-scroll-btn.visible{display:flex}
+  .tabs-wrapper .tab-scroll-btn:hover{color:var(--charcoal)}
+  .tabs{display:flex;gap:2px;border-bottom:1px solid var(--gray-border);overflow-x:auto;flex-wrap:nowrap;white-space:nowrap;scrollbar-width:none;-ms-overflow-style:none}.tabs::-webkit-scrollbar{display:none}
   .tab{display:inline-block;padding:8px 14px;font-size:12px;font-weight:500;color:var(--gray-mid);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;white-space:nowrap;flex-shrink:0}
   .tab:hover{color:var(--charcoal)}.tab.active{color:var(--red);border-bottom-color:var(--red)}
   .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
@@ -415,6 +422,7 @@
 </div>
 
 <div class="layout" id="app-layout" style="display:none">
+  <div class="viewer-banner">You're viewing as Ava DeVoe — read-only access. Changes made here won't sync.</div>
   <div class="sidebar">
     <div class="sidebar-section">
       <div class="sidebar-label">Views</div>
@@ -1293,9 +1301,9 @@ function renderOverview(){
             const diff=Math.round((new Date(d.nextOneOnOne+'T12:00:00')-new Date())/(1000*60*60*24));
             const cls=diff<=1?'urgent':diff<=4?'soon':'ok';
             const label=diff===0?'Today':diff<0?'Overdue':diff===1?'Tomorrow':diff+' days';
-            oneOnOneChip=`<button class="one-on-one-chip ${cls}" onclick="event.stopPropagation();openOneOnOneModal(${d.id})" title="Next 1:1">📅 1:1 ${label}</button>`;
-          } else {
-            oneOnOneChip=`<button class="one-on-one-chip none" onclick="event.stopPropagation();openOneOnOneModal(${d.id})" title="Set next 1:1">📅 Set 1:1</button>`;
+            oneOnOneChip=`<span class="one-on-one-chip ${cls}" ${canEdit()?`onclick="event.stopPropagation();openOneOnOneModal(${d.id})" title="Next 1:1"`:'title="Next 1:1"'} style="${canEdit()?'cursor:pointer':'cursor:default'}">1:1 ${label}</span>`;
+          } else if(canEdit()){
+            oneOnOneChip=`<button class="one-on-one-chip none" onclick="event.stopPropagation();openOneOnOneModal(${d.id})" title="Set next 1:1">Set 1:1</button>`;
           }
         }
         // Radar note preview
@@ -1324,7 +1332,7 @@ function renderOverview(){
               <div class="stat"><div class="stat-val stat-red">${atRisk}</div><div class="stat-label">At Risk</div></div>
               <div class="stat"><div class="stat-val stat-blue">${d.notes.length}</div><div class="stat-label">Updates</div></div>
             </div>
-            ${isAdmin()?`<button onclick="event.stopPropagation();quickPulse(${d.id})" style="padding:4px 10px;background:var(--warm-white);border:1px solid var(--gray-border);border-radius:6px;font-size:11px;color:var(--gray-mid);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap" title="Quick pulse check-in">+ Pulse</button>`:''}
+            ${canEdit()?`<button onclick="event.stopPropagation();quickPulse(${d.id})" style="padding:4px 10px;background:var(--warm-white);border:1px solid var(--gray-border);border-radius:6px;font-size:11px;color:var(--gray-mid);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap" title="Quick pulse check-in">+ Pulse</button>`:''}
           </div>
         </div>`;
       }).join('')}
@@ -1524,8 +1532,8 @@ function renderDesigner(id){
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
           <div class="page-title">${d.name}</div>
           <div style="display:flex;gap:6px;align-items:center">
-            ${isAdmin()?`<button class="btn btn-outline btn-sm" onclick="generate1on1Prep(${d.id})">1:1 Prep</button>`:''}
-            ${isAdmin()?`<button class="btn btn-outline btn-sm" onclick="exportGrowthProfile(${d.id})">Share Profile</button>`:''}
+            ${canEdit()?`<button class="btn btn-outline btn-sm" onclick="generate1on1Prep(${d.id})">1:1 Prep</button>`:''}
+            ${canEdit()?`<button class="btn btn-outline btn-sm" onclick="exportGrowthProfile(${d.id})">Share Profile</button>`:''}
             ${!isAdmin()?`<a href="https://docs.google.com/forms/d/e/1FAIpQLScT0sbDefkcSiuBDT4va4brHJFEhWCL4DaHdCvI-_2W-jQ6Rw/viewform" target="_blank" class="btn btn-outline btn-sm" style="text-decoration:none">Give Feedback</a>`:''}
             ${(()=>{const fname=GROWTH_FORM_NAMES[d.id];return fname?`<a href="${GROWTH_FORM_BASE}${encodeURIComponent(fname)}" target="_blank" class="btn btn-primary btn-sm" style="text-decoration:none">Request Growth Meeting</a>`:''})()}
           </div>
@@ -1541,7 +1549,9 @@ function renderDesigner(id){
       </div>
     </div>
 
-    <div class="tabs" style="overflow-x:auto;flex-wrap:nowrap;white-space:nowrap;scrollbar-width:none;-ms-overflow-style:none">
+    <div class="tabs-wrapper" id="tabs-wrapper-${d.id}">
+      <button class="tab-scroll-btn left" id="tabs-left-${d.id}" onclick="scrollTabs(${d.id},-1)">‹</button>
+      <div class="tabs" id="tabs-scroll-${d.id}" onscroll="updateTabArrows(${d.id})" style="overflow-x:auto;flex-wrap:nowrap;white-space:nowrap;scrollbar-width:none;padding:0 4px">
       <div class="tab active" id="tab-overview" onclick="switchTab('overview',${d.id})">Overview</div>
       ${isAdmin()?`<div class="tab" id="tab-radar" onclick="switchTab('radar',${d.id})">On My Radar${d.radarNote?' ●':''}</div>`:''}
       <div class="tab" id="tab-career" onclick="switchTab('career',${d.id})">Career Path</div>
@@ -1556,10 +1566,15 @@ function renderDesigner(id){
       ${isAdmin()?`<div class="tab" id="tab-notes" onclick="switchTab('notes',${d.id})">Updates (${d.notes.filter(n=>n.type!=='designer-submitted'&&n.type!=='career-request').length})</div>`:''}
       ${(isAdmin()||currentUser?.designerId===d.id)?`<div class="tab" id="tab-contact" onclick="switchTab('contact',${d.id})">Contact</div>`:''}
       ${isAdmin()&&d.onboardingChecklist?`<div class="tab" id="tab-onboarding" onclick="switchTab('onboarding',${d.id})">Return Checklist</div>`:''}
+      </div>
+      <button class="tab-scroll-btn right" id="tabs-right-${d.id}" onclick="scrollTabs(${d.id},1)">›</button>
     </div>
     <div id="tab-content"></div>`;
 
   renderDesignerTab('overview', d);
+  // Check arrows after render
+  const _did = d.id;
+  setTimeout(()=>updateTabArrows(_did), 50);
 }
 
 function switchTab(tab, designerId){
@@ -1568,6 +1583,20 @@ function switchTab(tab, designerId){
   destroyCharts();
   const d=designers.find(x=>x.id===designerId);
   renderDesignerTab(tab, d);
+  // Scroll active tab into view and update arrows
+  setTimeout(()=>{
+    const activeTab = document.getElementById('tab-'+tab);
+    const scrollEl = document.getElementById('tabs-scroll-'+designerId);
+    if(activeTab && scrollEl){
+      const tabLeft = activeTab.offsetLeft;
+      const tabRight = tabLeft + activeTab.offsetWidth;
+      const viewLeft = scrollEl.scrollLeft;
+      const viewRight = viewLeft + scrollEl.clientWidth;
+      if(tabLeft < viewLeft) scrollEl.scrollTo({left: tabLeft - 8, behavior:'smooth'});
+      else if(tabRight > viewRight) scrollEl.scrollTo({left: tabRight - scrollEl.clientWidth + 8, behavior:'smooth'});
+    }
+    updateTabArrows(designerId);
+  }, 30);
 }
 
 
@@ -1632,7 +1661,7 @@ function renderDesignerTab(tab, d){
         <div class="card card-full">
           <div class="card-label" style="justify-content:space-between">
             <span>Projects</span>
-            ${isAdmin()?`<button class="btn btn-outline btn-sm" onclick="openAddProject(${d.id})">+ Add</button>`:''}
+            ${canEdit()?`<button class="btn btn-outline btn-sm" onclick="openAddProject(${d.id})">+ Add</button>`:''}
           </div>
           <div style="display:flex;flex-direction:column;gap:0">
             ${(d.projects||[]).map((p,pi)=>{
@@ -1784,7 +1813,7 @@ function renderDesignerTab(tab, d){
         </div>
         <div style="display:flex;gap:8px;align-items:center">
           ${dorScore>0?`<span style="font-size:11px;color:#1B7A3E;background:#E8F5EE;padding:3px 8px;border-radius:10px">✅ ${greenCount}</span><span style="font-size:11px;color:#B45309;background:#FEF3C7;padding:3px 8px;border-radius:10px">⚠️ ${yellowCount}</span><span style="font-size:11px;color:#D93025;background:#FDECEA;padding:3px 8px;border-radius:10px">❌ ${redCount}</span>`:'<span style="font-size:11px;color:var(--gray-mid)">Not yet assessed</span>'}
-          <button class="btn btn-primary btn-sm" onclick="document.getElementById('note-type').value='dor';document.getElementById('note-designer').value=${d.id};showModal('addNote')">+ DoR Note</button>
+          ${canEdit()?`<button class="btn btn-primary btn-sm" onclick="document.getElementById('note-type').value='dor';document.getElementById('note-designer').value=${d.id};showModal('addNote')">+ DoR Note</button>`:''}
         </div>
       </div>
 
@@ -1903,7 +1932,7 @@ function renderDesignerTab(tab, d){
             <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal)">Documents</div>
             <div style="font-size:12px;color:var(--gray-mid);margin-top:2px">Performance reviews, mid-year docs, promotion write-ups, and other reference materials</div>
           </div>
-          ${isAdmin()?`<button class="btn btn-primary btn-sm" onclick="openAddDocModal(${d.id})">+ Add Document</button>`:''}
+          ${canEdit()?`<button class="btn btn-primary btn-sm" onclick="openAddDocModal(${d.id})">+ Add Document</button>`:''}
         </div>
         <div style="background:#fff;border:1px solid var(--gray-border);border-radius:10px;overflow:hidden">
           ${docs.length===0?`<div class="empty-state" style="padding:32px"><div class="empty-state-icon">📄</div><p>${isAdmin()?'No documents yet. Add links to performance reviews, mid-year docs, or any other reference materials.':'No documents have been shared yet.'}</p></div>`:''}
@@ -1916,7 +1945,7 @@ function renderDesignerTab(tab, d){
               </div>
               <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
                 <a href="${doc.url}" target="_blank" style="padding:5px 12px;background:var(--warm-white);border:1px solid var(--gray-border);border-radius:6px;font-size:11px;color:var(--charcoal);text-decoration:none;font-family:'DM Sans',sans-serif;white-space:nowrap">Open →</a>
-                ${isAdmin()?`<button onclick="removeDoc(${d.id},${i})" style="padding:5px 8px;background:none;border:1px solid var(--gray-border);border-radius:6px;font-size:11px;color:var(--gray-mid);cursor:pointer;font-family:'DM Sans',sans-serif">✕</button>`:''}
+                ${canEdit()?`<button onclick="removeDoc(${d.id},${i})" style="padding:5px 8px;background:none;border:1px solid var(--gray-border);border-radius:6px;font-size:11px;color:var(--gray-mid);cursor:pointer;font-family:'DM Sans',sans-serif">✕</button>`:''}
               </div>
             </div>`).join('')}
         </div>
@@ -2124,7 +2153,7 @@ function renderDesignerTab(tab, d){
           <button class="reply-submit" onclick="submitAdminReply(${d.id},${idx})">Reply</button>
         </div>`}` : n.adminReply&&!isAdmin()?`<div class="admin-reply"><div class="admin-reply-label">Mirella replied</div>${n.adminReply}</div>`:'';
       const noteIndex = d.notes.indexOf(n);
-      const visibilityToggle = isAdmin()&&!isDesignerNote ? `<button onclick="toggleNoteVisibility(${d.id},${noteIndex})" style="font-size:10px;padding:1px 8px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;color:var(--gray-mid);font-family:'DM Sans',sans-serif;margin-top:5px">${n.visibleToDesigner?'Hide from designer':'Share with designer'}</button>` : '';
+      const visibilityToggle = canEdit()&&!isDesignerNote ? `<button onclick="toggleNoteVisibility(${d.id},${noteIndex})" style="font-size:10px;padding:1px 8px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;color:var(--gray-mid);font-family:'DM Sans',sans-serif;margin-top:5px">${n.visibleToDesigner?'Hide from designer':'Share with designer'}</button>` : '';
       return `<div class="${itemClass}" style="display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--gray-border)">
         <div style="font-size:16px">${icon}</div>
         <div style="flex:1">
@@ -2152,7 +2181,7 @@ function renderDesignerTab(tab, d){
       <div class="card card-full">
         <div class="card-label" style="justify-content:space-between">
           <span>Updates & Notes</span>
-          ${isAdmin()?`<button class="btn btn-outline btn-sm" onclick="document.getElementById('note-designer').value=${d.id};showModal('addNote')">+ Add</button>`:''}
+          ${canEdit()?`<button class="btn btn-outline btn-sm" onclick="document.getElementById('note-designer').value=${d.id};showModal('addNote')">+ Add</button>`:''}
         </div>
         ${adminNotes.length===0&&isAdmin()?`<div class="empty-state"><div class="empty-state-icon">📝</div><p>No admin notes yet.</p></div>`:
           adminNotes.slice().reverse().map((n,i)=>renderNoteItem(n,i,false)).join('')}
@@ -2292,7 +2321,7 @@ function renderDesignerTab(tab, d){
           </div>
         </div>
 
-        ${isAdmin()?`<div class="contact-card contact-section-full">
+        ${canEdit()?`<div class="contact-card contact-section-full">
           <div class="contact-card-label">Edit Contact Info</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
             <div>
@@ -2487,6 +2516,24 @@ async function toggleNoteVisibility(designerId, noteIndex){
   renderDesignerTab('notes', d);
 }
 
+function scrollTabs(designerId, dir){
+  const el = document.getElementById('tabs-scroll-'+designerId);
+  if(!el) return;
+  el.scrollBy({left: dir * 120, behavior:'smooth'});
+  setTimeout(()=>updateTabArrows(designerId), 200);
+}
+
+function updateTabArrows(designerId){
+  const el = document.getElementById('tabs-scroll-'+designerId);
+  const leftBtn = document.getElementById('tabs-left-'+designerId);
+  const rightBtn = document.getElementById('tabs-right-'+designerId);
+  if(!el||!leftBtn||!rightBtn) return;
+  const hasLeft = el.scrollLeft > 4;
+  const hasRight = el.scrollLeft < (el.scrollWidth - el.clientWidth - 4);
+  leftBtn.classList.toggle('visible', hasLeft);
+  rightBtn.classList.toggle('visible', hasRight);
+}
+
 function submitDesignerNote(designerId){
   const text = document.getElementById('designer-note-input')?.value.trim();
   if(!text) return alert('Please write something before submitting.');
@@ -2648,7 +2695,7 @@ function renderLeaveView(){
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between">
             <span style="font-size:13px;font-weight:500;padding:4px 10px;border-radius:16px;background:${d.onLeave?'#FEF3C7':'#E8F5EE'};color:${d.onLeave?'#92400E':'#1B7A3E'}">${d.onLeave||'✅ Active'}</span>
-            ${isAdmin()?`<button class="btn btn-outline btn-sm" onclick="showLeaveModal(${d.id})">Edit</button>`:''}
+            ${canEdit()?`<button class="btn btn-outline btn-sm" onclick="showLeaveModal(${d.id})">Edit</button>`:''}
           </div>
           ${dateRange}${returnNote}
           <div style="font-size:11px;color:var(--gray-mid);margin-top:4px">📍 ${d.location}</div>
@@ -3223,6 +3270,9 @@ function copyPrep(){
 // ── Slack Integration ──
 document.addEventListener('DOMContentLoaded', () => {
   checkLeaveExpiry();
+  window.addEventListener('resize', ()=>{
+    if(currentDesignerId) updateTabArrows(currentDesignerId);
+  });
   const sel = document.getElementById('slack-designer');
   if(sel) sel.innerHTML = designers.map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
   document.getElementById('slack-channel')?.addEventListener('change', function(){
@@ -3604,7 +3654,7 @@ async function atSaveAccount(u, f){ /* no-op */ }
 
 // ── AUTH ──
 
-const AUTH_CREDS = {"smartt_admin": {"role": "admin", "designerId": null, "name": "Mirella"}, "will_grow": {"role": "designer", "designerId": 1, "name": "Will Soemargo"}, "pooja_grow": {"role": "designer", "designerId": 2, "name": "Pooja Sheth"}, "lauren_grow": {"role": "designer", "designerId": 3, "name": "Lauren Lang"}, "jon_grow": {"role": "designer", "designerId": 4, "name": "Jon Grimes"}, "christina_grow": {"role": "designer", "designerId": 6, "name": "Christina Poon"}};
+const AUTH_CREDS = {"smartt_admin": {"role": "admin", "designerId": null, "name": "Mirella"}, "devoe_view": {"role": "viewer", "designerId": null, "name": "Ava DeVoe"}, "will_grow": {"role": "designer", "designerId": 1, "name": "Will Soemargo"}, "pooja_grow": {"role": "designer", "designerId": 2, "name": "Pooja Sheth"}, "lauren_grow": {"role": "designer", "designerId": 3, "name": "Lauren Lang"}, "jon_grow": {"role": "designer", "designerId": 4, "name": "Jon Grimes"}, "christina_grow": {"role": "designer", "designerId": 6, "name": "Christina Poon"}};
 const SESSION_KEY = 'rdc_session_v1';
 
 function authLogin(){
@@ -3630,9 +3680,15 @@ function authBegin(pw, user){
   renderAccountTrigger();
   if(user.role === 'designer'){
     document.body.classList.add('designer-mode');
+    document.body.classList.remove('viewer-mode');
     initApp(user.designerId);
+  } else if(user.role === 'viewer'){
+    document.body.classList.remove('designer-mode');
+    document.body.classList.add('viewer-mode');
+    initApp(null);
   } else {
     document.body.classList.remove('designer-mode');
+    document.body.classList.remove('viewer-mode');
     initApp(null);
   }
 }
@@ -3646,7 +3702,7 @@ function authLogout(){
   document.getElementById('auth-pw').value = '';
   document.getElementById('auth-err').textContent = '';
   document.body.classList.remove('designer-mode');
-  const badge = document.getElementById('user-badge');
+  document.body.classList.remove('viewer-mode');
   const logoutBtn = document.getElementById('logout-btn');
   if(badge) badge.style.display = 'none';
   if(logoutBtn) logoutBtn.style.display = 'none';
@@ -3781,7 +3837,8 @@ document.addEventListener('click', function(e){
 // No-op stubs for legacy calls
 function applyAcctOverrides(){}
 
-function isAdmin(){ return currentUser && currentUser.role === 'admin'; }
+function isAdmin(){ return currentUser && (currentUser.role === 'admin' || currentUser.role === 'viewer'); }
+function canEdit(){ return currentUser && currentUser.role === 'admin'; }
 function getDesignerId(){ return currentUser ? currentUser.designerId : null; }
 
 // ── ON MY RADAR ──────────────────────────────────────────────────────────────
@@ -3879,7 +3936,7 @@ function renderRoadmapView(){
           const entry=(d.roadmap||[]).find(r=>r.quarter===q);
           const isLeave=d.onLeave&&qi===0;
           const displayEntry=isLeave?{project:d.onLeave,status:'leave',notes:d.returnDate||''}:entry;
-          return`<div class="roadmap-cell" onclick="isAdmin()&&openRoadmapEdit(${d.id},'${q}')" style="cursor:pointer;transition:background .12s" onmouseover="this.style.background='var(--warm-white)'" onmouseout="this.style.background=''">${pillHTML(displayEntry)}</div>`;
+          return`<div class="roadmap-cell" onclick="canEdit()&&openRoadmapEdit(${d.id},'${q}')" style="cursor:pointer;transition:background .12s" onmouseover="this.style.background='var(--warm-white)'" onmouseout="this.style.background=''">${pillHTML(displayEntry)}</div>`;
         }).join('')}
       </div>`).join('')}
   </div>`;
@@ -3927,7 +3984,7 @@ function renderReviewCycleView(){
     const rc=d.reviewCycle||{};
     const val=rc[stage.key];
     const isDone=!!val;
-    return`<div class="review-cell" style="cursor:pointer" onclick="toggleReviewStage(${d.id},'${stage.key}')" title="${isDone?'Mark incomplete':'Mark complete'}">
+    return`<div class="review-cell" style="cursor:pointer" onclick="canEdit()&&toggleReviewStage(${d.id},'${stage.key}')" title="${isDone?'Mark incomplete':'Mark complete'}">
       <div class="review-stage">
         <div class="review-dot ${isDone?'complete':''}"></div>
         <span style="font-size:11px;color:${isDone?'var(--exceeds)':'var(--gray-mid)'}">${isDone?val:'—'}</span>
@@ -4149,7 +4206,7 @@ function renderCareerTab(d, content){
         <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal)">Path to ${nextLevelKey}</div>
         <div style="font-size:12px;color:var(--gray-mid);margin-top:2px">${criteria.label} — based on RDC career ladder</div>
       </div>
-      ${isAdmin()?`<button onclick="generateCareerRecs(${d.id})" style="padding:8px 16px;background:var(--charcoal);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px">
+      ${canEdit()?`<button onclick="generateCareerRecs(${d.id})" style="padding:8px 16px;background:var(--charcoal);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px">
         ✦ AI Recommendations
       </button>`:''}
     </div>
