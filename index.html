@@ -327,21 +327,43 @@
   .onboard-check-text.done{text-decoration:line-through;color:var(--gray-mid)}
 
   /* CAREER PATH TAB */
-  .career-level-bar{display:flex;align-items:center;gap:0;margin-bottom:24px;border-radius:8px;overflow:hidden;border:1px solid var(--gray-border)}
-  .career-level-seg{flex:1;padding:8px 10px;text-align:center;font-size:11px;font-weight:500;background:#fff;color:var(--gray-mid);border-right:1px solid var(--gray-border);transition:all .15s;line-height:1.3}
-  .career-level-seg:last-child{border-right:none}
-  .career-level-seg.current{background:var(--charcoal);color:#fff}
-  .career-level-seg.past{background:var(--exceeds-bg);color:var(--exceeds)}
-  .career-level-seg.next{background:#EDE9FE;color:#5B21B6;font-weight:600}
-  .career-dim-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--gray-border)}
-  .career-dim-row:last-child{border-bottom:none}
-  .career-dim-bar{width:80px;flex-shrink:0;margin-top:2px}
-  .career-dim-indicator{height:6px;border-radius:3px;margin-bottom:2px}
-  .career-dim-label{font-size:9px;color:var(--gray-mid);text-align:center}
-  .career-signal{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;margin-right:4px;margin-bottom:3px}
-  .career-signal-strong{background:var(--exceeds-bg);color:var(--exceeds)}
-  .career-signal-developing{background:#FEF3C7;color:#92400E}
-  .career-signal-gap{background:var(--red-light);color:var(--red-dark)}
+  .career-progress-track{position:relative;margin-bottom:36px;padding:0 8px}
+  .career-progress-bar-bg{height:6px;background:#E5E7EB;border-radius:3px;position:relative;margin:28px 0 8px}
+  .career-progress-bar-fill{height:100%;border-radius:3px;background:var(--charcoal);transition:width .4s}
+  .career-level-nodes{display:flex;justify-content:space-between;position:absolute;top:-8px;left:0;right:0}
+  .career-level-node{display:flex;flex-direction:column;align-items:center;position:relative;cursor:default}
+  .career-level-node-dot{width:22px;height:22px;border-radius:50%;border:3px solid #E5E7EB;background:#fff;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#9CA3AF;position:relative;z-index:1}
+  .career-level-node-dot.past{background:var(--charcoal);border-color:var(--charcoal);color:#fff}
+  .career-level-node-dot.current{background:var(--charcoal);border-color:var(--charcoal);color:#fff;box-shadow:0 0 0 4px rgba(30,30,30,.15)}
+  .career-level-node-dot.next{background:#fff;border-color:#9CA3AF;color:#9CA3AF}
+  .career-level-node-label{font-size:10px;font-weight:600;color:var(--charcoal);margin-top:6px;white-space:nowrap}
+  .career-level-node-label.muted{color:#9CA3AF}
+  .career-level-node-sublabel{font-size:9px;color:#9CA3AF;white-space:nowrap}
+  .you-are-here{position:absolute;top:-32px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;white-space:nowrap}
+  .you-are-here-label{font-size:9px;font-weight:700;background:var(--charcoal);color:#fff;padding:2px 7px;border-radius:8px;letter-spacing:.3px}
+  .you-are-here-arrow{font-size:11px;color:var(--charcoal)}
+  .career-from-to{background:#fff;border:1px solid var(--gray-border);border-radius:10px;overflow:hidden;margin-bottom:14px}
+  .career-from-to-header{display:grid;grid-template-columns:180px 1fr 1fr;background:var(--warm-white);border-bottom:1px solid var(--gray-border)}
+  .career-from-to-header-cell{padding:8px 14px;font-size:10px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.6px}
+  .career-from-to-header-cell.current-col{color:var(--charcoal);background:#F0F0F0}
+  .career-from-to-header-cell.next-col{color:#5B21B6;background:#F5F3FF}
+  .career-from-to-row{display:grid;grid-template-columns:180px 1fr 1fr;border-bottom:1px solid var(--gray-border);align-items:stretch}
+  .career-from-to-row:last-child{border-bottom:none}
+  .career-from-to-row.signal-strong .career-signal-indicator{background:#E8F5EE}
+  .career-from-to-row.signal-developing .career-signal-indicator{background:#EFF6FF}
+  .career-from-to-row.signal-gap .career-signal-indicator{background:#FFFBEB}
+  .career-dim-name-cell{padding:12px 14px;font-size:12px;font-weight:600;color:var(--charcoal);border-right:1px solid var(--gray-border);display:flex;flex-direction:column;gap:4px}
+  .career-signal-pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;width:fit-content}
+  .career-signal-pill.strong{background:#D1FAE5;color:#065F46}
+  .career-signal-pill.developing{background:#DBEAFE;color:#1E40AF}
+  .career-signal-pill.gap{background:#FEF3C7;color:#92400E}
+  .career-from-cell{padding:12px 14px;font-size:11px;color:var(--gray-dark);line-height:1.6;border-right:1px solid var(--gray-border)}
+  .career-to-cell{padding:12px 14px;font-size:11px;line-height:1.6}
+  .career-to-cell.strong{color:#065F46}
+  .career-to-cell.developing{color:#1E40AF}
+  .career-to-cell.gap{color:#92400E}
+  .career-evidence-box{font-size:11px;color:var(--gray-dark);background:var(--warm-white);border-radius:5px;padding:6px 8px;margin-top:6px;line-height:1.5;border-left:2px solid #E5E7EB;grid-column:2/-1}
+  .career-signal-indicator{padding:0 14px;display:flex;align-items:center}
 
   /* OFFBOARDING NOTES */
   .offboard-section{margin-bottom:28px}
@@ -1315,29 +1337,70 @@ When assessing a designer, explicitly map their evidence (from reviews, goals, n
 
 const LADDER_CRITERIA = {
   T3_to_T4: {
-    label: 'T3 → T4 (Mid-Level → Senior)',
+    label: 'Mid-Level → Senior',
+    currentLabel: 'At T3 (Mid-Level)',
+    nextLabel: 'At T4 (Senior)',
     dimensions: [
-      { id: 'ambiguity', label: 'Handles Ambiguous / Multi-flow Projects', desc: 'Takes on projects with many unknowns, multiple user flows, minimal supervision' },
-      { id: 'leadership_moment', label: 'Demonstrates Leadership Moments', desc: 'Has driven a design sprint, coordinated other designers, led a design effort' },
-      { id: 'delivery', label: 'Consistent High-Quality Delivery', desc: 'Reliable, on-time, strong handoff specs, VQA, documentation' },
-      { id: 'xfn', label: 'Strong Cross-Functional Relationships', desc: 'Trusted partner to PM and Eng; proactive communication, early alignment' },
-      { id: 'team_contribution', label: 'Contributes to Team Improvements', desc: 'Process improvements, design system contributions, advocates for design practice' },
-      { id: 'product_thinking', label: 'Strategic / Product Thinking', desc: 'Understands business goals, KPIs, user problems behind the design — not just execution' },
-      { id: 'ownership', label: 'Outcome Ownership', desc: 'Follows through post-handoff, does UX QA, iterates based on data/feedback' }
+      { id: 'ambiguity', label: 'Project Scope & Ambiguity',
+        from: 'Works on defined features with moderate complexity and clear direction from manager or lead.',
+        to: 'Independently navigates larger, ambiguous projects with multiple user flows and many unknowns. Minimal supervision needed.' },
+      { id: 'leadership_moment', label: 'Leadership & Initiative',
+        from: 'Executes well on assigned work. Raises issues but rarely drives resolution independently.',
+        to: 'Drives design efforts — facilitates sprints, coordinates other designers on sub-projects, steps up without being asked.' },
+      { id: 'delivery', label: 'Delivery Quality & Reliability',
+        from: 'Generally meets deadlines. Handoff specs and documentation are inconsistent.',
+        to: 'Consistent, on-time delivery with strong handoff specs, VQA, and documentation. Engineering rarely needs to follow up.' },
+      { id: 'xfn', label: 'Cross-Functional Relationships',
+        from: 'Collaborates well when in meetings. Reactive rather than proactive in partner communication.',
+        to: 'Trusted partner to PM and Eng. Proactive early alignment, flags risks before they become problems.' },
+      { id: 'team_contribution', label: 'Team & Practice Contribution',
+        from: 'Participates in team rituals and contributes to discussions.',
+        to: 'Actively improves the team — process changes, design system contributions, advocates for design practice.' },
+      { id: 'product_thinking', label: 'Strategic & Product Thinking',
+        from: 'Understands user needs and translates requirements into design. Focuses on the "what."',
+        to: 'Connects design decisions to business goals, KPIs, and user problems. Challenges assumptions about the "why."' },
+      { id: 'ownership', label: 'Outcome Ownership',
+        from: 'Delivers designs and considers the work done at handoff.',
+        to: 'Follows through post-handoff — UX QA, iterates based on data and feedback, owns the outcome not just the deliverable.' }
     ]
   },
   T4_to_T5: {
-    label: 'T4 → T5 (Senior → Lead)',
+    label: 'Senior → Lead',
+    currentLabel: 'At T4 (Senior)',
+    nextLabel: 'At T5 (Lead)',
     dimensions: [
-      { id: 'multi_area', label: 'Influences Multiple Product Areas', desc: 'Impact beyond a single feature — cross-squad, cross-surface influence' },
-      { id: 'cross_team_direction', label: 'Sets Cross-Team Design Direction', desc: 'Defines patterns and vision that guide other designers\' work' },
-      { id: 'colead', label: 'Co-leads with PM & Eng as Equal Partner', desc: 'Shapes roadmap and strategy, not just executing on it. Questions constraints, negotiates.' },
-      { id: 'exec_presence', label: 'Executive Forum Presence', desc: 'Presents design strategy clearly in PIPR, exec forums, product strategy meetings' },
-      { id: 'thought_leadership', label: 'Recognized as Thought Leader', desc: 'Design org and cross-functional leadership look to them for design direction and expertise' },
-      { id: 'mentorship_scale', label: 'Mentorship at Scale', desc: 'Actively develops multiple designers across teams, not just 1:1 guidance' },
-      { id: 'systems_thinking', label: 'Systems-Level & Strategic Vision', desc: 'Oversees design system evolution, defines design ecosystems, long-range thinking' }
+      { id: 'multi_area', label: 'Scope of Influence',
+        from: 'Owns and executes deeply within one product area or squad.',
+        to: 'Influences multiple product areas or squads. Impact is felt cross-surface, not just within one team.' },
+      { id: 'cross_team_direction', label: 'Setting Design Direction',
+        from: 'Makes strong design decisions for their own work. Others may follow their lead informally.',
+        to: 'Defines patterns and vision that actively guide other designers\' work. Others look to them for direction.' },
+      { id: 'colead', label: 'Partnership with PM & Eng',
+        from: 'Strong execution partner. Translates requirements into design and delivers with quality.',
+        to: 'Co-leads with PM and Eng as an equal. Shapes roadmap and strategy upstream, not just executes downstream.' },
+      { id: 'exec_presence', label: 'Executive & Stakeholder Presence',
+        from: 'Presents work clearly to immediate team and stakeholders.',
+        to: 'Presents design strategy confidently in PIPR, exec forums, and product strategy meetings. Influences at leadership level.' },
+      { id: 'thought_leadership', label: 'Recognized Expertise',
+        from: 'Respected within the design team for craft and delivery.',
+        to: 'Recognized as a thought leader by both the design org AND cross-functional leadership. People actively seek their perspective.' },
+      { id: 'mentorship_scale', label: 'Mentorship & Designer Development',
+        from: 'Provides good peer feedback and may informally support newer designers.',
+        to: 'Actively develops multiple designers across teams with intentionality. Mentorship is deliberate, not incidental.' },
+      { id: 'systems_thinking', label: 'Systems-Level Thinking',
+        from: 'Works effectively within design systems and considers platform constraints.',
+        to: 'Oversees design system evolution, defines ecosystems, thinks long-range about how the whole fits together.' }
     ]
   }
+};
+
+// Level position context — where in the level a designer sits
+const LEVEL_POSITION = {
+  1: { position: 'start', note: 'Just promoted — at the very beginning of Senior.' },
+  2: { position: 'advancing', note: 'Advancing through Senior — PAC nomination pending.' },
+  3: { position: 'start', note: 'Newer to Senior — still building into the level.' },
+  4: { position: 'developing', note: 'Developing at Mid-Level — clear growth momentum.' },
+  6: { position: 'established', note: 'Established at Lead — deepening and expanding impact.' }
 };
 
 function getRatingClass(r){if(!r)return'rating-achieves';if(r.includes('Exceeds'))return'rating-exceeds';if(r.includes('Below'))return'rating-below';return'rating-achieves';}
@@ -4369,122 +4432,145 @@ function renderCareerTab(d, content){
   const levels = ['T2','T3','T4','T5','T6'];
   const levelLabels = {'T2':'Associate','T3':'Mid-Level','T4':'Senior','T5':'Lead','T6':'Principal'};
   const currentLevelKey = d.level.match(/T(\d)/)?.[0] || 'T3';
-  const nextLevelKey = 'T'+( parseInt(currentLevelKey.replace('T','')) + 1 );
+  const nextLevelKey = 'T'+(parseInt(currentLevelKey.replace('T',''))+1);
+  const currentIdx = levels.indexOf(currentLevelKey);
+  const levelCtx = LEVEL_POSITION[d.id] || {position:'developing', note:''};
 
-  const levelBar = levels.map(l=>{
-    const cls = l===currentLevelKey?'current':levels.indexOf(l)<levels.indexOf(currentLevelKey)?'past':l===nextLevelKey?'next':'';
-    return`<div class="career-level-seg ${cls}">${l}<div style="font-size:9px;opacity:.75">${levelLabels[l]||''}</div></div>`;
-  }).join('');
+  // Progress bar fill % — past levels full, current level partial based on position
+  const positionFill = {start:5, developing:35, advancing:60, established:80};
+  const fillPerSegment = 100 / (levels.length - 1);
+  const fillPct = (currentIdx * fillPerSegment) + (fillPerSegment * (positionFill[levelCtx.position]||30) / 100);
+
+  // Node positions as % across the bar
+  const nodePositions = levels.map((_,i) => (i / (levels.length-1)) * 100);
+
+  // "You are here" position
+  const youAreHerePct = fillPct;
+
+  // Build progress bar HTML
+  const progressHTML = `
+    <div class="career-progress-track">
+      <div class="career-progress-bar-bg">
+        <div class="career-progress-bar-fill" style="width:${fillPct}%"></div>
+        <!-- You are here indicator -->
+        <div class="you-are-here" style="left:${youAreHerePct}%;position:absolute;top:-30px;transform:translateX(-50%)">
+          <div class="you-are-here-label">You are here</div>
+          <div class="you-are-here-arrow">↓</div>
+        </div>
+        <!-- Level nodes -->
+        <div class="career-level-nodes" style="top:-8px">
+          ${levels.map((l,i)=>{
+            const cls = i < currentIdx ? 'past' : l===currentLevelKey ? 'current' : 'next';
+            const labelCls = i > currentIdx ? 'muted' : '';
+            return `<div class="career-level-node" style="position:absolute;left:${nodePositions[i]}%;transform:translateX(-50%)">
+              <div class="career-level-node-dot ${cls}">${l.replace('T','')}</div>
+              <div class="career-level-node-label ${labelCls}" style="margin-top:4px">${l}</div>
+              <div class="career-level-node-sublabel">${levelLabels[l]}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      <!-- spacer for node labels below bar -->
+      <div style="height:36px"></div>
+    </div>`;
+
+  // Context note
+  const contextNote = levelCtx.note
+    ? `<div style="background:#fff;border:1px solid var(--gray-border);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--gray-dark);line-height:1.6;display:flex;gap:8px;align-items:flex-start">
+        <span style="font-size:14px;flex-shrink:0">📍</span>
+        <span>${levelCtx.note}</span>
+      </div>`
+    : '';
 
   if(!evidence){
-    content.innerHTML=`<div style="max-width:680px">
-      <div class="career-level-bar">${levelBar}</div>
-      <div class="empty-state"><p>Career path analysis not yet configured for this designer.</p></div>
-    </div>`; return;
+    content.innerHTML=`<div style="max-width:720px">${progressHTML}${contextNote}<div class="empty-state"><p>Career path analysis not yet configured for this designer.</p></div></div>`;
+    return;
   }
 
   const criteria = LADDER_CRITERIA[evidence.targetLevel];
   const dims = evidence.dimensions;
 
-  // Warmer signal labels and colors
+  // Signal config — no red, no gray conflicts
   const signalConfig = {
-    strong:     { label:'You\'re doing this',   adminLabel:'Demonstrated',     color:'#1B7A3E', bg:'#E8F5EE', barWidth:'100%' },
-    developing: { label:'You\'re building this', adminLabel:'Building',         color:'#1A56A0', bg:'#E8F0FB', barWidth:'58%'  },
-    gap:        { label:'Next to explore',        adminLabel:'Opportunity ahead', color:'#6B7280', bg:'#F3F4F6', barWidth:'20%'  }
+    strong:     { pill:'strong',     pillLabel: isAdmin()?'Demonstrated':'You\'re doing this',   rowClass:'signal-strong'     },
+    developing: { pill:'developing', pillLabel: isAdmin()?'Building':'Building toward this',      rowClass:'signal-developing' },
+    gap:        { pill:'gap',        pillLabel: isAdmin()?'Opportunity ahead':'Next to explore',   rowClass:'signal-gap'        }
   };
 
   // Sort: strong first, then developing, then gap
   const sorted = [...criteria.dimensions].sort((a,b)=>{
-    const order = {strong:0, developing:1, gap:2};
-    const sa = (dims[a.id]||{}).signal||'gap';
-    const sb = (dims[b.id]||{}).signal||'gap';
-    return order[sa] - order[sb];
+    const order={strong:0,developing:1,gap:2};
+    return order[(dims[a.id]||{}).signal||'gap'] - order[(dims[b.id]||{}).signal||'gap'];
   });
 
-  const counts = {strong:0, developing:0, gap:0};
+  const counts = {strong:0,developing:0,gap:0};
   criteria.dimensions.forEach(dim=>{ counts[(dims[dim.id]||{}).signal||'gap']++; });
 
-  const dimRows = sorted.map(dim=>{
-    const ev = dims[dim.id]||{signal:'gap', evidence:'No evidence collected yet.'};
-    const cfg = signalConfig[ev.signal];
-    const displayLabel = isAdmin() ? cfg.adminLabel : cfg.label;
-    return`<div class="career-dim-row">
-      <div class="career-dim-bar">
-        <div class="career-dim-indicator" style="background:${cfg.color};width:${cfg.barWidth}"></div>
-        <div class="career-dim-label" style="color:${cfg.color}">${displayLabel}</div>
+  // From/To table
+  const tableHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div>
+        <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal)">Your path: ${currentLevelKey} → ${nextLevelKey}</div>
+        <div style="font-size:11px;color:var(--gray-mid);margin-top:2px">What changes as you grow from ${levelLabels[currentLevelKey]} to ${levelLabels[nextLevelKey]} · sorted by strongest first</div>
       </div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:12px;font-weight:600;color:var(--charcoal);margin-bottom:3px">${dim.label}</div>
-        <div style="font-size:11px;color:var(--gray-mid);line-height:1.6">${dim.desc}</div>
-        <div style="font-size:11px;color:var(--gray-dark);margin-top:5px;line-height:1.6;padding:6px 8px;background:${cfg.bg};border-radius:5px;border-left:2px solid ${cfg.color}">
-          ${ev.evidence}
-        </div>
+      ${canEdit()?`<button onclick="generateCareerRecs(${d.id})" style="padding:8px 14px;background:var(--charcoal);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0">✦ AI Recommendations</button>`:''}
+    </div>
+
+    <div class="career-from-to">
+      <div class="career-from-to-header">
+        <div class="career-from-to-header-cell">Area</div>
+        <div class="career-from-to-header-cell current-col">${criteria.currentLabel}</div>
+        <div class="career-from-to-header-cell next-col">${criteria.nextLabel} — what's expected</div>
+      </div>
+      ${sorted.map(dim=>{
+        const ev = dims[dim.id]||{signal:'gap',evidence:'No evidence yet.'};
+        const cfg = signalConfig[ev.signal];
+        return `<div class="career-from-to-row ${cfg.rowClass}">
+          <div class="career-dim-name-cell">
+            <span>${dim.label}</span>
+            <span class="career-signal-pill ${cfg.pill}">${cfg.pillLabel}</span>
+          </div>
+          <div class="career-from-cell">${dim.from}</div>
+          <div class="career-to-cell ${ev.signal}">
+            <div>${dim.to}</div>
+            <div style="margin-top:6px;font-size:10px;background:${ev.signal==='strong'?'#D1FAE5':ev.signal==='developing'?'#DBEAFE':'#FEF3C7'};color:${ev.signal==='strong'?'#065F46':ev.signal==='developing'?'#1E40AF':'#92400E'};padding:5px 8px;border-radius:5px;line-height:1.5">
+              <strong>Where you are now:</strong> ${ev.evidence}
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  // Summary bar (no tiles, text-based)
+  const summaryHTML = `
+    <div style="display:flex;gap:16px;margin-bottom:16px;padding:12px 16px;background:#fff;border:1px solid var(--gray-border);border-radius:8px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="width:10px;height:10px;border-radius:50%;background:#065F46;display:inline-block"></span>
+        <span style="font-size:12px;color:var(--gray-dark)"><strong style="color:#065F46">${counts.strong}</strong> ${isAdmin()?'demonstrated':'you\'re doing this'}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="width:10px;height:10px;border-radius:50%;background:#1E40AF;display:inline-block"></span>
+        <span style="font-size:12px;color:var(--gray-dark)"><strong style="color:#1E40AF">${counts.developing}</strong> ${isAdmin()?'building':'building toward'}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="width:10px;height:10px;border-radius:50%;background:#B45309;display:inline-block"></span>
+        <span style="font-size:12px;color:var(--gray-dark)"><strong style="color:#B45309">${counts.gap}</strong> ${isAdmin()?'opportunity ahead':'next to explore'}</span>
       </div>
     </div>`;
-  }).join('');
 
-  // Summary phrase — no percentage, warm language
-  const summaryPhrases = {
-    strong: [
-      `${d.name.split(' ')[0]} is demonstrating real ${nextLevelKey} behaviors in several areas — this is a genuine path.`,
-      `There's meaningful evidence of ${nextLevelKey}-level work happening already.`
-    ],
-    mixed: [
-      `${d.name.split(' ')[0]} has a solid foundation and clear areas where ${nextLevelKey} behaviors are emerging.`,
-      `Good momentum in key areas — there are natural next steps to work toward together.`
-    ],
-    early: [
-      `${d.name.split(' ')[0]} is at the start of the ${nextLevelKey} path with some clear early opportunities to focus on.`,
-      `There's a clear direction ahead — the strongest areas are a great foundation to build from.`
-    ]
-  };
-  const phraseSet = counts.strong >= 4 ? summaryPhrases.strong : counts.strong >= 2 ? summaryPhrases.mixed : summaryPhrases.early;
-  const summaryText = phraseSet[0];
+  content.innerHTML=`<div style="max-width:760px">
+    ${progressHTML}
+    ${contextNote}
+    ${summaryHTML}
+    ${tableHTML}
 
-  content.innerHTML=`<div style="max-width:720px">
-
-    <div class="career-level-bar">${levelBar}</div>
-
-    <div style="background:var(--warm-white);border-radius:10px;padding:14px 16px;margin-bottom:20px;font-size:13px;color:var(--gray-dark);line-height:1.7">
-      ${summaryText}
-    </div>
-
-    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
-      <div style="flex:1;min-width:140px;background:#E8F5EE;border-radius:8px;padding:12px 14px;text-align:center">
-        <div style="font-size:22px;font-weight:700;color:#1B7A3E">${counts.strong}</div>
-        <div style="font-size:11px;color:#1B7A3E;font-weight:500">${isAdmin()?'Demonstrated':'You\'re doing this'}</div>
-      </div>
-      <div style="flex:1;min-width:140px;background:#E8F0FB;border-radius:8px;padding:12px 14px;text-align:center">
-        <div style="font-size:22px;font-weight:700;color:#1A56A0">${counts.developing}</div>
-        <div style="font-size:11px;color:#1A56A0;font-weight:500">${isAdmin()?'Building':'You\'re building this'}</div>
-      </div>
-      <div style="flex:1;min-width:140px;background:#F3F4F6;border-radius:8px;padding:12px 14px;text-align:center">
-        <div style="font-size:22px;font-weight:700;color:#6B7280">${counts.gap}</div>
-        <div style="font-size:11px;color:#6B7280;font-weight:500">${isAdmin()?'Opportunity ahead':'Next to explore'}</div>
-      </div>
-    </div>
-
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <div>
-        <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal)">Path to ${nextLevelKey} — ${levelLabels[nextLevelKey]||nextLevelKey}</div>
-        <div style="font-size:12px;color:var(--gray-mid);margin-top:2px">${criteria.label} · Based on the RDC career ladder · Sorted by what's strongest first</div>
-      </div>
-      ${canEdit()?`<button onclick="generateCareerRecs(${d.id})" style="padding:8px 16px;background:var(--charcoal);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap">
-        ✦ AI Recommendations
-      </button>`:''}
-    </div>
-
-    <div style="background:#fff;border:1px solid var(--gray-border);border-radius:10px;padding:4px 16px;margin-bottom:16px">
-      ${dimRows}
-    </div>
-
-    <div id="career-recs-${d.id}" style="display:none">
+    <div id="career-recs-${d.id}" style="display:none;margin-top:16px">
       <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal);margin-bottom:12px">AI Growth Recommendations</div>
       <div id="career-recs-content-${d.id}" style="background:#fff;border:1px solid var(--gray-border);border-radius:10px;padding:16px;font-size:12px;color:var(--gray-dark);line-height:1.8"></div>
     </div>
 
-    ${!isAdmin()?`<div style="margin-top:8px;padding:10px 14px;background:var(--warm-white);border-radius:8px;font-size:12px;color:var(--gray-mid);line-height:1.6">
-      Your manager can generate AI-powered growth recommendations based on this. Bring it up in your next 1:1 — it's a great conversation starter.
+    ${!isAdmin()?`<div style="margin-top:14px;padding:10px 14px;background:#fff;border:1px solid var(--gray-border);border-radius:8px;font-size:12px;color:var(--gray-mid);line-height:1.6">
+      Your manager can generate AI-powered growth recommendations based on this analysis. Bring it up in your next 1:1 — it's a great conversation starter.
     </div>`:''}
   </div>`;
 }
