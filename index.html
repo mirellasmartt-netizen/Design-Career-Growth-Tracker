@@ -327,8 +327,8 @@
   .onboard-check-text.done{text-decoration:line-through;color:var(--gray-mid)}
 
   /* CAREER PATH TAB */
-  .career-progress-track{position:relative;margin-bottom:36px;padding:0 8px}
-  .career-progress-bar-bg{height:6px;background:#E5E7EB;border-radius:3px;position:relative;margin:28px 0 8px}
+  .career-progress-track{position:relative;margin-bottom:36px;padding:0 4px}
+  .career-progress-bar-bg{height:6px;background:#E5E7EB;border-radius:3px;position:relative;margin:44px 0 8px}
   .career-progress-bar-fill{height:100%;border-radius:3px;background:var(--charcoal);transition:width .4s}
   .career-level-nodes{display:flex;justify-content:space-between;position:absolute;top:-8px;left:0;right:0}
   .career-level-node{display:flex;flex-direction:column;align-items:center;position:relative;cursor:default}
@@ -960,7 +960,7 @@ const initialDesigners=[
     ]
   },
   {
-    id:3,name:"Lauren Lang",role:"Senior Product Designer",level:"Senior (newer to role)",area:"Online Store → UWP (Q2)",
+    id:3,name:"Lauren Lang",role:"Senior Product Designer",level:"T4 — Senior Product Designer",area:"Online Store → UWP (Q2)",
     startDate:"11/18/2024",location:"TBD, CST",contact:{birthday:"9/9",address:"3917 Katzman Dr, Austin TX 78728",cell:"512-563-5509",email:"laurenlangdesign@gmail.com",personal:""},
     projects:[
       {category:"client",name:"Online Store Redesign — Mobile IA",status:"past",fy:"FY25",detail:"Led mobile information architecture effort. Replaced text-heavy VQA docs with annotated Figma board."},
@@ -1396,11 +1396,11 @@ const LADDER_CRITERIA = {
 
 // Level position context — where in the level a designer sits
 const LEVEL_POSITION = {
-  1: { position: 'start', note: 'Just promoted — at the very beginning of Senior.' },
-  2: { position: 'advancing', note: 'Advancing through Senior — PAC nomination pending.' },
-  3: { position: 'start', note: 'Newer to Senior — still building into the level.' },
-  4: { position: 'developing', note: 'Developing at Mid-Level — clear growth momentum.' },
-  6: { position: 'established', note: 'Established at Lead — deepening and expanding impact.' }
+  1: { position: 'start',      note: 'Just promoted out-of-cycle in January 2026 — at the very beginning of Senior.' },
+  2: { position: 'advancing',  note: 'Deep into Senior with a PAC nomination for Lead pending — the closest to the next level on the team.' },
+  3: { position: 'developing', note: 'Brought in as Senior with lead-level experience from a previous role — solid footing, developing RDC-specific breadth.' },
+  4: { position: 'developing', note: 'Developing at Mid-Level with strong product thinking — clear growth momentum toward Senior.' },
+  6: { position: 'established', note: 'Well-established at Lead — returning from leave and deepening strategic impact.' }
 };
 
 function getRatingClass(r){if(!r)return'rating-achieves';if(r.includes('Exceeds'))return'rating-exceeds';if(r.includes('Below'))return'rating-below';return'rating-achieves';}
@@ -4389,7 +4389,7 @@ const CAREER_EVIDENCE = {
       systems_thinking:   { signal:'strong',    evidence:'Platform and design system thinking is core strength. Scalable patterns, RBAC, CRM integration all reflect systems-level scope.' }
     }
   },
-  3: { // Lauren Lang — T4 (newer), path to T5 eventually but T4 solidification first
+  3: { // Lauren Lang — T4 Senior, solidifying the level before path to T5
     targetLevel: 'T4_to_T5',
     dimensions: {
       multi_area:         { signal:'developing', evidence:'Moving from Online Store to UWP in Q2 — positive signal. Still early in building cross-surface breadth.' },
