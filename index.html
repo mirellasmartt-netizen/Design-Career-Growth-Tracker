@@ -303,8 +303,10 @@
   .roadmap-pill.tbd{background:#F3F4F6;color:#9CA3AF;font-style:italic}
   .roadmap-pill.leave{background:#FEF3C7;color:#92400E}
   .roadmap-pill.complete{background:var(--exceeds-bg);color:var(--exceeds)}
-  .roadmap-edit-btn{font-size:10px;color:var(--gray-mid);background:none;border:none;cursor:pointer;padding:2px 4px;border-radius:3px;font-family:'DM Sans',sans-serif}
-  .roadmap-edit-btn:hover{background:var(--gray-light);color:var(--charcoal)}
+  .btn-edit{padding:3px 10px;font-size:11px;font-family:'DM Sans',sans-serif;font-weight:500;background:#fff;border:1px solid var(--gray-border);border-radius:6px;cursor:pointer;color:var(--gray-dark);transition:all .12s}
+  .btn-edit:hover{border-color:var(--charcoal);color:var(--charcoal)}
+  .btn-remove{padding:3px 10px;font-size:11px;font-family:'DM Sans',sans-serif;font-weight:500;background:#fff;border:1px solid var(--gray-border);border-radius:6px;cursor:pointer;color:var(--red);transition:all .12s}
+  .btn-remove:hover{border-color:var(--red);background:var(--red-light)}
 
   /* REVIEW CYCLE VIEW */
   .review-stage{display:flex;align-items:center;gap:6px}
@@ -1165,6 +1167,23 @@ const initialDesigners=[
     },
     reviewHistory:[
       {
+        period:"FY24 Annual Review",
+        fy:"FY24",
+        rating:"Achieves Expectations — Strong",
+        ratingPrev:"N/A",
+        summary:"Exemplary year driving partnerships between Customer and Consumer teams across high-priority initiatives including Alternative Lead Vetting (ALV), Project Unity, UpNest, and Agent Profiles & Branding. Christina consistently tackled ambiguity head-on, conducting generative research, building cross-functional strategies, and evangelizing design vision across multiple teams. Manager strongly recommended level-up to Lead Product Designer, noting she was already performing at that level. Highlighted areas of opportunity: deepening mentorship of other designers at scale, bridging from strategic discovery to hands-on execution and delivery, improving documentation practices, and strengthening facilitation and presentation skills.",
+        strengths:["Tackling Ambiguity & Strategic Clarity","Cross-functional Partnership Building","User Research Leadership","Workshop Facilitation & Alignment","Mentorship (Peter onboarding)","Design Vision & Evangelism across Teams"],
+        gaps:["Documentation of project status and artifacts","Working closely with Engineering / Figma execution (less practice due to strategic work)","Facilitation & presentation confidence (self-identified)","Scaling mentorship beyond 1:1 to impact design team broadly"],
+        peerQuotes:[
+          "Anytime I see Christina is working on a project, I get excited. She has the ability to break down really complex concepts to present ideas in a digestible way which helps us all tell a better story.",
+          "Christina demonstrates outstanding proficiency as a designer, consistently enhancing team collaboration and cross-functional partnerships across diverse projects.",
+          "Christina went beyond the internal boundaries of our team structures to ensure our consumers remained our north star. She was able to build partnerships across our organization.",
+          "Christina is talented at breaking down convoluted processes in a compelling manner. She is meticulous at research and never backs down from taking on complex work.",
+          "Christina has been an amazing mentor and onboarding partner since I started at Realtor.com. I'm grateful for her patience and ability to lead in a way that empowers me to become a better designer.",
+          "I strongly recommend she level up to a Lead Product Designer — she is already performing at that level."
+        ]
+      },
+      {
         period:"FY26 Annual Review",
         fy:"FY26",
         rating:"Achieves Expectations",
@@ -1537,7 +1556,7 @@ function renderGoalItem(g,designerId){
       <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
         ${yearBadge}
         <span class="goal-type goal-type-${g.type.toLowerCase()}">${g.type}</span>
-        ${canEdit()?`<button onclick="openEditGoal('${g.id}',${designerId})" style="padding:2px 7px;font-size:10px;background:none;border:1px solid var(--gray-border);border-radius:5px;cursor:pointer;color:var(--gray-mid);font-family:'DM Sans',sans-serif;margin-left:2px">Edit</button>`:''}
+        ${canEdit()?`<button onclick="openEditGoal('${g.id}',${designerId})" class="btn-edit" style="margin-left:2px">Edit</button>`:''}
       </div>
     </div>
     <div class="goal-desc">${g.desc||''}</div>
@@ -1776,8 +1795,8 @@ function renderDesignerTab(tab, d){
                   ${p.detail?`<div style="font-size:12px;color:var(--gray-mid);margin-top:2px;line-height:1.5">${p.detail}</div>`:''}
                 </div>
                 ${isAdmin()?`<div style="display:flex;gap:4px;flex-shrink:0;padding-top:2px">
-                  <button class="btn btn-outline btn-sm" style="padding:2px 8px;font-size:11px" onclick="openEditProject(${d.id},${pi})">Edit</button>
-                  <button class="btn btn-outline btn-sm" style="padding:2px 8px;font-size:11px;color:var(--red);border-color:var(--red)" onclick="deleteProject(${d.id},${pi})">×</button>
+                  <button class="btn-edit" onclick="openEditProject(${d.id},${pi})">Edit</button>
+                  <button class="btn-remove" onclick="deleteProject(${d.id},${pi})">Remove</button>
                 </div>`:''}
               </div>`;
             }).join('')}
@@ -2042,7 +2061,7 @@ function renderDesignerTab(tab, d){
               </div>
               <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
                 <a href="${doc.url}" target="_blank" style="padding:5px 12px;background:var(--warm-white);border:1px solid var(--gray-border);border-radius:6px;font-size:11px;color:var(--charcoal);text-decoration:none;font-family:'DM Sans',sans-serif;white-space:nowrap">Open →</a>
-                ${canEdit()?`<button onclick="removeDoc(${d.id},${i})" style="padding:5px 8px;background:none;border:1px solid var(--gray-border);border-radius:6px;font-size:11px;color:var(--gray-mid);cursor:pointer;font-family:'DM Sans',sans-serif">✕</button>`:''}
+                ${canEdit()?`<button onclick="removeDoc(${d.id},${i})" class="btn-remove">Remove</button>`:''}
               </div>
             </div>`).join('')}
         </div>
@@ -2250,7 +2269,7 @@ function renderDesignerTab(tab, d){
           <button class="reply-submit" onclick="submitAdminReply(${d.id},${idx})">Reply</button>
         </div>`}` : n.adminReply&&!isAdmin()?`<div class="admin-reply"><div class="admin-reply-label">Mirella replied</div>${n.adminReply}</div>`:'';
       const noteIndex = d.notes.indexOf(n);
-      const visibilityToggle = canEdit()&&!isDesignerNote ? `<button onclick="toggleNoteVisibility(${d.id},${noteIndex})" style="font-size:10px;padding:1px 8px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;color:var(--gray-mid);font-family:'DM Sans',sans-serif;margin-top:5px">${n.visibleToDesigner?'Hide from designer':'Share with designer'}</button>` : '';
+      const visibilityToggle = canEdit()&&!isDesignerNote ? `<button onclick="toggleNoteVisibility(${d.id},${noteIndex})" class="btn-edit" style="margin-top:5px">${n.visibleToDesigner?'Hide from designer':'Share with designer'}</button>` : '';
       return `<div class="${itemClass}" style="display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--gray-border)">
         <div style="font-size:16px">${icon}</div>
         <div style="flex:1">
@@ -2353,20 +2372,19 @@ function renderDesignerTab(tab, d){
     }
 
     function getBirthday(bdStr){
-      if(!bdStr) return {next:'',daysUntil:null};
+      if(!bdStr) return {next:'',daysUntil:null,hasYear:false};
       const parts = bdStr.split('/');
+      const hasYear = parts.length === 3 && parts[2] && parts[2].length === 4;
       const today = new Date();
       const thisYear = new Date(today.getFullYear(), +parts[0]-1, +parts[1]||1);
       const nextBd = thisYear < today ? new Date(today.getFullYear()+1, +parts[0]-1, +parts[1]||1) : thisYear;
       const days = Math.round((nextBd - today)/(1000*60*60*24));
       const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const age = today.getFullYear() - +parts[2] - (thisYear < today ? 0 : 1);
-      return {
-        next: months[nextBd.getMonth()]+' '+nextBd.getDate(),
-        daysUntil: days,
-        age,
-        raw: bdStr
-      };
+      const age = hasYear ? (today.getFullYear() - +parts[2] - (thisYear < today ? 0 : 1)) : null;
+      const month = +parts[0]-1;
+      const day = +parts[1]||1;
+      const raw = months[month]+' '+day+(hasYear?' '+parts[2]:'');
+      return { next: months[nextBd.getMonth()]+' '+nextBd.getDate(), daysUntil: days, age, hasYear, raw };
     }
 
     const anniv = getAnniversary(d.startDate);
@@ -2386,7 +2404,12 @@ function renderDesignerTab(tab, d){
           </div>
           <div class="contact-field">
             <span class="contact-field-label">Birthday</span>
-            <span class="contact-field-value">${c.birthday?bday.raw+' ('+bday.age+' yrs)':'<span class=\'contact-empty\'>Not entered</span>'}${c.birthday&&bday.daysUntil!==null?' <span class=\"anniv-badge\" style=\"background:#FCE7F3;color:#9D174D\">'+(bday.daysUntil===0?'Today! 🎂':bday.daysUntil+' days'):''}</span>${c.birthday&&bday.daysUntil!==null?'</span>':''}</span>
+            <span class="contact-field-value">${c.birthday
+              ? bday.raw
+                + (bday.hasYear ? ' ('+bday.age+' yrs)' : '')
+                + (bday.daysUntil===0 ? ' <span class="anniv-badge" style="background:#FCE7F3;color:#9D174D">Today! 🎂</span>'
+                  : bday.daysUntil!==null ? ' <span class="anniv-badge" style="background:#FCE7F3;color:#9D174D">in '+bday.daysUntil+' days</span>' : '')
+              : '<span class=\'contact-empty\'>Not entered</span>'}</span>
           </div>
         </div>
 
@@ -3145,7 +3168,7 @@ function selectPulseScore(val){
 
 function showPulseModal(designerId){
   document.getElementById('pulse-designer-id').value=designerId;
-  const today = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const today = new Date().toISOString().slice(0,10);
   document.getElementById('pulse-week').value=today;
   document.getElementById('pulse-note').value='';
   document.getElementById('pulse-score').value='';
@@ -3252,8 +3275,8 @@ function renderPulseTab(d, content){
     // Edit/delete buttons — admin only
     if(canEdit()){
       out += '<div style="display:flex;gap:4px;flex-shrink:0">';
-      out += '<button onclick="togglePulseEdit(' + d.id + ',' + actualIdx + ')" style="background:none;border:1px solid var(--gray-border);cursor:pointer;color:var(--gray-mid);font-size:11px;padding:3px 8px;border-radius:4px">✏️</button>';
-      out += '<button onclick="deletePulse(' + d.id + ',' + actualIdx + ')" style="background:none;border:1px solid var(--gray-border);cursor:pointer;color:var(--red);font-size:13px;padding:3px 8px;border-radius:4px;font-weight:600">×</button>';
+      out += '<button class="btn-edit" onclick="togglePulseEdit(' + d.id + ',' + actualIdx + ')">Edit</button>';
+      out += '<button class="btn-remove" onclick="deletePulse(' + d.id + ',' + actualIdx + ')">Remove</button>';
       out += '</div>';
     }
     out += '</div>';
@@ -3273,12 +3296,14 @@ async function savePulse(){
   if(!Array.isArray(d.pulseLog))d.pulseLog=[];
   // Map score to legacy status for backward compat
   const status = score>=4?'green':score>=2.5?'yellow':'red';
+  const rawDate = document.getElementById('pulse-week').value;
+  const formattedDate = rawDate ? new Date(rawDate+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   const entry = {
     score,
     status,
-    week: (document.getElementById('pulse-week').value||'').trim() || new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),
+    week: formattedDate,
     note: (document.getElementById('pulse-note').value||'').trim(),
-    date: new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+    date: formattedDate
   };
   d.pulseLog.push(entry);
   try { await save(); } catch(e){ console.error('Save error:', e); }
@@ -3313,7 +3338,7 @@ async function deletePulse(designerId, actualIndex){
     setTimeout(()=>{
       if(document.getElementById(btnId)){
         delBtn.id='';
-        delBtn.textContent='×';
+        delBtn.textContent='Remove';
         delBtn.style.background='none';
         delBtn.style.color='var(--red)';
         delBtn.style.borderColor='var(--gray-border)';
@@ -5083,7 +5108,7 @@ function copySnippet(btn){
     <div class="form-grid">
       <div class="form-group full">
         <label class="form-label">Date</label>
-        <input class="form-input" id="pulse-week" type="text" placeholder="e.g. Jun 18, 2026">
+        <input class="form-input" id="pulse-week" type="date">
       </div>
       <div class="form-group full">
         <label class="form-label">Rating <span style="font-weight:400;color:var(--gray-mid)">(1 = questioning life's choices · 5 = popping bottles of champagne · halves allowed)</span></label>
