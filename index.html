@@ -1651,35 +1651,83 @@ function renderGaps(){
 
   main.innerHTML=`
     <div class="page-header">
-      <div><div class="page-title">Skills & Gaps</div><div class="page-subtitle">Where your team needs support and development</div></div>
+      <div><div class="page-title">Skills & Gaps</div><div class="page-subtitle">Skill snapshots, development areas, and FY27 growth focus for each designer</div></div>
     </div>
+
+    <!-- Team comparison chart -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-label">Team Skills Comparison</div>
+      <div style="height:280px"><canvas id="teamChart"></canvas></div>
+    </div>
+
     ${sharedGaps.length?`
-    <div class="card card-full" style="margin-bottom:14px;border-left:3px solid var(--red)">
+    <div class="card" style="margin-bottom:20px;border-left:3px solid var(--red)">
       <div class="card-label">Shared Team Gaps — consider team-level development</div>
       ${sharedGaps.map(([gap,names])=>`
         <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--gray-border)">
-          <div style="font-size:13px;font-weight:500">${gap}</div>
+          <div style="font-size:12px;font-weight:500">${gap}</div>
           <div style="display:flex;gap:5px">${names.map(n=>`<span class="tag tag-neutral">${n}</span>`).join('')}</div>
         </div>`).join('')}
     </div>`:''}
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
-      ${designers.map((d,i)=>`
-        <div class="card">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-            <div class="avatar" style="background:${d.avatarColor};width:28px;height:28px;font-size:11px">${d.name.split(' ').map(n=>n[0]).join('')}</div>
-            <div><div style="font-size:13px;font-weight:500">${d.name.split(' ')[0]}</div><div style="font-size:11px;color:var(--gray-mid)">${d.level}</div></div>
+
+    <!-- Per-designer cards: radar + skill breakdown + growth focus -->
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px">
+      ${designers.map(d=>{
+        const topSkills = d.skills.length ? [...d.skills].sort((a,b)=>b.score-a.score).slice(0,2) : [];
+        const bottomSkills = d.skills.length ? [...d.skills].sort((a,b)=>a.score-b.score).slice(0,2) : [];
+        return `<div class="card">
+          <!-- Header -->
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+            <div class="avatar" style="background:${d.avatarColor};width:32px;height:32px;font-size:12px;flex-shrink:0">${d.name.split(' ').map(n=>n[0]).join('')}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:13px;font-weight:600;color:var(--charcoal)">${d.name}</div>
+              <div style="font-size:11px;color:var(--gray-mid)">${d.level}</div>
+            </div>
+            <span class="rating-badge ${getRatingClass(d.fy25Rating)}" style="font-size:10px;flex-shrink:0">${d.fy25Rating}</span>
           </div>
-          <div style="height:180px"><canvas id="radar-${d.id}"></canvas></div>
-        </div>`).join('')}
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
-      ${designers.map(d=>`
-        <div class="card">
-          <div class="card-label">FY27 Growth Focus</div>
-          ${d.nextSteps.map(s=>`<div style="font-size:12px;color:var(--gray-dark);padding:5px 0;border-bottom:1px solid var(--gray-border);display:flex;gap:6px"><span style="color:var(--red)">→</span><span>${s}</span></div>`).join('')}
-        </div>`).join('')}
+
+          <!-- Chart + skill breakdown side by side -->
+          <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:14px">
+            <div style="flex:0 0 160px;height:160px"><canvas id="radar-${d.id}"></canvas></div>
+            <div style="flex:1;min-width:0;padding-top:4px">
+              ${topSkills.length?`
+              <div style="font-size:10px;font-weight:700;color:var(--exceeds);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Top Skills</div>
+              ${topSkills.map(s=>`
+                <div style="margin-bottom:6px">
+                  <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray-dark);margin-bottom:2px">
+                    <span>${s.name}</span><span style="font-weight:600;color:var(--exceeds)">${s.score}</span>
+                  </div>
+                  <div style="height:4px;background:var(--gray-border);border-radius:2px"><div style="height:100%;width:${s.score}%;background:var(--exceeds);border-radius:2px"></div></div>
+                </div>`).join('')}
+              <div style="font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 6px">Needs Development</div>
+              ${bottomSkills.map(s=>`
+                <div style="margin-bottom:6px">
+                  <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray-dark);margin-bottom:2px">
+                    <span>${s.name}</span><span style="font-weight:600;color:var(--red)">${s.score}</span>
+                  </div>
+                  <div style="height:4px;background:var(--gray-border);border-radius:2px"><div style="height:100%;width:${s.score}%;background:var(--red);border-radius:2px"></div></div>
+                </div>`).join('')}
+              `:`<div style="font-size:12px;color:var(--gray-mid);padding-top:8px">No skill scores entered yet.</div>`}
+            </div>
+          </div>
+
+          <!-- Growth focus -->
+          ${d.nextSteps.length?`
+          <div style="border-top:1px solid var(--gray-border);padding-top:12px">
+            <div style="font-size:10px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">FY27 Growth Focus</div>
+            ${d.nextSteps.slice(0,3).map(s=>`
+              <div style="font-size:12px;color:var(--gray-dark);padding:4px 0;border-bottom:1px solid var(--gray-border);display:flex;gap:6px;line-height:1.5">
+                <span style="color:var(--red);flex-shrink:0">→</span><span>${s}</span>
+              </div>`).join('')}
+          </div>`:``}
+        </div>`;
+      }).join('')}
     </div>`;
-  setTimeout(()=>designers.forEach(d=>renderRadar(d)),50);
+
+  setTimeout(()=>{
+    renderTeamChart();
+    designers.forEach(d=>renderRadar(d));
+  },50);
 }
 
 function renderRadar(d){
