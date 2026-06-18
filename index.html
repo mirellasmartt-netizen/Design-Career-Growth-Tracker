@@ -1407,6 +1407,18 @@ function getRatingClass(r){if(!r)return'rating-achieves';if(r.includes('Exceeds'
 function getRatingDot(r){if(!r)return'#1A56A0';if(r.includes('Exceeds'))return'#1B7A3E';if(r.includes('Below'))return'#B45309';return'#1A56A0';}
 function getStatusClass(s){return'status-'+s.replace(' ','-');}
 
+// Shared date formatter — converts M/D/YYYY or M/D to "Jan 5, 2021" or "Jan 5"
+function formatDateStr(str){
+  if(!str) return '—';
+  const parts = str.split('/');
+  if(parts.length < 2) return str;
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const m = months[+parts[0]-1] || parts[0];
+  const d = +parts[1];
+  const y = parts[2] ? ', '+parts[2] : '';
+  return `${m} ${d}${y}`;
+}
+
 function initSidebar(filterDesignerId){
   const visibleDesigners = filterDesignerId ? designers.filter(d=>d.id===filterDesignerId) : designers;
   document.getElementById('designer-list').innerHTML=visibleDesigners.map(d=>`
@@ -1715,7 +1727,7 @@ function renderDesigner(id){
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap">
-          <span style="font-size:12px;color:var(--gray-mid)">${d.role} · ${d.area} · ${d.location}${d.startDate?' · Started '+d.startDate:''}</span>
+          <span style="font-size:12px;color:var(--gray-mid)">${d.role} · ${d.area} · ${d.location}${d.startDate?' · Started '+formatDateStr(d.startDate):''}</span>
           <span class="rating-badge ${getRatingClass(d.fy25Rating)}">${d.fy25Rating}</span>
         </div>
         ${d.promoted||d.promotionPending?`<div style="margin-top:5px;display:flex;gap:6px;flex-wrap:wrap">
@@ -2446,7 +2458,7 @@ function renderDesignerTab(tab, d){
       const age = hasYear ? (today.getFullYear() - +parts[2] - (thisYear < today ? 0 : 1)) : null;
       const month = +parts[0]-1;
       const day = +parts[1]||1;
-      const raw = months[month]+' '+day+(hasYear?' '+parts[2]:'');
+      const raw = months[month]+' '+day+(hasYear?', '+parts[2]:'');
       return { next: months[nextBd.getMonth()]+' '+nextBd.getDate(), daysUntil: days, age, hasYear, raw };
     }
 
@@ -2459,7 +2471,7 @@ function renderDesignerTab(tab, d){
           <div class="contact-card-label">Work Dates</div>
           <div class="contact-field">
             <span class="contact-field-label">Start Date</span>
-            <span class="contact-field-value">${d.startDate||'—'}</span>
+            <span class="contact-field-value">${formatDateStr(d.startDate)||'—'}</span>
           </div>
           <div class="contact-field">
             <span class="contact-field-label">Next Work Anniversary</span>
@@ -2907,7 +2919,7 @@ async function getAIResponse(){
 
 function renderLeaveView(){
   const main=document.getElementById('main-content');
-  const fmt = d => new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const fmt = d => new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   main.innerHTML=`
     <div class="page-header">
       <div><div class="page-title">Leave Tracker</div><div class="page-subtitle">Team availability at a glance</div></div>
@@ -4344,7 +4356,7 @@ async function toggleReviewStage(designerId, stageKey){
   if(d.reviewCycle[stageKey]){
     d.reviewCycle[stageKey]=null;
   } else {
-    const today=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    const today=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
     d.reviewCycle[stageKey]=today;
   }
   await save(); renderReviewCycleView();
