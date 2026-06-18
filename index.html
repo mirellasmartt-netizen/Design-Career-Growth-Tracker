@@ -4385,57 +4385,91 @@ function renderCareerTab(d, content){
 
   const criteria = LADDER_CRITERIA[evidence.targetLevel];
   const dims = evidence.dimensions;
-  const signalCounts = {strong:0,developing:0,gap:0};
-  criteria.dimensions.forEach(dim=>{ const s=(dims[dim.id]||{}).signal||'gap'; signalCounts[s]++; });
 
-  const dimRows = criteria.dimensions.map(dim=>{
-    const ev = dims[dim.id]||{signal:'gap',evidence:'No evidence collected yet.'};
-    const colors = {strong:'var(--exceeds)',developing:'#F59E0B',gap:'var(--red)'};
-    const widths = {strong:'100%',developing:'55%',gap:'20%'};
-    const labels = {strong:'Strong',developing:'Developing',gap:'Gap'};
-    const cls = {strong:'career-signal-strong',developing:'career-signal-developing',gap:'career-signal-gap'};
+  // Warmer signal labels and colors
+  const signalConfig = {
+    strong:     { label:'You\'re doing this',   adminLabel:'Demonstrated',     color:'#1B7A3E', bg:'#E8F5EE', barWidth:'100%' },
+    developing: { label:'You\'re building this', adminLabel:'Building',         color:'#1A56A0', bg:'#E8F0FB', barWidth:'58%'  },
+    gap:        { label:'Next to explore',        adminLabel:'Opportunity ahead', color:'#6B7280', bg:'#F3F4F6', barWidth:'20%'  }
+  };
+
+  // Sort: strong first, then developing, then gap
+  const sorted = [...criteria.dimensions].sort((a,b)=>{
+    const order = {strong:0, developing:1, gap:2};
+    const sa = (dims[a.id]||{}).signal||'gap';
+    const sb = (dims[b.id]||{}).signal||'gap';
+    return order[sa] - order[sb];
+  });
+
+  const counts = {strong:0, developing:0, gap:0};
+  criteria.dimensions.forEach(dim=>{ counts[(dims[dim.id]||{}).signal||'gap']++; });
+
+  const dimRows = sorted.map(dim=>{
+    const ev = dims[dim.id]||{signal:'gap', evidence:'No evidence collected yet.'};
+    const cfg = signalConfig[ev.signal];
+    const displayLabel = isAdmin() ? cfg.adminLabel : cfg.label;
     return`<div class="career-dim-row">
       <div class="career-dim-bar">
-        <div class="career-dim-indicator" style="background:${colors[ev.signal]};width:${widths[ev.signal]}"></div>
-        <div class="career-dim-label">${labels[ev.signal]}</div>
+        <div class="career-dim-indicator" style="background:${cfg.color};width:${cfg.barWidth}"></div>
+        <div class="career-dim-label" style="color:${cfg.color}">${displayLabel}</div>
       </div>
       <div style="flex:1;min-width:0">
         <div style="font-size:12px;font-weight:600;color:var(--charcoal);margin-bottom:3px">${dim.label}</div>
         <div style="font-size:11px;color:var(--gray-mid);line-height:1.6">${dim.desc}</div>
-        <div style="font-size:11px;color:var(--gray-dark);margin-top:5px;line-height:1.6;padding:6px 8px;background:var(--warm-white);border-radius:5px;border-left:2px solid ${colors[ev.signal]}">
+        <div style="font-size:11px;color:var(--gray-dark);margin-top:5px;line-height:1.6;padding:6px 8px;background:${cfg.bg};border-radius:5px;border-left:2px solid ${cfg.color}">
           ${ev.evidence}
         </div>
       </div>
     </div>`;
   }).join('');
 
+  // Summary phrase — no percentage, warm language
+  const summaryPhrases = {
+    strong: [
+      `${d.name.split(' ')[0]} is demonstrating real ${nextLevelKey} behaviors in several areas — this is a genuine path.`,
+      `There's meaningful evidence of ${nextLevelKey}-level work happening already.`
+    ],
+    mixed: [
+      `${d.name.split(' ')[0]} has a solid foundation and clear areas where ${nextLevelKey} behaviors are emerging.`,
+      `Good momentum in key areas — there are natural next steps to work toward together.`
+    ],
+    early: [
+      `${d.name.split(' ')[0]} is at the start of the ${nextLevelKey} path with some clear early opportunities to focus on.`,
+      `There's a clear direction ahead — the strongest areas are a great foundation to build from.`
+    ]
+  };
+  const phraseSet = counts.strong >= 4 ? summaryPhrases.strong : counts.strong >= 2 ? summaryPhrases.mixed : summaryPhrases.early;
+  const summaryText = phraseSet[0];
+
   content.innerHTML=`<div style="max-width:720px">
+
     <div class="career-level-bar">${levelBar}</div>
+
+    <div style="background:var(--warm-white);border-radius:10px;padding:14px 16px;margin-bottom:20px;font-size:13px;color:var(--gray-dark);line-height:1.7">
+      ${summaryText}
+    </div>
+
     <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
-      <div style="flex:1;min-width:180px;background:var(--exceeds-bg);border-radius:8px;padding:12px 14px;text-align:center">
-        <div style="font-size:22px;font-weight:700;color:var(--exceeds)">${signalCounts.strong}</div>
-        <div style="font-size:11px;color:var(--exceeds);font-weight:500">Strong</div>
+      <div style="flex:1;min-width:140px;background:#E8F5EE;border-radius:8px;padding:12px 14px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:#1B7A3E">${counts.strong}</div>
+        <div style="font-size:11px;color:#1B7A3E;font-weight:500">${isAdmin()?'Demonstrated':'You\'re doing this'}</div>
       </div>
-      <div style="flex:1;min-width:180px;background:#FEF3C7;border-radius:8px;padding:12px 14px;text-align:center">
-        <div style="font-size:22px;font-weight:700;color:#92400E">${signalCounts.developing}</div>
-        <div style="font-size:11px;color:#92400E;font-weight:500">Developing</div>
+      <div style="flex:1;min-width:140px;background:#E8F0FB;border-radius:8px;padding:12px 14px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:#1A56A0">${counts.developing}</div>
+        <div style="font-size:11px;color:#1A56A0;font-weight:500">${isAdmin()?'Building':'You\'re building this'}</div>
       </div>
-      <div style="flex:1;min-width:180px;background:var(--red-light);border-radius:8px;padding:12px 14px;text-align:center">
-        <div style="font-size:22px;font-weight:700;color:var(--red)">${signalCounts.gap}</div>
-        <div style="font-size:11px;color:var(--red);font-weight:500">Gaps</div>
-      </div>
-      <div style="flex:1;min-width:180px;background:#EDE9FE;border-radius:8px;padding:12px 14px;text-align:center">
-        <div style="font-size:22px;font-weight:700;color:#5B21B6">${Math.round(signalCounts.strong/criteria.dimensions.length*100)}%</div>
-        <div style="font-size:11px;color:#5B21B6;font-weight:500">Readiness</div>
+      <div style="flex:1;min-width:140px;background:#F3F4F6;border-radius:8px;padding:12px 14px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:#6B7280">${counts.gap}</div>
+        <div style="font-size:11px;color:#6B7280;font-weight:500">${isAdmin()?'Opportunity ahead':'Next to explore'}</div>
       </div>
     </div>
 
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
       <div>
-        <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal)">Path to ${nextLevelKey}</div>
-        <div style="font-size:12px;color:var(--gray-mid);margin-top:2px">${criteria.label} — based on RDC career ladder</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal)">Path to ${nextLevelKey} — ${levelLabels[nextLevelKey]||nextLevelKey}</div>
+        <div style="font-size:12px;color:var(--gray-mid);margin-top:2px">${criteria.label} · Based on the RDC career ladder · Sorted by what's strongest first</div>
       </div>
-      ${canEdit()?`<button onclick="generateCareerRecs(${d.id})" style="padding:8px 16px;background:var(--charcoal);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px">
+      ${canEdit()?`<button onclick="generateCareerRecs(${d.id})" style="padding:8px 16px;background:var(--charcoal);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap">
         ✦ AI Recommendations
       </button>`:''}
     </div>
@@ -4448,7 +4482,10 @@ function renderCareerTab(d, content){
       <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal);margin-bottom:12px">AI Growth Recommendations</div>
       <div id="career-recs-content-${d.id}" style="background:#fff;border:1px solid var(--gray-border);border-radius:10px;padding:16px;font-size:12px;color:var(--gray-dark);line-height:1.8"></div>
     </div>
-    ${!isAdmin()?`<div style="margin-top:8px;padding:10px 14px;background:var(--warm-white);border-radius:8px;font-size:12px;color:var(--gray-mid);line-height:1.6">AI-powered recommendations are available to your manager. Ask Mirella to share insights from your career path analysis in your next 1:1.</div>`:''}
+
+    ${!isAdmin()?`<div style="margin-top:8px;padding:10px 14px;background:var(--warm-white);border-radius:8px;font-size:12px;color:var(--gray-mid);line-height:1.6">
+      Your manager can generate AI-powered growth recommendations based on this. Bring it up in your next 1:1 — it's a great conversation starter.
+    </div>`:''}
   </div>`;
 }
 
