@@ -2233,16 +2233,16 @@ function renderDesignerTab(tab, d){
     function prefRow(label, val){
       const items = Array.isArray(val) ? val : (val ? [val] : []);
       if(!items.length) return '';
-      return `<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-border);align-items:flex-start">
-        <div style="font-size:11px;font-weight:600;color:var(--gray-mid);min-width:140px;flex-shrink:0;padding-top:2px">${label}</div>
+      return `<div style="display:flex;gap:16px;padding:10px 16px;border-bottom:1px solid var(--gray-border);align-items:flex-start">
+        <div style="font-size:12px;color:var(--gray-mid);width:140px;flex-shrink:0;padding-top:3px">${label}</div>
         <div style="flex:1;display:flex;flex-wrap:wrap;gap:5px">${items.map(i=>`<span class="tag tag-neutral">${i}</span>`).join('')}</div>
       </div>`;
     }
 
     function prefText(label, val){
       if(!val) return '';
-      return `<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-border);align-items:flex-start">
-        <div style="font-size:11px;font-weight:600;color:var(--gray-mid);min-width:140px;flex-shrink:0;padding-top:2px">${label}</div>
+      return `<div style="display:flex;gap:16px;padding:10px 16px;border-bottom:1px solid var(--gray-border);align-items:flex-start">
+        <div style="font-size:12px;color:var(--gray-mid);width:140px;flex-shrink:0;padding-top:2px">${label}</div>
         <div style="flex:1;font-size:12px;color:var(--charcoal);line-height:1.6">${val}</div>
       </div>`;
     }
@@ -2259,20 +2259,16 @@ function renderDesignerTab(tab, d){
           ${prefRow('Feedback Style', t.feedbackPref)}
           ${prefRow('Needs from Manager', t.managerNeeds)}
           ${prefText('Other needs', t.managerNeedsOther)}
-          ${prefText('Worked well with past managers', t.workedWell)}
-          ${prefText('Wishes past managers did differently', t.workedPoorly)}
           ${prefText('What you should know', t.knowGoingIn)}
-          ${prefText('Currently worried about / hoping to change', t.worries)}
           ${prefText('Passions & special skills', t.passions)}
-          ${prefText('Anything else', t.anythingElse)}
-          ${t.aiLevel?`<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-border);align-items:center">
-            <div style="font-size:11px;font-weight:600;color:var(--gray-mid);min-width:140px;flex-shrink:0">AI Skill Level</div>
+          ${t.aiLevel?`<div style="display:flex;gap:16px;padding:10px 16px;border-bottom:1px solid var(--gray-border);align-items:center">
+            <div style="font-size:12px;color:var(--gray-mid);width:140px;flex-shrink:0">AI Skill Level</div>
             <div>${getAILevelBadge(t.aiLevel)}</div>
           </div>`:''}
           ${prefText('How AI helps most / falls flat', t.aiQ2)}
-          ${prefText('Other AI thoughts', t.aiNotes)}
         </div>`}
       </div>`;
+  } else if(tab==='notes'){
   } else if(tab==='notes'){
   
   } else if(tab==='notes'){
