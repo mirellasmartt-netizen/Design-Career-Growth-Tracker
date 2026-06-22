@@ -1587,7 +1587,7 @@ function renderGoalsView(){
             <span class="rating-badge ${getRatingClass(d.fy25Rating)}" style="margin-left:auto;font-size:10px">${d.fy25Rating}</span>
           </div>
           ${d.goals.map(g=>renderGoalItem(g,d.id)).join('')}
-          <button class="btn btn-outline btn-sm" style="width:100%;margin-top:8px" onclick="document.getElementById('goal-designer').value=${d.id};showModal('addGoal')">+ Add Goal</button>
+          ${canEdit()?`<button class="btn btn-outline btn-sm" style="width:100%;margin-top:8px" onclick="document.getElementById('goal-designer').value=${d.id};showModal('addGoal')">+ Add Goal</button>`:''}
         </div>`).join('')}
     </div>`;
   setTimeout(()=>renderGoalChart(),50);
@@ -1918,8 +1918,8 @@ function renderDesignerTab(tab, d){
                   ${p.detail?`<div style="font-size:12px;color:var(--gray-mid);margin-top:2px;line-height:1.5">${p.detail}</div>`:''}
                 </div>
                 ${isAdmin()?`<div style="display:flex;gap:4px;flex-shrink:0;padding-top:2px">
-                  <button class="btn-edit" onclick="openEditProject(${d.id},${pi})">Edit</button>
-                  <button class="btn-remove" onclick="deleteProject(${d.id},${pi})">Remove</button>
+                  ${canEdit()?`<button class="btn-edit" onclick="openEditProject(${d.id},${pi})">Edit</button>`:''}
+                  ${canEdit()?`<button class="btn-remove" onclick="deleteProject(${d.id},${pi})">Remove</button>`:''}
                 </div>`:''}
               </div>`;
             }).join('')}
@@ -1945,7 +1945,7 @@ function renderDesignerTab(tab, d){
           </div>
           <textarea id="obs-${d.id}" class="notes-area" placeholder="Add your observations, impressions, or anything you want to remember about ${d.name.split(' ')[0]}..." style="min-height:100px;width:100%">${d.observations||''}</textarea>
           <div style="display:flex;justify-content:flex-end;margin-top:8px">
-            <button class="btn btn-primary btn-sm" onclick="saveObservation(${d.id})">Save</button>
+            ${canEdit()?`<button class="btn btn-primary btn-sm" onclick="saveObservation(${d.id})">Save</button>`:''}
           </div>
         </div>`:''}
       </div>`;
@@ -2032,9 +2032,9 @@ function renderDesignerTab(tab, d){
           ${note?`<div style="font-size:10px;color:var(--gray-mid);margin-top:2px;font-style:italic">${note}</div>`:''}
         </div>
         <div style="display:flex;gap:4px;flex-shrink:0">
-          <button onclick="setDorCheck(${d.id},'${key}','green')" style="padding:3px 7px;border-radius:4px;border:1px solid ${val==='green'?'#1B7A3E':'var(--gray-border)'};background:${val==='green'?'#E8F5EE':'#fff'};cursor:pointer;font-size:11px">✅</button>
+          ${canEdit()?`<button onclick="setDorCheck(${d.id},'${key}','green')" style="padding:3px 7px;border-radius:4px;border:1px solid ${val==='green'?'#1B7A3E':'var(--gray-border)'};background:${val==='green'?'#E8F5EE':'#fff'};cursor:pointer;font-size:11px">✅</button>
           <button onclick="setDorCheck(${d.id},'${key}','yellow')" style="padding:3px 7px;border-radius:4px;border:1px solid ${val==='yellow'?'#B45309':'var(--gray-border)'};background:${val==='yellow'?'#FEF3C7':'#fff'};cursor:pointer;font-size:11px">⚠️</button>
-          <button onclick="setDorCheck(${d.id},'${key}','red')" style="padding:3px 7px;border-radius:4px;border:1px solid ${val==='red'?'#D93025':'var(--gray-border)'};background:${val==='red'?'#FDECEA':'#fff'};cursor:pointer;font-size:11px">❌</button>
+          <button onclick="setDorCheck(${d.id},'${key}','red')" style="padding:3px 7px;border-radius:4px;border:1px solid ${val==='red'?'#D93025':'var(--gray-border)'};background:${val==='red'?'#FDECEA':'#fff'};cursor:pointer;font-size:11px">❌</button>`:'<span style="font-size:11px;color:var(--gray-mid)">${val==="green"?"✅":val==="yellow"?"⚠️":val==="red"?"❌":"—"}</span>'}
         </div>
       </div>`;
     };
@@ -2196,7 +2196,7 @@ function renderDesignerTab(tab, d){
           <div style="font-size:13px;font-weight:500">Recognition Log</div>
           <div style="font-size:11px;color:var(--gray-mid)">Wins to call out publicly, kudos to share, or review season ammo 🏆</div>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="showRecognitionModal(${d.id})">+ Add Recognition</button>
+        ${canEdit()?`<button class="btn btn-primary btn-sm" onclick="showRecognitionModal(${d.id})">+ Add Recognition</button>`:''}
       </div>
       ${recs.length===0?`<div class="empty-state"><div class="empty-state-icon">🌟</div><p>No recognition logged yet. Start capturing wins!</p></div>`:''}
       <div>
@@ -2324,10 +2324,10 @@ function renderDesignerTab(tab, d){
       const sharedBadge = n.visibleToDesigner?'<span style="font-size:10px;background:#E8F5EE;color:#1B7A3E;padding:1px 8px;border-radius:8px;font-weight:600">👁 Shared with designer</span>':'';
       const replySection = isDesignerNote && isAdmin() ? `
         ${n.adminReply?`<div class="admin-reply"><div class="admin-reply-label">Mirella replied</div>${n.adminReply}</div>`:`
-        <div class="reply-input-row">
+        ${canEdit()?`<div class="reply-input-row">
           <input class="reply-input" id="reply-input-${idx}" placeholder="Reply to ${n.submittedBy||'designer'}…" />
           <button class="reply-submit" onclick="submitAdminReply(${d.id},${idx})">Reply</button>
-        </div>`}` : n.adminReply&&!isAdmin()?`<div class="admin-reply"><div class="admin-reply-label">Mirella replied</div>${n.adminReply}</div>`:'';
+        </div>`:''}`}` : n.adminReply&&!isAdmin()?`<div class="admin-reply"><div class="admin-reply-label">Mirella replied</div>${n.adminReply}</div>`:'';
       const noteIndex = d.notes.indexOf(n);
       const visibilityToggle = canEdit()&&!isDesignerNote ? `<button onclick="toggleNoteVisibility(${d.id},${noteIndex})" class="btn-edit" style="margin-top:5px">${n.visibleToDesigner?'Hide from designer':'Share with designer'}</button>` : '';
       return `<div class="${itemClass}" style="display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--gray-border)">
@@ -2525,8 +2525,8 @@ function renderDesignerTab(tab, d){
             <div class="contact-field-label" style="margin-bottom:4px">Personal Notes (family, interests, important context)</div>
             <textarea class="form-input" id="ci-personal" rows="2" style="resize:vertical">${c.personal||''}</textarea>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="saveContactInfo(${d.id})">Save Contact Info</button>
-          <span id="ci-saved-${d.id}" style="font-size:11px;color:var(--exceeds);margin-left:8px;opacity:0;transition:opacity .3s"></span>
+          ${canEdit()?`<button class="btn btn-primary btn-sm" onclick="saveContactInfo(${d.id})">Save Contact Info</button>
+          <span id="ci-saved-${d.id}" style="font-size:11px;color:var(--exceeds);margin-left:8px;opacity:0;transition:opacity .3s"></span>`:''}
         </div>`:''}
       </div>`;
   }
@@ -4346,8 +4346,8 @@ function renderReviewCycleView(){
           <div class="contact-field-label" style="margin-bottom:4px">Notes</div>
           <textarea class="form-input" id="rc-notes-${d.id}" rows="2" style="resize:none;font-size:12px" placeholder="Calibration notes, blockers, context...">${rc.notes||''}</textarea>
         </div>
-        <button class="btn btn-outline btn-sm" onclick="saveReviewNotes(${d.id})">Save Notes</button>
-        <span id="rc-saved-${d.id}" style="font-size:11px;color:var(--exceeds);margin-left:6px;opacity:0;transition:opacity .3s">✓ Saved</span>
+        ${canEdit()?`<button class="btn btn-outline btn-sm" onclick="saveReviewNotes(${d.id})">Save Notes</button>
+        <span id="rc-saved-${d.id}" style="font-size:11px;color:var(--exceeds);margin-left:6px;opacity:0;transition:opacity .3s">✓ Saved</span>`:''}
       </div>`;
     }).join('')}
   </div>`;
