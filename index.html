@@ -2228,92 +2228,52 @@ function renderDesignerTab(tab, d){
   
   } else if(tab==='thrive'){
     const t=d.thrive||{};
-    const commOptions=['Slack','Email','Scheduled Check-ins (1:1s)','Quick Phone/Video Calls','Combination depending on urgency','Other'];
-    const focusOptions=['Early Morning (before 10AM)','Late Morning (10AM-12PM)','Afternoons (1PM-4PM)','Late Afternoon/Evening (after 4PM)','Bursts throughout the day','Varies by task'];
-    const feedbackOptions=['In the moment (as situation arises)','Written format (email, project comments, perf review)','During scheduled 1:1s','Formal structured review cycles only'];
-    const needsOptions=['Clear priorities and goals','More autonomy and trust in decision-making','Protection from scope creep/distractions','Better cross-functional collaboration','Career development/Mentorship','Specific tools, training, or resources','Timely feedback and recognition','Advocacy for the Design function'];
-    const aiRows=['Excitement about AI integration','Concerns about job security or skill relevance','Preparedness to use AI tools effectively','Clarity on RDC guidelines/strategy for AI use'];
-    const aiLabels=['Very Negative','Negative','Neutral','Positive','Very Positive'];
+    const hasData = t && Object.keys(t).length > 0;
 
-    function renderField(label, val){
-      return`<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">${label}</div><div style="font-size:13px;color:${val?'var(--charcoal)':'var(--gray-light)'};line-height:1.6;background:var(--warm-white);padding:8px 10px;border-radius:6px;min-height:32px">${val||'<em style="color:var(--gray-light)">Not filled in yet</em>'}</div></div>`;
-    }
-    function renderTags(label, val){
+    function prefRow(label, val){
       const items = Array.isArray(val) ? val : (val ? [val] : []);
-      return`<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">${label}</div><div class="tag-list">${items.length?items.map(i=>`<span class="tag tag-neutral">${i}</span>`).join(''):'<em style="font-size:12px;color:var(--gray-light)">Not filled in yet</em>'}</div></div>`;
+      if(!items.length) return '';
+      return `<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-border);align-items:flex-start">
+        <div style="font-size:11px;font-weight:600;color:var(--gray-mid);min-width:140px;flex-shrink:0;padding-top:2px">${label}</div>
+        <div style="flex:1;display:flex;flex-wrap:wrap;gap:5px">${items.map(i=>`<span class="tag tag-neutral">${i}</span>`).join('')}</div>
+      </div>`;
+    }
+
+    function prefText(label, val){
+      if(!val) return '';
+      return `<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-border);align-items:flex-start">
+        <div style="font-size:11px;font-weight:600;color:var(--gray-mid);min-width:140px;flex-shrink:0;padding-top:2px">${label}</div>
+        <div style="flex:1;font-size:12px;color:var(--charcoal);line-height:1.6">${val}</div>
+      </div>`;
     }
 
     content.innerHTML=`
-      <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
-        ${canEdit()?`<button class="btn btn-primary btn-sm" onclick="openThriveModal(${d.id})">${t&&Object.keys(t).length?'Edit':'Fill In'} Survey Responses</button>`:''}
-      </div>
-      <div class="cards-grid">
-        <div class="card">
-          <div class="card-label">Section 1: How We Work Together</div>
-          ${renderTags('Preferred Communication', t.commMethod)}
-          ${renderTags('Best Focus Hours', t.focusHours)}
-          ${renderTags('Feedback Preferences', t.feedbackPref)}
-          ${renderTags('What They Need From You', t.managerNeeds)}
-          ${renderField('Other needs (open text)', t.managerNeedsOther)}
-        </div>
-        <div class="card">
-          <div class="card-label">Section 2: Work & Environment</div>
-          ${renderField('Current Projects / Initiatives', t.currentProjects)}
-          <div style="margin-bottom:10px">
-            <div style="font-size:11px;font-weight:600;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Quality vs Speed Balance</div>
-            ${t.qualityVsSpeed ? `
-              <div style="display:flex;align-items:center;gap:8px">
-                <span style="font-size:11px;color:var(--gray-mid)">Delivery Speed</span>
-                <div style="flex:1;height:6px;background:var(--gray-light);border-radius:3px;overflow:hidden">
-                  <div style="width:${t.qualityVsSpeed*10}%;height:100%;background:var(--achieves);border-radius:3px"></div>
-                </div>
-                <span style="font-size:11px;color:var(--gray-mid)">Design Quality</span>
-                <span class="tag tag-neutral">${t.qualityVsSpeed}/10</span>
-              </div>` : '<em style="font-size:12px;color:var(--gray-light)">Not filled in yet</em>'}
-          </div>
-          <div style="margin-bottom:10px">
-            <div style="font-size:11px;font-weight:600;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">AI Integration Feelings</div>
-            ${t.aiFeelings && t.aiFeelings.length ? `
-              <table style="width:100%;border-collapse:collapse;font-size:11px">
-                ${t.aiFeelings.map((row,i)=>`
-                  <tr style="border-bottom:1px solid var(--gray-border)">
-                    <td style="padding:5px 0;color:var(--gray-dark);width:55%">${aiRows[i]}</td>
-                    <td style="padding:5px 0;text-align:right"><span class="tag ${row==='Positive'||row==='Very Positive'?'tag-strength':row==='Negative'||row==='Very Negative'?'tag-gap':'tag-neutral'}">${row||'—'}</span></td>
-                  </tr>`).join('')}
-              </table>` : '<em style="font-size:12px;color:var(--gray-light)">Not filled in yet</em>'}
-          </div>
-          ${renderField('Broken Processes / Improvement Ideas', t.brokenProcesses)}
-        </div>
-        <div class="card card-full">
-          <div class="card-label">Section 4: AI Enablement (FY27)</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-            <div>
-              <div style="font-size:10px;font-weight:600;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">AI Skill Level</div>
-              <div>${getAILevelBadge(t.aiLevel)}</div>
-            </div>
-            <div>${renderField('Q1 — How often does AI help you do your best work?', t.aiQ1)}</div>
-            <div>${renderField('Q3 — Confidence in knowing which AI tool to reach for?', t.aiQ3)}</div>
-            <div>${renderField('Q4 — How well does AI fit your workflow & handoffs?', t.aiQ4)}</div>
-          </div>
-          ${renderField('Q2 — Where AI is most useful / falls flat in your workflow', t.aiQ2)}
-          ${renderField('Other thoughts on AI in your design process', t.aiNotes)}
-        </div>
-        <div class="card card-full">
-          <div class="card-label">Section 3: Looking Forward & Past Experiences</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-            <div>
-              ${renderField('What has worked well with past managers', t.workedWell)}
-              ${renderField("What they wish a past manager had done differently", t.workedPoorly)}
-              ${renderField('What you should know going into this role', t.knowGoingIn)}
-            </div>
-            <div>
-              ${renderField('Currently worried about or hoping to change', t.worries)}
-              ${renderField('Anything else to share', t.anythingElse)}
-              ${renderField('Passions, special skills, unique projects', t.passions)}
-            </div>
-          </div>
-        </div>
+      <div style="max-width:680px">
+        ${canEdit()?`<div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+          <button class="btn btn-primary btn-sm" onclick="openThriveModal(${d.id})">${hasData?'Edit':'Fill In'} Survey Responses</button>
+        </div>`:''}
+        ${!hasData?`<div class="empty-state"><div class="empty-state-icon">📋</div><p>Work preferences survey not yet completed for ${d.name.split(' ')[0]}.</p></div>`:`
+        <div style="background:#fff;border:1px solid var(--gray-border);border-radius:10px;overflow:hidden">
+          ${prefRow('Communication', t.commMethod)}
+          ${prefRow('Focus Hours', t.focusHours)}
+          ${prefRow('Feedback Style', t.feedbackPref)}
+          ${prefRow('Needs from Manager', t.managerNeeds)}
+          ${prefText('Other needs', t.managerNeedsOther)}
+          ${prefText('Worked well with past managers', t.workedWell)}
+          ${prefText('Wishes past managers did differently', t.workedPoorly)}
+          ${prefText('What you should know', t.knowGoingIn)}
+          ${prefText('Currently worried about / hoping to change', t.worries)}
+          ${prefText('Passions & special skills', t.passions)}
+          ${prefText('Anything else', t.anythingElse)}
+          ${t.aiLevel?`<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-border);align-items:center">
+            <div style="font-size:11px;font-weight:600;color:var(--gray-mid);min-width:140px;flex-shrink:0">AI Skill Level</div>
+            <div>${getAILevelBadge(t.aiLevel)}</div>
+          </div>`:''}
+          ${prefText('How AI helps most / falls flat', t.aiQ2)}
+          ${prefText('Other AI thoughts', t.aiNotes)}
+        </div>`}
       </div>`;
+  } else if(tab==='notes'){
   
   } else if(tab==='notes'){
     // Split notes: admin-only vs designer-submitted/career-request
