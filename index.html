@@ -2000,7 +2000,7 @@ function renderDesignerTab(tab, d){
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
           <div>
             <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal)">Skill Areas</div>
-            <div style="font-size:12px;color:var(--gray-mid);margin-top:2px">Initial assessment based on review history · Admin can calibrate</div>
+            <div style="font-size:12px;color:var(--gray-mid);margin-top:2px">Initial assessment based on review history</div>
           </div>
           <div style="display:flex;gap:8px;font-size:11px">
             <span style="padding:3px 9px;border-radius:10px;background:#E8F5EE;color:#1B7A3E;font-weight:600">H High</span>
@@ -2026,9 +2026,6 @@ function renderDesignerTab(tab, d){
             </div>`;
           }).join('')}
         </div>
-        ${canEdit()?`<div style="padding:10px 14px;background:var(--warm-white);border-radius:8px;font-size:12px;color:var(--gray-mid);line-height:1.6;margin-top:12px">
-          These are initial assessments based on review history and available notes. Click H / M / L on any skill to calibrate. Changes save automatically.
-        </div>`:''}
       </div>`;
   } else if(tab==='dor'){
     const dorNotes = (d.notes||[]).filter(n=>n.type==='dor').slice().reverse();
@@ -2967,7 +2964,17 @@ async function loadAndInit(filterDesignerId){
             // Merge mutable fields — preserve initialDesigners structure but restore user data
             const mutableFields = ['pulseLog','notes','goals','thrive','dorChecks','contact','nextOneOnOne','radarNote','roadmap','reviewCycle','onboardingChecklist','leaveStart','leaveEnd','onLeave','returnDate','documents','skills'];
             mutableFields.forEach(field => {
-              if(saved[field] !== undefined) designers[idx][field] = saved[field];
+              if(saved[field] !== undefined) {
+                // For skills, merge hml from initialDesigners if localStorage entry lacks it
+                if(field === 'skills' && Array.isArray(saved[field])) {
+                  designers[idx][field] = saved[field].map((s, i) => ({
+                    ...s,
+                    hml: s.hml || (designers[idx].skills[i] && designers[idx].skills[i].hml) || 'M'
+                  }));
+                } else {
+                  designers[idx][field] = saved[field];
+                }
+              }
             });
           }
         });
