@@ -326,7 +326,16 @@
   .onboard-check-text{font-size:12px;color:var(--gray-dark);line-height:1.6;flex:1}
   .onboard-check-text.done{text-decoration:line-through;color:var(--gray-mid)}
 
-  /* CAREER PATH TAB */
+  /* CALIBRATION VIEW */
+  .calib-table-wrap{background:#fff;border:1px solid var(--gray-border);border-radius:10px;overflow-x:auto;margin-bottom:20px}
+  .calib-table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}
+  .calib-table th{padding:10px 14px;text-align:left;background:var(--warm-white);font-size:10px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--gray-border);border-right:1px solid var(--gray-border)}
+  .calib-table td{padding:9px 14px;border-bottom:1px solid var(--gray-border);border-right:1px solid var(--gray-border);color:var(--gray-dark);white-space:normal;max-width:240px}
+  .calib-table tr.your-report{background:#FFFBF0}
+  .calib-pill{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;white-space:nowrap}
+  .calib-pill-yes{background:#D1FAE5;color:#065F46}
+  .calib-pill-no{background:#F3F4F6;color:#6B7280}
+  .calib-pill-potential{background:#DBEAFE;color:#1E40AF}
   .career-progress-track{position:relative;margin-bottom:36px;padding:0 11px}
   .career-progress-bar-bg{height:6px;background:#E5E7EB;border-radius:3px;position:relative;margin:44px 0 8px}
   .career-progress-bar-fill{height:100%;border-radius:3px;background:var(--charcoal);transition:width .4s}
@@ -481,6 +490,7 @@
       <div class="nav-item admin-only" id="nav-reviews" onclick="showView('reviews')">Review Cycle</div>
       <div class="nav-item admin-only" id="nav-gaps" onclick="showView('gaps')">Skills & Gaps</div>
       <div class="nav-item admin-only" id="nav-leave" onclick="showView('leave')">Leave Tracker</div>
+      <div class="nav-item admin-only" id="nav-calibration" onclick="showView('calibration')">Calibration</div>
       <div class="nav-item admin-only" id="nav-offboarding" onclick="showView('offboarding')">Offboarding Notes</div>
       <div class="nav-item admin-only" id="nav-backup" onclick="showView('backup')" style="margin-top:4px;border-top:1px solid var(--gray-border);padding-top:10px">Backup & Restore</div>
     </div>
@@ -1445,6 +1455,7 @@ function showView(view){
   else if(view==='reviews')renderReviewCycleView();
   else if(view==='gaps')renderGaps();
   else if(view==='leave')renderLeaveView();
+  else if(view==='calibration')renderCalibrationView();
   else if(view==='offboarding')renderOffboardingView();
   else if(view==='backup')renderBackupView();
 }
@@ -4721,6 +4732,218 @@ async function removeDoc(designerId, idx){
   await save();
   renderDesignerTab('docs', d);
   setTimeout(()=>switchTab('docs', designerId), 10);
+}
+
+// ── CALIBRATION ───────────────────────────────────────────────────────────────
+// Source: Product Design Leadership Calibration — Database Master
+// Full Customer Design org roster — includes designers outside Mirella's direct reports
+const CALIBRATION_DATA = [
+  {
+    name:"Hayley", legalName:"Mueller, Hayley", title:"Product Designer", level:"T3", newToRole:true, yourReport:false,
+    fy26Rating:"Too new to rate", promoCandidateFY27:null,
+    pmTrajectory:"Too new to role", problemSolving:"Too new to role", collaboration:"Too new to role",
+    priorityAlignment:"Too new to role", gmPerformance:"Too new to role", trendingOverall:"Too new to role",
+    offCyclePromo:null, trendingOnCycle:null,
+    fy25Rating:"Too new to rate", potentialFY26:"Growth",
+    devOpportunity:"Hayley continues to show ownership and efficiency over and over, being able to jump from one product to another and doing it with enthusiasm and confidence. Hayley needs to continue learning the product and understand when to prioritize craft over speed."
+  },
+  {
+    name:"Jon", legalName:"Grimes, Jon", title:"Product Designer", level:"T3", newToRole:true, yourReport:true,
+    fy26Rating:"Achieves expectations", promoCandidateFY27:false,
+    pmTrajectory:"Employee is progressing well and on track.", problemSolving:"The Employee effectively handles challenges.", collaboration:"Opportunity to leverage resources more.",
+    priorityAlignment:"Needs to prioritize PMs more.", gmPerformance:"Performs in alignment with GMs.", trendingOverall:"Partially meets expectations",
+    offCyclePromo:"No", trendingOnCycle:"No",
+    fy25Rating:"#N/A", potentialFY26:"At",
+    devOpportunity:null,
+    comments:"Jon is new to his role, only 2 weeks shy of the cutoff for being too new to rate. I think his opportunity for improvement is natural, given this. He is aware of his growth areas, particularly in leveraging resources (working with product/eng) and GM performance (design system adoption/AI). We are actively working together on these performance areas."
+  },
+  {
+    name:"Lauren", legalName:"Lang, Lauren", title:"Senior Product Designer", level:"T4", newToRole:false, yourReport:true,
+    fy26Rating:"Achieves expectations", promoCandidateFY27:false,
+    pmTrajectory:"Employee is progressing well and on track.", problemSolving:"The Employee effectively handles challenges.", collaboration:"Makes good use of resources.",
+    priorityAlignment:"Excellent Clarity/Strong Alignment.", gmPerformance:"Models standards consistently.", trendingOverall:"Achieves expectations",
+    offCyclePromo:"No", trendingOnCycle:"No",
+    fy25Rating:"Achieves expectations", potentialFY26:"High",
+    devOpportunity:"Lauren is in growth because she's fully performing in her role while continuing to expand her scope and demonstrate high potential for broader impact. She drove meaningful revenue outcomes and established foundational design practices for the Online Store, and is now applying that same leadership to the RealPro Dashboard — advancing complex billing experiences and championing adoption of the RDC-UI library across teams."
+  },
+  {
+    name:"Sarah", legalName:"Miller, Sarah M.", title:"Senior Product Designer", level:"T4", newToRole:true, yourReport:false,
+    fy26Rating:"Achieves expectations", promoCandidateFY27:false,
+    pmTrajectory:"Employee is progressing well and on track.", problemSolving:"The Employee effectively handles challenges.", collaboration:"Makes good use of resources.",
+    priorityAlignment:"Excellent Clarity/Strong Alignment.", gmPerformance:"Models standards consistently.", trendingOverall:"Achieves expectations",
+    offCyclePromo:"No", trendingOnCycle:"No",
+    fy25Rating:"#N/A", potentialFY26:"High",
+    devOpportunity:"Sarah hasn't been at RDC for long but her ability to onboard and take on complex projects and being able to simplify them and find solutions cross-functionally so quickly has reinforced the decision that she was right for this role. Sarah was a lead at her previous role for 5 years and I can see her being able to move into that role at RDC as well."
+  },
+  {
+    name:"Pooja", legalName:"Sheth, Pooja R.", title:"Senior Product Designer", level:"T4", newToRole:false, yourReport:true,
+    fy26Rating:"Often exceeds expectations", promoCandidateFY27:true,
+    pmTrajectory:"Employee is progressing well and on track.", problemSolving:"The Employee effectively handles challenges.", collaboration:"Fully leverages all resources.",
+    priorityAlignment:"Excellent Clarity/Strong Alignment.", gmPerformance:"Models standards consistently.", trendingOverall:"Often exceeds expectations",
+    offCyclePromo:"No", trendingOnCycle:"Potential yes",
+    fy25Rating:"Achieves expectations", potentialFY26:"At",
+    devOpportunity:"Pooja has been an acting lead alongside Julie for RealPro Dashboard (fka UWP). She has led our feedback process for dashboard testing alongside Marketing/GTM, guided many key decisions on the design system, and has taken on some of the most complicated workflows with RBAC and CRM integration. With Julie moving into management, Pooja is positioned to also become the strategic/vision-setting lead for our team lead experiences.",
+    comments:"Continues to act as the lead for the RealPro Dashboard with an emphasis this half to mentor other designers and to set the vision for the premium buyer experience as part of the touchpoints project."
+  },
+  {
+    name:"Will", legalName:"Soemargo, William A.", title:"Senior Product Designer", level:"T4", newToRole:true, yourReport:true,
+    fy26Rating:"Achieves expectations", promoCandidateFY27:false, promoCandidateNote:"(Promoted in Jan 2026)",
+    pmTrajectory:"Employee is progressing well and on track.", problemSolving:"The Employee effectively handles challenges.", collaboration:"Fully leverages all resources.",
+    priorityAlignment:"Excellent Clarity/Strong Alignment.", gmPerformance:"Models standards consistently.", trendingOverall:"Sets a new standard",
+    offCyclePromo:"Yes", trendingOnCycle:"No if promotion is accepted",
+    fy25Rating:"Achieves expectations", potentialFY26:"High",
+    devOpportunity:"Will has been leading RealPro App (fka UMA) execution since the start of the year and is now spearheading foundational research on Listing Agent JTBD which will impact our prioritization for both web and mobile. In this way he's really pushed himself to acting at the senior level and own all design aspects of a product space.",
+    comments:"Submitted a promotion request for Will. He has been performing at the senior level for the past year, with recently completing successful discovery and JTBD prioritization on LTKA/UpNest features in RPA. He is acting in the role of lead designer for the app."
+  },
+  {
+    name:"Laura", legalName:"Ho, Laura", title:"Senior Product Designer", level:"T4", newToRole:true, yourReport:false,
+    fy26Rating:"Often exceeds expectations", promoCandidateFY27:false,
+    pmTrajectory:"Too new to role", problemSolving:"Too new to role", collaboration:"Too new to role",
+    priorityAlignment:"Too new to role", gmPerformance:"Too new to role", trendingOverall:"Too new to role",
+    offCyclePromo:"No", trendingOnCycle:"No",
+    fy25Rating:"Sets a new standard", potentialFY26:"At",
+    devOpportunity:null
+  },
+  {
+    name:"Tony", legalName:"Christos, Antonios K.", title:"Lead Product Designer", level:"T5", newToRole:false, yourReport:false,
+    fy26Rating:"Achieves expectations", promoCandidateFY27:false,
+    pmTrajectory:"Employee is progressing well and on track.", problemSolving:"The Employee effectively handles challenges.", collaboration:"Makes good use of resources.",
+    priorityAlignment:"Excellent Clarity/Strong Alignment.", gmPerformance:"Models standards consistently.", trendingOverall:"Achieves expectations",
+    offCyclePromo:"No", trendingOnCycle:"No",
+    fy25Rating:"#N/A", potentialFY26:"At",
+    devOpportunity:null
+  },
+  {
+    name:"Christina", legalName:"Poon, Christina V.", title:"Lead Product Designer", level:"T5", newToRole:false, yourReport:true,
+    fy26Rating:"Achieves expectations", promoCandidateFY27:false,
+    pmTrajectory:"Employee is progressing well and on track.", problemSolving:"The Employee effectively handles challenges.", collaboration:"Fully leverages all resources.",
+    priorityAlignment:"Excellent Clarity/Strong Alignment.", gmPerformance:"Models standards consistently.", trendingOverall:"Achieves expectations",
+    offCyclePromo:"No", trendingOnCycle:"No",
+    fy25Rating:"Above and Beyond", potentialFY26:"At",
+    devOpportunity:null
+  },
+  {
+    name:"Zeke", legalName:"Skovron, Ezekiel B.", title:"Lead Product Designer", level:"T5", newToRole:true, yourReport:false,
+    fy26Rating:"Needs improvement", promoCandidateFY27:false,
+    pmTrajectory:"Too new to role", problemSolving:"Too new to role", collaboration:"Too new to role",
+    priorityAlignment:"Too new to role", gmPerformance:"Too new to role", trendingOverall:"Too new to role",
+    offCyclePromo:"No", trendingOnCycle:"No",
+    fy25Rating:"Through the Roof", potentialFY26:"At",
+    devOpportunity:null
+  },
+  {
+    name:"Libby", legalName:"Ginsberg, Libby", title:"Lead Product Designer", level:"T5", newToRole:true, yourReport:false,
+    fy26Rating:null, promoCandidateFY27:null,
+    pmTrajectory:null, problemSolving:null, collaboration:null,
+    priorityAlignment:null, gmPerformance:null, trendingOverall:null,
+    offCyclePromo:null, trendingOnCycle:null,
+    fy25Rating:"#N/A", potentialFY26:null,
+    devOpportunity:null
+  }
+];
+
+function renderCalibrationView(){
+  if(!isAdmin()){ document.getElementById('main-content').innerHTML='<div class="empty-state"><p>Access restricted.</p></div>'; return; }
+  const main = document.getElementById('main-content');
+
+  const pillFor = (val) => {
+    if(val===null||val===undefined) return '<span class="calib-pill calib-pill-no">—</span>';
+    if(val===true||val==='Yes') return '<span class="calib-pill calib-pill-yes">Yes</span>';
+    if(val===false||val==='No') return '<span class="calib-pill calib-pill-no">No</span>';
+    if(typeof val==='string' && val.toLowerCase().includes('potential')) return `<span class="calib-pill calib-pill-potential">${val}</span>`;
+    return `<span class="calib-pill calib-pill-yes">${val}</span>`;
+  };
+
+  main.innerHTML = `
+  <div class="page-header">
+    <div>
+      <div class="page-title">Calibration</div>
+      <div class="page-subtitle">Product Design Leadership Calibration — full Customer Design org · Rows highlighted in amber are your direct reports</div>
+    </div>
+  </div>
+
+  <div class="calib-table-wrap">
+    <table class="calib-table">
+      <thead>
+        <tr>
+          <th>Name</th><th>Title</th><th>Level</th><th>New to Role</th>
+          <th>FY26 Rating</th><th>Promo Candidate FY27</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${CALIBRATION_DATA.map(p=>`
+          <tr class="${p.yourReport?'your-report':''}">
+            <td style="font-weight:600;color:var(--charcoal)">${p.name}${p.yourReport?' <span style="font-size:9px;color:var(--red);font-weight:700">★</span>':''}</td>
+            <td>${p.title}</td>
+            <td>${p.level}</td>
+            <td>${p.newToRole?'Yes':'No'}</td>
+            <td>${p.fy26Rating||'—'}</td>
+            <td>${pillFor(p.promoCandidateFY27)}${p.promoCandidateNote?` <span style="font-size:10px;color:var(--gray-mid)">${p.promoCandidateNote}</span>`:''}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-header" style="margin-top:8px"><div class="page-subtitle" style="font-size:13px;font-weight:600;color:var(--charcoal)">FY26 Mid-Year Check-In — PM Trajectory & GM Performance</div></div>
+  <div class="calib-table-wrap">
+    <table class="calib-table">
+      <thead>
+        <tr><th>Name</th><th>PM Trajectory</th><th>Problem Solving</th><th>Collaboration & Resources</th><th>Priority Alignment</th><th>GM Performance</th><th>Trending Overall</th></tr>
+      </thead>
+      <tbody>
+        ${CALIBRATION_DATA.map(p=>`
+          <tr class="${p.yourReport?'your-report':''}">
+            <td style="font-weight:600;color:var(--charcoal)">${p.name}</td>
+            <td>${p.pmTrajectory||'—'}</td>
+            <td>${p.problemSolving||'—'}</td>
+            <td>${p.collaboration||'—'}</td>
+            <td>${p.priorityAlignment||'—'}</td>
+            <td>${p.gmPerformance||'—'}</td>
+            <td>${p.trendingOverall||'—'}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-header" style="margin-top:8px"><div class="page-subtitle" style="font-size:13px;font-weight:600;color:var(--charcoal)">Promotion Tracking & Comments</div></div>
+  <div class="calib-table-wrap">
+    <table class="calib-table">
+      <thead>
+        <tr><th>Name</th><th>Off-Cycle Promo (H2 FY26)</th><th>Trending On-Cycle (FY27)</th><th style="min-width:320px">Comments</th></tr>
+      </thead>
+      <tbody>
+        ${CALIBRATION_DATA.map(p=>`
+          <tr class="${p.yourReport?'your-report':''}">
+            <td style="font-weight:600;color:var(--charcoal)">${p.name}</td>
+            <td>${pillFor(p.offCyclePromo)}</td>
+            <td>${pillFor(p.trendingOnCycle)}</td>
+            <td style="white-space:normal">${p.comments||'—'}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-header" style="margin-top:8px"><div class="page-subtitle" style="font-size:13px;font-weight:600;color:var(--charcoal)">9-Box & Development Opportunities (FY26)</div></div>
+  <div class="calib-table-wrap">
+    <table class="calib-table">
+      <thead>
+        <tr><th>Name</th><th>FY25 Rating</th><th>Potential Rating FY26</th><th style="min-width:380px">Development Opportunity</th></tr>
+      </thead>
+      <tbody>
+        ${CALIBRATION_DATA.map(p=>`
+          <tr class="${p.yourReport?'your-report':''}">
+            <td style="font-weight:600;color:var(--charcoal)">${p.name}</td>
+            <td>${p.fy25Rating||'—'}</td>
+            <td>${p.potentialFY26?`<span class="calib-pill ${p.potentialFY26==='High'?'calib-pill-yes':p.potentialFY26==='Growth'?'calib-pill-potential':'calib-pill-no'}">${p.potentialFY26}</span>`:'—'}</td>
+            <td style="white-space:normal">${p.devOpportunity||'—'}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <div style="font-size:11px;color:var(--gray-mid);line-height:1.7;padding:10px 14px;background:var(--warm-white);border-radius:8px">
+    Source: Product Design Leadership Calibration — Database Master. This roster includes the full Customer Design org, not just your direct reports — useful context for calibration conversations with Ava and peer managers.
+  </div>`;
 }
 
 // ── OFFBOARDING NOTES ─────────────────────────────────────────────────────────
