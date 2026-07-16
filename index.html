@@ -1814,6 +1814,7 @@ function renderDesigner(id){
       <div class="tab" id="tab-goals" onclick="switchTab('goals',${d.id})">Goals</div>
       <div class="tab" id="tab-skills" onclick="switchTab('skills',${d.id})">Skills</div>
       <div class="tab" id="tab-pulse" onclick="switchTab('pulse',${d.id})">Pulse${d.pulseLog&&d.pulseLog.length?` (${d.pulseLog.length})`:''}</div>
+      <div class="tab" id="tab-ailog" onclick="switchTab('ailog',${d.id})">AI Exploration${d.aiExplorationLog&&d.aiExplorationLog.length?` (${d.aiExplorationLog.length})`:''}</div>
       <div class="tab" id="tab-recognition" onclick="switchTab('recognition',${d.id})">Recognition${d.recognition&&d.recognition.length?` (${d.recognition.length})`:''}</div>
       <div class="tab" id="tab-thrive" onclick="switchTab('thrive',${d.id})">Work Preferences${d.thrive?' ✓':''}</div>
       ${isAdmin()?`<div class="tab" id="tab-notes" onclick="switchTab('notes',${d.id})">Updates (${d.notes.filter(n=>n.type!=='designer-submitted'&&n.type!=='career-request').length})</div>`:''}
@@ -2218,7 +2219,56 @@ function renderDesignerTab(tab, d){
   } else if(tab==='pulse'){
     renderPulseTab(d, content);
 
-    } else if(tab==='recognition'){
+    } else if(tab==='ailog'){
+    const AI_TYPE_STYLE = {
+      Experiment: {bg:'#E8F0FB', col:'#1A56A0', icon:'🧪'},
+      Win: {bg:'#E8F5EE', col:'#1B7A3E', icon:'✅'},
+      Miss: {bg:'#F5F5F5', col:'#555', icon:'🤷'},
+      Concern: {bg:'#FEF3C7', col:'#92400E', icon:'🚧'}
+    };
+    const aiLog = Array.isArray(d.aiExplorationLog) ? d.aiExplorationLog : [];
+    const entries = aiLog.slice().reverse();
+    const counts = {Experiment:0,Win:0,Miss:0,Concern:0};
+    aiLog.forEach(e=>{ if(counts[e.type]!==undefined) counts[e.type]++; });
+    content.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div>
+          <div style="font-size:13px;font-weight:500">AI Exploration Log</div>
+          <div style="font-size:11px;color:var(--gray-mid)">What they tried, what worked, what didn't — no polish required 🧪</div>
+        </div>
+        ${canEdit()?`<button class="btn btn-primary btn-sm" onclick="showAILogModal(${d.id})">+ Log Entry</button>`:''}
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:14px">
+        ${Object.keys(AI_TYPE_STYLE).map(type=>`
+          <div class="card" style="flex:1;text-align:center">
+            <div style="font-size:22px;font-weight:700;color:${AI_TYPE_STYLE[type].col}">${counts[type]}</div>
+            <div style="font-size:11px;color:var(--gray-mid)">${AI_TYPE_STYLE[type].icon} ${type}${counts[type]===1?'':'s'}</div>
+          </div>`).join('')}
+      </div>
+      ${entries.length===0?`<div class="empty-state"><div class="empty-state-icon">🧪</div><p>No AI exploration logged yet. Try one thing and log it here.</p></div>`:''}
+      <div>
+        ${entries.map((e,i)=>{
+          const actualIdx = aiLog.length - 1 - i;
+          const style = AI_TYPE_STYLE[e.type]||AI_TYPE_STYLE.Experiment;
+          return `
+          <div class="card" style="margin-bottom:10px;border-left:3px solid ${style.col}">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:500;color:var(--charcoal);margin-bottom:4px">${e.task||''}</div>
+                ${e.tool?`<div style="font-size:11px;color:var(--gray-mid);margin-bottom:5px">🔧 ${e.tool}</div>`:''}
+                ${e.note?`<div style="font-size:12px;color:var(--gray-dark);line-height:1.6">${e.note}</div>`:''}
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+                <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:${style.bg};color:${style.col};text-transform:uppercase">${style.icon} ${e.type}</span>
+                <span style="font-size:11px;color:var(--gray-mid)">${e.date||''}</span>
+                ${canEdit()?`<button class="btn-remove" onclick="deleteAILog(${d.id},${actualIdx})">Remove</button>`:''}
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+
+  } else if(tab==='recognition'){
     const recs = (d.recognition||[]).slice().reverse();
     content.innerHTML=`
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
@@ -2938,7 +2988,7 @@ async function loadAndInit(filterDesignerId){
           const idx = designers.findIndex(d => d.id === saved.id);
           if(idx !== -1){
             // Merge mutable fields — preserve initialDesigners structure but restore user data
-            const mutableFields = ['pulseLog','notes','goals','thrive','dorChecks','contact','nextOneOnOne','radarNote','roadmap','reviewCycle','onboardingChecklist','leaveStart','leaveEnd','onLeave','returnDate','documents','skills'];
+            const mutableFields = ['pulseLog','aiExplorationLog','notes','goals','thrive','dorChecks','contact','nextOneOnOne','radarNote','roadmap','reviewCycle','onboardingChecklist','leaveStart','leaveEnd','onLeave','returnDate','documents','skills'];
             mutableFields.forEach(field => {
               if(saved[field] !== undefined) {
                 // For skills, merge hml from initialDesigners if localStorage entry lacks it
@@ -3454,6 +3504,64 @@ async function saveRecognition(){
   d.recognition.push({title,detail:document.getElementById('recog-detail').value,type:document.getElementById('recog-type').value,sharedWith:document.getElementById('recog-shared').value,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})});
   await save();hideModal('recognition');
   renderDesigner(designerId);setTimeout(()=>switchTab('recognition',designerId),50);
+}
+
+function showAILogModal(designerId){
+  document.getElementById('ailog-designer-id').value=designerId;
+  ['ailog-task','ailog-tool','ailog-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ailog-type').value='Experiment';
+  document.getElementById('ailog-date').value=new Date().toISOString().slice(0,10);
+  showModal('ailog');
+}
+
+async function saveAILog(){
+  const designerId=parseInt(document.getElementById('ailog-designer-id').value);
+  const task=document.getElementById('ailog-task').value.trim();
+  if(!task)return alert('Please add a task or workflow.');
+  const d=designers.find(x=>x.id===designerId);if(!d)return;
+  if(!Array.isArray(d.aiExplorationLog))d.aiExplorationLog=[];
+  const rawDate = document.getElementById('ailog-date').value;
+  const formattedDate = rawDate ? new Date(rawDate+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  d.aiExplorationLog.push({
+    type: document.getElementById('ailog-type').value,
+    task,
+    tool: document.getElementById('ailog-tool').value.trim(),
+    note: document.getElementById('ailog-note').value.trim(),
+    date: formattedDate
+  });
+  await save();hideModal('ailog');
+  initSidebar();
+  renderDesigner(designerId);setTimeout(()=>switchTab('ailog',designerId),50);
+}
+
+async function deleteAILog(designerId, actualIndex){
+  const d=designers.find(x=>x.id===designerId);
+  if(!d||!Array.isArray(d.aiExplorationLog))return;
+  const btnId = 'ai-del-confirm-'+designerId+'-'+actualIndex;
+  const existing = document.getElementById(btnId);
+  if(existing){
+    d.aiExplorationLog.splice(actualIndex,1);
+    await save();
+    renderDesigner(designerId);
+    setTimeout(()=>switchTab('ailog',designerId),80);
+  } else {
+    const delBtn = event.target.closest('button');
+    if(!delBtn)return;
+    delBtn.id = btnId;
+    delBtn.textContent = 'Confirm?';
+    delBtn.style.background = 'var(--red)';
+    delBtn.style.color = '#fff';
+    delBtn.style.borderColor = 'var(--red)';
+    setTimeout(()=>{
+      if(document.getElementById(btnId)){
+        delBtn.id='';
+        delBtn.textContent='Remove';
+        delBtn.style.background='none';
+        delBtn.style.color='var(--red)';
+        delBtn.style.borderColor='var(--gray-border)';
+      }
+    },3000);
+  }
 }
 
 function leaveStatusChanged(){
@@ -5515,6 +5623,45 @@ function copySnippet(btn){
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="hideModal('recognition')">Cancel</button>
       <button class="btn btn-primary" onclick="saveRecognition()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI Exploration Log Modal -->
+<div class="modal-overlay" id="modal-ailog">
+  <div class="modal" style="width:500px">
+    <div class="modal-title">Log AI Exploration</div>
+    <input type="hidden" id="ailog-designer-id">
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Type</label>
+        <select class="form-select" id="ailog-type">
+          <option value="Experiment">Experiment (tried it, tbd)</option>
+          <option value="Win">Win</option>
+          <option value="Miss">Miss / didn't work</option>
+          <option value="Concern">Concern to flag</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" id="ailog-date" type="date">
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Task or workflow</label>
+        <input class="form-input" id="ailog-task" placeholder="e.g. Competitive audit synthesis, spec writing, Figma cleanup">
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Tool used <span style="font-weight:400;color:var(--gray-mid)">(optional)</span></label>
+        <input class="form-input" id="ailog-tool" placeholder="e.g. Claude, Figma AI, ChatGPT">
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" id="ailog-note" placeholder="What happened? What would you do differently? Anything to share at team sync?"></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="hideModal('ailog')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAILog()">Save</button>
     </div>
   </div>
 </div>
